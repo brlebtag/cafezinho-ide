@@ -18,7 +18,7 @@
     <item row="0" column="0">
      <layout class="QVBoxLayout" name="verticalLayout_2">
       <item>
-       <widget class="QTabWidget" name="tabWidget">
+       <widget class="QTabWidget" name="TabWidgetArquivos">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
           <horstretch>0</horstretch>
@@ -34,7 +34,7 @@
          </attribute>
          <layout class="QGridLayout" name="gridLayout_2">
           <item row="0" column="0">
-           <widget class="QTextEdit" name="textEdit"/>
+           <widget class="QPlainTextEdit" name="plainTextEdit"/>
           </item>
          </layout>
         </widget>
@@ -53,11 +53,7 @@
         </property>
         <layout class="QGridLayout" name="gridLayout">
          <item row="0" column="0">
-          <widget class="QTextEdit" name="textEdit_2">
-           <property name="readOnly">
-            <bool>true</bool>
-           </property>
-          </widget>
+          <widget class="QPlainTextEdit" name="plainTextEdit_2"/>
          </item>
         </layout>
        </widget>
@@ -327,6 +323,9 @@
   <action name="actionAbrir">
    <property name="text">
     <string>Abrir</string>
+   </property>
+   <property name="toolTip">
+    <string>Abrir Arquivo</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+O</string>
