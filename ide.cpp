@@ -6,11 +6,9 @@ IDE::IDE(QWidget *parent) :
     ui(new Ui::IDE)
 {
     ui->setupUi(this);
-    connect(this->ui->actionAbrir,SIGNAL(triggered()),this,SLOT(actionAbrirClicked()));
-    //Criar a HashTable que irar guardar a informação se o arquivo já foi aberto no editor para não guardar novamente...
-    fileOpened = new QHash<QFile,int>();
     this->num_arquivos_aberto = 0;
     this->num_arquivos_nao_salvo = 1;
+    connect(this->ui->actionAbrir,SIGNAL(triggered()),this,SLOT(actionAbrirClicked()));
     connect(this->ui->actionNovo,SIGNAL(triggered(bool)),this,SLOT(actionNovoClicked(bool)));
     connect(this->ui->actionFechar,SIGNAL(triggered(bool)),this,SLOT(actionFecharClicked(bool)));
     connect(this->ui->actionSair,SIGNAL(triggered(bool)),this,SLOT(actionSairClicked(bool)));
@@ -19,13 +17,12 @@ IDE::IDE(QWidget *parent) :
 IDE::~IDE()
 {
     //deleta o HashTable
-    delete fileOpened;
     delete ui;
 }
 
 void IDE::actionAbrirClicked(bool checked)
 {
-
+    /*
     //Abrir a janela pedindo ao usuario que entre com o arquivo...
     QString fileName = QFileDialog::getOpenFileName(this, tr("Abrir Arquivo"), "", tr("Files (*.cafe)"));
     //Abrir o arquivo...
@@ -41,15 +38,15 @@ void IDE::actionAbrirClicked(bool checked)
         msg.exec();
     }
     //Verifica se o editor já está com aquele arquivo aberto e senão o tiver aberto ele o abre.
-    if(!fileOpened->contains(file))
+    if(!fileOpened.contains(file))
     {
         //Verifica se só existe um arquivo não salvo
-        if(this->num_arquivo_nao_salvo==1)
+        if(this->num_arquivos_nao_salvo==1)
         {
 
         }
     }
-    file.close();
+    file.close();*/
 }
 
 void IDE::actionNovoClicked(bool checked)

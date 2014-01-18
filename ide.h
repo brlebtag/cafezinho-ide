@@ -27,14 +27,13 @@ public:
 
 private:
     Ui::IDE *ui;
-    QHash<QFile,int> *fileOpened;
-private slots:
-    void actionAbrirClicked(bool checked = false);
+    QHash<QFile,int> fileOpened;
+    QHash<int, QPlainTextEdit*> arquivos;
     int num_arquivos_aberto;
     int num_arquivos_nao_salvo;
-private:
-    QHash<int, QPlainTextEdit*> arquivos;
+
 private slots:
+    void actionAbrirClicked(bool checked = false);
     void actionNovoClicked(bool checked = false);
     void actionFecharClicked(bool checked = false);
     void actionSairClicked(bool checked = false);
