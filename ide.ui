@@ -1,0 +1,599 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>IDE</class>
+ <widget class="QMainWindow" name="IDE">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>877</width>
+    <height>527</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>CafezinhoIDE - Ambiente de Desenvolvimento da Linguagem Cafezinho</string>
+  </property>
+  <widget class="QWidget" name="centralWidget">
+   <layout class="QGridLayout" name="gridLayout_7">
+    <item row="0" column="0">
+     <layout class="QVBoxLayout" name="verticalLayout_2">
+      <item>
+       <widget class="QTabWidget" name="tabWidget">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="currentIndex">
+         <number>0</number>
+        </property>
+        <widget class="QWidget" name="tab">
+         <attribute name="title">
+          <string>Novo Arquivo*</string>
+         </attribute>
+         <layout class="QGridLayout" name="gridLayout_2">
+          <item row="0" column="0">
+           <widget class="QTextEdit" name="textEdit"/>
+          </item>
+         </layout>
+        </widget>
+       </widget>
+      </item>
+      <item>
+       <widget class="QGroupBox" name="groupBox">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="title">
+         <string>Saída do Programa</string>
+        </property>
+        <layout class="QGridLayout" name="gridLayout">
+         <item row="0" column="0">
+          <widget class="QTextEdit" name="textEdit_2">
+           <property name="readOnly">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item row="0" column="1">
+     <layout class="QVBoxLayout" name="verticalLayout">
+      <item>
+       <widget class="QGroupBox" name="groupBox_2">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="title">
+         <string>Funções</string>
+        </property>
+        <layout class="QGridLayout" name="gridLayout_3">
+         <item row="0" column="0">
+          <widget class="QTreeWidget" name="treeWidget">
+           <column>
+            <property name="text">
+             <string>Nome</string>
+            </property>
+           </column>
+           <column>
+            <property name="text">
+             <string>Tipo</string>
+            </property>
+           </column>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item>
+       <widget class="QTabWidget" name="tabWidget_2">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Maximum" vsizetype="Minimum">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="currentIndex">
+         <number>2</number>
+        </property>
+        <widget class="QWidget" name="tab_3">
+         <attribute name="title">
+          <string>Local</string>
+         </attribute>
+         <layout class="QGridLayout" name="gridLayout_5">
+          <item row="0" column="0">
+           <widget class="QTreeWidget" name="treeWidget_2">
+            <column>
+             <property name="text">
+              <string>Nome</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>Tipo</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>Valor</string>
+             </property>
+            </column>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QWidget" name="tab_4">
+         <attribute name="title">
+          <string>Variaveis</string>
+         </attribute>
+         <layout class="QGridLayout" name="gridLayout_6">
+          <item row="0" column="0">
+           <widget class="QTreeWidget" name="treeWidget_3">
+            <column>
+             <property name="text">
+              <string>Nome</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>Tipo</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>Valor</string>
+             </property>
+            </column>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QWidget" name="tab_2">
+         <attribute name="title">
+          <string>Vigiados</string>
+         </attribute>
+         <layout class="QGridLayout" name="gridLayout_4">
+          <item row="0" column="0">
+           <widget class="QTreeWidget" name="treeWidget_4">
+            <column>
+             <property name="text">
+              <string>Nome</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>Tipo</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>Valor</string>
+             </property>
+            </column>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </widget>
+      </item>
+     </layout>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menuBar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>877</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuArquivo">
+    <property name="title">
+     <string>Arquivo</string>
+    </property>
+    <addaction name="actionNovo"/>
+    <addaction name="separator"/>
+    <addaction name="actionAbrir"/>
+    <addaction name="actionReabrir"/>
+    <addaction name="separator"/>
+    <addaction name="actionSalvar"/>
+    <addaction name="actionSalvar_Como"/>
+    <addaction name="separator"/>
+    <addaction name="actionSair"/>
+   </widget>
+   <widget class="QMenu" name="menuEditar">
+    <property name="title">
+     <string>Editar</string>
+    </property>
+    <addaction name="actionCopiar"/>
+    <addaction name="actionColar"/>
+    <addaction name="actionRecortar"/>
+    <addaction name="separator"/>
+    <addaction name="actionDesfazer"/>
+    <addaction name="actionRefazer"/>
+    <addaction name="separator"/>
+    <addaction name="actionDuplicar"/>
+   </widget>
+   <widget class="QMenu" name="menuPesquisar">
+    <property name="title">
+     <string>Pesquisar</string>
+    </property>
+    <addaction name="actionLocalizar"/>
+    <addaction name="actionLocalizar_Pr_ximo"/>
+    <addaction name="actionLocalizar_Anterior"/>
+    <addaction name="actionSubstituir"/>
+    <addaction name="separator"/>
+    <addaction name="actionIr_para_Linha"/>
+   </widget>
+   <widget class="QMenu" name="menuVer">
+    <property name="title">
+     <string>Ver</string>
+    </property>
+    <addaction name="actionBarra_de_Ferementas"/>
+    <addaction name="separator"/>
+    <addaction name="actionResaltar_a_Sintaxe"/>
+    <addaction name="actionNumero_da_Linha"/>
+    <addaction name="separator"/>
+    <addaction name="actionFun_es"/>
+    <addaction name="actionDebugger"/>
+    <addaction name="actionSa_da_do_Programa"/>
+   </widget>
+   <widget class="QMenu" name="menuOp_es">
+    <property name="title">
+     <string>Opções</string>
+    </property>
+    <widget class="QMenu" name="menuDebugger">
+     <property name="title">
+      <string>Debugger</string>
+     </property>
+     <addaction name="actionProximo"/>
+     <addaction name="actionEntrar"/>
+     <addaction name="separator"/>
+     <addaction name="actionInserir_Breakpoint"/>
+     <addaction name="actionRemover_Breakpoint"/>
+     <addaction name="separator"/>
+     <addaction name="actionVigiar_Variavel"/>
+    </widget>
+    <addaction name="actionExecutar"/>
+    <addaction name="actionExecutar_passo_a_passo"/>
+    <addaction name="separator"/>
+    <addaction name="menuDebugger"/>
+    <addaction name="separator"/>
+    <addaction name="actionConfigura_es"/>
+   </widget>
+   <widget class="QMenu" name="menuDocumentos">
+    <property name="title">
+     <string>Documentos</string>
+    </property>
+    <addaction name="actionPr_ximo_Arquivo"/>
+    <addaction name="actionArquivo_Anterior"/>
+    <addaction name="actionSalvar_Todos"/>
+    <addaction name="actionFechar_Todos"/>
+    <addaction name="separator"/>
+   </widget>
+   <widget class="QMenu" name="menuAjuda">
+    <property name="title">
+     <string>Ajuda</string>
+    </property>
+    <addaction name="actionAjuda"/>
+    <addaction name="actionTutorial_Linguagem_Cafezinho"/>
+    <addaction name="actionSobre_CafezinhoIDE"/>
+   </widget>
+   <addaction name="menuArquivo"/>
+   <addaction name="menuEditar"/>
+   <addaction name="menuPesquisar"/>
+   <addaction name="menuVer"/>
+   <addaction name="menuOp_es"/>
+   <addaction name="menuDocumentos"/>
+   <addaction name="menuAjuda"/>
+  </widget>
+  <widget class="QToolBar" name="mainToolBar">
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>true</bool>
+   </attribute>
+   <addaction name="separator"/>
+  </widget>
+  <widget class="QStatusBar" name="statusBar">
+   <property name="toolTip">
+    <string/>
+   </property>
+   <property name="statusTip">
+    <string/>
+   </property>
+  </widget>
+  <action name="actionNovo">
+   <property name="text">
+    <string>Novo</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+N</string>
+   </property>
+  </action>
+  <action name="actionAbrir">
+   <property name="text">
+    <string>Abrir</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+O</string>
+   </property>
+  </action>
+  <action name="actionReabrir">
+   <property name="text">
+    <string>Reabrir...</string>
+   </property>
+  </action>
+  <action name="actionSalvar">
+   <property name="text">
+    <string>Salvar</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+S</string>
+   </property>
+  </action>
+  <action name="actionSair">
+   <property name="text">
+    <string>Sair</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+E</string>
+   </property>
+  </action>
+  <action name="actionCopiar">
+   <property name="text">
+    <string>Copiar</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+C</string>
+   </property>
+  </action>
+  <action name="actionColar">
+   <property name="text">
+    <string>Colar</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+V</string>
+   </property>
+  </action>
+  <action name="actionRecortar">
+   <property name="text">
+    <string>Recortar</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+X</string>
+   </property>
+  </action>
+  <action name="actionDesfazer">
+   <property name="text">
+    <string>Desfazer</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Z</string>
+   </property>
+  </action>
+  <action name="actionRefazer">
+   <property name="text">
+    <string>Refazer</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Y</string>
+   </property>
+  </action>
+  <action name="actionDuplicar">
+   <property name="text">
+    <string>Duplicar</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+D</string>
+   </property>
+  </action>
+  <action name="actionBarra_de_Ferementas">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Barra de Ferramentas</string>
+   </property>
+  </action>
+  <action name="actionResaltar_a_Sintaxe">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Resaltar a Sintaxe</string>
+   </property>
+  </action>
+  <action name="actionNumero_da_Linha">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Numero da Linha</string>
+   </property>
+  </action>
+  <action name="actionFun_es">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Funções</string>
+   </property>
+  </action>
+  <action name="actionDebugger">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Debugger</string>
+   </property>
+  </action>
+  <action name="actionSa_da_do_Programa">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Saída do Programa</string>
+   </property>
+  </action>
+  <action name="actionLocalizar">
+   <property name="text">
+    <string>Localizar</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+L</string>
+   </property>
+  </action>
+  <action name="actionLocalizar_Pr_ximo">
+   <property name="text">
+    <string>Localizar Próximo</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+F3</string>
+   </property>
+  </action>
+  <action name="actionLocalizar_Anterior">
+   <property name="text">
+    <string>Localizar Anterior</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+F2</string>
+   </property>
+  </action>
+  <action name="actionSubstituir">
+   <property name="text">
+    <string>Substituir</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+R</string>
+   </property>
+  </action>
+  <action name="actionIr_para_Linha">
+   <property name="text">
+    <string>Ir para Linha...</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+G</string>
+   </property>
+  </action>
+  <action name="actionExecutar">
+   <property name="text">
+    <string>Executar</string>
+   </property>
+  </action>
+  <action name="actionExecutar_passo_a_passo">
+   <property name="text">
+    <string>Passo a passo</string>
+   </property>
+  </action>
+  <action name="actionDebugger_2">
+   <property name="text">
+    <string>Debugger</string>
+   </property>
+  </action>
+  <action name="actionConfigura_es">
+   <property name="text">
+    <string>Configurações</string>
+   </property>
+  </action>
+  <action name="actionProximo">
+   <property name="text">
+    <string>Proximo</string>
+   </property>
+  </action>
+  <action name="actionEntrar">
+   <property name="text">
+    <string>Entrar</string>
+   </property>
+  </action>
+  <action name="actionInserir_Breakpoint">
+   <property name="text">
+    <string>Inserir Breakpoint</string>
+   </property>
+  </action>
+  <action name="actionRemover_Breakpoint">
+   <property name="text">
+    <string>Remover Breakpoint</string>
+   </property>
+  </action>
+  <action name="actionPr_ximo_Arquivo">
+   <property name="text">
+    <string>Próximo Arquivo</string>
+   </property>
+  </action>
+  <action name="actionArquivo_Anterior">
+   <property name="text">
+    <string>Arquivo Anterior</string>
+   </property>
+  </action>
+  <action name="actionSalvar_Todos">
+   <property name="text">
+    <string>Salvar Todos</string>
+   </property>
+  </action>
+  <action name="actionFechar_Todos">
+   <property name="text">
+    <string>Fechar Todos</string>
+   </property>
+  </action>
+  <action name="actionAjuda">
+   <property name="text">
+    <string>Ajuda CafezinhoIDE</string>
+   </property>
+  </action>
+  <action name="actionTutorial_Linguagem_Cafezinho">
+   <property name="text">
+    <string>Tutorial Linguagem Cafezinho</string>
+   </property>
+  </action>
+  <action name="actionSobre_CafezinhoIDE">
+   <property name="text">
+    <string>Sobre CafezinhoIDE</string>
+   </property>
+  </action>
+  <action name="actionSalvar_Como">
+   <property name="text">
+    <string>Salvar Como...</string>
+   </property>
+  </action>
+  <action name="actionVigiar_Variavel">
+   <property name="text">
+    <string>Vigiar Variavel</string>
+   </property>
+  </action>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <resources/>
+ <connections/>
+</ui>
