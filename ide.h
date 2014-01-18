@@ -3,10 +3,15 @@
 
 #include <QMainWindow>
 #include <QString>
+#include <QHash>
+#include <QWidget>
+#include <QPlainTextEdit>
+#include <QSizePolicy>
+#include <QVBoxLayout>
+#include <QMessageBox>
 #include <QFileDialog>
 #include <QFile>
-#include <QHash>
-#include <QMessageBox>
+#include <QTextStream>
 
 namespace Ui {
 class IDE;
@@ -22,11 +27,17 @@ public:
 
 private:
     Ui::IDE *ui;
-    int num_arquivo_abertos;
-    int num_arquivo_nao_salvo;
     QHash<QFile,int> *fileOpened;
 private slots:
     void actionAbrirClicked(bool checked = false);
+    int num_arquivos_aberto;
+    int num_arquivos_nao_salvo;
+private:
+    QHash<int, QPlainTextEdit*> arquivos;
+private slots:
+    void actionNovoClicked(bool checked = false);
+    void actionFecharClicked(bool checked = false);
+    void actionSairClicked(bool checked = false);
 };
 
 #endif // IDE_H

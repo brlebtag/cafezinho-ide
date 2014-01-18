@@ -18,7 +18,7 @@
     <item row="0" column="0">
      <layout class="QVBoxLayout" name="verticalLayout_2">
       <item>
-       <widget class="QTabWidget" name="TabWidgetArquivos">
+       <widget class="QTabWidget" name="tabWidgetArquivos">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
           <horstretch>0</horstretch>
@@ -203,6 +203,7 @@
     <addaction name="separator"/>
     <addaction name="actionAbrir"/>
     <addaction name="actionReabrir"/>
+    <addaction name="actionFechar"/>
     <addaction name="separator"/>
     <addaction name="actionSalvar"/>
     <addaction name="actionSalvar_Como"/>
@@ -300,7 +301,7 @@
     <enum>TopToolBarArea</enum>
    </attribute>
    <attribute name="toolBarBreak">
-    <bool>true</bool>
+    <bool>false</bool>
    </attribute>
    <addaction name="separator"/>
   </widget>
@@ -589,6 +590,14 @@
   <action name="actionVigiar_Variavel">
    <property name="text">
     <string>Vigiar Variavel</string>
+   </property>
+  </action>
+  <action name="actionFechar">
+   <property name="text">
+    <string>Fechar</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+W</string>
    </property>
   </action>
  </widget>
