@@ -125,6 +125,7 @@ void IDE::actionFecharClicked(bool checked)
                 out<<edit->toPlainText();
             }
         }
+        this->num_arquivos_nao_salvo--;
         //remove o tab
         this->ui->tabWidgetArquivos->removeTab(index);
         //remove o tab da hash
