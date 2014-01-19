@@ -13,8 +13,10 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        ide.cpp
+        ide.cpp \
+    document.cpp
 
-HEADERS  += ide.h
+HEADERS  += ide.h \
+    document.h
 
 FORMS    += ide.ui

@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QString>
 #include <QHash>
+#include <QSet>
 #include <QWidget>
 #include <QPlainTextEdit>
 #include <QSizePolicy>
@@ -12,6 +13,8 @@
 #include <QFileDialog>
 #include <QFile>
 #include <QTextStream>
+#include <QCryptographicHash>
+#include "document.h"
 
 namespace Ui {
 class IDE;
@@ -27,16 +30,15 @@ public:
 
 private:
     Ui::IDE *ui;
-    QHash<QFile,int> fileOpened;
-    QHash<int, QPlainTextEdit*> arquivos;
-    int num_arquivos_aberto;
-    int num_arquivos_nao_salvo;
+    QSet<QString> fileOpened;
+    QHash<int, Document*> arquivos;
 
 private slots:
     void actionAbrirClicked(bool checked = false);
     void actionNovoClicked(bool checked = false);
     void actionFecharClicked(bool checked = false);
     void actionSairClicked(bool checked = false);
+    void plainTextEditTextChanged();
 };
 
 #endif // IDE_H
