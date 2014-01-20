@@ -11,6 +11,8 @@ IDE::IDE(QWidget *parent) :
     connect(this->ui->actionNovo,SIGNAL(triggered(bool)),this,SLOT(actionNovoClicked(bool)));
     connect(this->ui->actionFechar,SIGNAL(triggered(bool)),this,SLOT(actionFecharClicked(bool)));
     connect(this->ui->actionSair,SIGNAL(triggered(bool)),this,SLOT(actionSairClicked(bool)));
+    connect(this->ui->actionSalvar,SIGNAL(triggered(bool)),this,SLOT(actionSalvarClicked(bool)));
+    connect(this->ui->actionSalvar_Como,SIGNAL(triggered(bool)),this,SLOT(actionSalvarComoClicked(bool)));
 
     //Index da aba atual...
     int index = this->ui->tabWidgetArquivos->currentIndex();
@@ -38,6 +40,9 @@ IDE::IDE(QWidget *parent) :
 
     //inseri a tab na Hashtable
     arquivos.insert(index,doc);
+
+    //Ajusta o ultimo caminho
+    lastPath = QDir::currentPath();
 }
 
 IDE::~IDE()
@@ -50,7 +55,7 @@ void IDE::actionAbrirClicked(bool checked)
 {
 
     //Abrir a janela pedindo ao usuario que entre com o arquivo...
-    QString fileName = QFileDialog::getOpenFileName(this, tr("Abrir Arquivo"), "", tr("Files (*.cafe)"));
+    QString fileName = QFileDialog::getOpenFileName(this, tr("Abrir Arquivo"), lastPath, tr("Files (*.cafe)"));
 
     if(fileName.isEmpty())
         return;
@@ -83,8 +88,9 @@ void IDE::actionAbrirClicked(bool checked)
             //Se o atual estiver vazio carrega o texto dentro dele...
             QString buffer = file.readAll();
             doc->setText(buffer);
-            this->ui->tabWidgetArquivos->setTabText(index,fileName.section(QDir::separator(),-1));
-            doc->setFileId(fileName);
+            this->ui->tabWidgetArquivos->setTabText(index,QString(fileName.section(QDir::separator(),-1)));
+            doc->setFileName(fileName);
+            lastPath = fileName.remove(fileName.section(QDir::separator(),-1));//atualizo o ultimo arquivo
             fileOpened.insert(doc->getFileId());
         }
         else
@@ -97,7 +103,7 @@ void IDE::actionAbrirClicked(bool checked)
             tab->setToolTip(fileName);
 
             //Inseri a aba no tabWidget o titulo é apenas a ultima parte do caminho full do arquivo (só o nome do arquivo)
-            int index = this->ui->tabWidgetArquivos->addTab(tab,QString(fileName.section(QDir::separator(),-1)));
+            int index = this->ui->tabWidgetArquivos->addTab(tab,fileName.section(QDir::separator(),-1));
 
             //seta a nova aba como atual
             this->ui->tabWidgetArquivos->setCurrentWidget(tab);
@@ -197,14 +203,26 @@ void IDE::actionFecharClicked(bool checked)
             //deseja salvar...
             if(result == QMessageBox::Save)
             {
+
+                QString path;
+
+                if(doc->isOpened())
+                    path = doc->getPath();
+                else
+                    path = lastPath;
                 //A onde salvar
                 QString fileName = QFileDialog::getSaveFileName(
                                                                     this,
                                                                     tr("Salvar Arquivo"),
-                                                                    QDir::currentPath(),
+                                                                    path,
                                                                     tr("Arquivo Cafezinho(*.cafe)"),
                                                                     new QString(tr("Arquivo Cafezinho (*.cafe)"))
                                                                 );
+
+                //Se estiver vazia não fecha a aba...
+                if(fileName.isEmpty())
+                    return;
+
                 //Abre o arquivo
                 QFile file(fileName);
 
@@ -240,6 +258,9 @@ void IDE::actionFecharClicked(bool checked)
         //remove o tab da hash
         arquivos.remove(index);
 
+        //remove o arquivo da tabela de aberto: se não estava aberto não acontece nada.
+        fileOpened.remove(doc->getFileId());
+
         //Deleta o container do documento...
         delete doc;
     }
@@ -253,13 +274,163 @@ void IDE::actionSairClicked(bool checked)
 
 }
 
-void IDE::plainTextEditTextChanged()
+void IDE::actionSalvarClicked(bool checked)
 {
     //pega o index do tab atual
     int index = this->ui->tabWidgetArquivos->currentIndex();
 
     //Pega o edit da hashtable
     Document* doc = arquivos.value(index);
+
+    QString fileName;
+    bool salvar_como = false;
+
+    if(!doc->isOpened())
+    {
+        //mostra a tela de aberto
+
+        //A onde salvar
+        fileName = QFileDialog::getSaveFileName(
+                                                    this,
+                                                    tr("Salvar Arquivo"),
+                                                    lastPath,
+                                                    tr("Arquivo Cafezinho(*.cafe)"),
+                                                    new QString(tr("Arquivo Cafezinho (*.cafe)"))
+                                                );
+        //Se estiver vazia não salva nada...
+        if(fileName.isEmpty())
+            return;
+
+        salvar_como = true;
+
+    }
+    else
+    {
+        fileName = doc->getPath();
+    }
+
+    //apenas salva o arquivo
+    QFile file(fileName);
+
+    //Verifica se é possivel gravar no arquivo...
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
+    {
+        //Cria mensagem de erro...
+        QMessageBox msgBox;
+        msgBox.setWindowTitle("CafezinhoIDE");
+        msgBox.setText("Erro ao tentar salvar o arquivo");
+        msgBox.setInformativeText(file.errorString());
+        msgBox.setStandardButtons(QMessageBox::Ok);
+        msgBox.setDefaultButton(QMessageBox::Ok);
+        msgBox.exec();
+        //Sai e Não deleta a janela...
+        return;
+    }
+
+    //Se foi salvar como então o arquivo possivelmente mudou de local e agora estamos trabalhando naquele local...
+    if(salvar_como)
+    {
+        //remove o antigo file...
+        fileOpened.remove(doc->getFileId());
+
+        doc->setFileName(fileName);
+
+        //Reinsere o novo...
+        fileOpened.insert(doc->getFileId());
+
+    }
+
+    //Grava arquivo no disco...
+    QTextStream out(&file);
+    out<<doc->getText();
+
+    //Marca o arquivo como limpo...
+    doc->gotCleaned();
+
+    //Seta ou reseta o nome da aba
+    this->ui->tabWidgetArquivos->setTabText(index, fileName.section(QDir::separator(),-1));
+
+    //Fecha o arquivo
+    file.close();
+
+}
+
+void IDE::actionSalvarComoClicked(bool checked)
+{
+    //pega o index do tab atual
+    int index = this->ui->tabWidgetArquivos->currentIndex();
+
+    //Pega o edit da hashtable
+    Document* doc = arquivos.value(index);
+
+    //A onde salvar
+    QString fileName = QFileDialog::getSaveFileName(
+                                                this,
+                                                tr("Salvar Arquivo"),
+                                                lastPath,
+                                                tr("Arquivo Cafezinho(*.cafe)"),
+                                                new QString(tr("Arquivo Cafezinho (*.cafe)"))
+                                            );
+    //Se estiver vazia não salva nada...
+    if(fileName.isEmpty())
+        return;
+
+    //apenas salva o arquivo
+    QFile file(fileName);
+
+    //Verifica se é possivel gravar no arquivo...
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
+    {
+        //Cria mensagem de erro...
+        QMessageBox msgBox;
+        msgBox.setWindowTitle("CafezinhoIDE");
+        msgBox.setText("Erro ao tentar salvar o arquivo");
+        msgBox.setInformativeText(file.errorString());
+        msgBox.setStandardButtons(QMessageBox::Ok);
+        msgBox.setDefaultButton(QMessageBox::Ok);
+        msgBox.exec();
+        //Sai e Não deleta a janela...
+        return;
+    }
+
+    //remove o antigo file...
+    fileOpened.remove(doc->getFileId());
+
+    doc->setFileName(fileName);
+
+    //Reinsere o novo...
+    fileOpened.insert(doc->getFileId());
+
+    //Grava arquivo no disco...
+    QTextStream out(&file);
+    out<<doc->getText();
+
+    //Marca o arquivo como limpo...
+    doc->gotCleaned();
+
+    //Seta ou reseta o nome da aba
+    this->ui->tabWidgetArquivos->setTabText(index, fileName.section(QDir::separator(),-1));
+
+    //Fecha o arquivo
+    file.close();
+}
+
+void IDE::plainTextEditTextChanged()
+{
+
+    //pega o index do tab atual
+    int index = this->ui->tabWidgetArquivos->currentIndex();
+
+    //Pega o edit da hashtable
+    Document* doc = arquivos.value(index);
+    if(doc->isDirty()&&(doc->isOpened()))
+    {
+
+        //poem o texto no lugar
+        QString text =doc->getPath().section(QDir::separator(),-1);
+        text+="*";
+        this->ui->tabWidgetArquivos->setTabText(index, text);
+    }
 
     if(doc->isEmpty()&&(!doc->isOpened()))
         doc->gotCleaned(); //Marca o documento como limpo por que está vazio.

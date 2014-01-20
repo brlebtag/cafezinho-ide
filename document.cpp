@@ -6,10 +6,11 @@ Document::Document(int id, QPlainTextEdit *edit, bool dirty)
     opened = false;
 }
 
-Document::Document(QString fileId, int id, QPlainTextEdit *edit, bool dirty)
+Document::Document(QString fileName, int id, QPlainTextEdit *edit, bool dirty)
     :id(id), edit(edit), dirty(dirty)
 {
-    this->fileId =  QCryptographicHash::hash(fileId.toUtf8(),QCryptographicHash::Md5).toHex();
+    this->path = fileName;
+    this->fileId =  QCryptographicHash::hash(fileName.toUtf8(),QCryptographicHash::Md5).toHex();
     opened = true;
 }
 
@@ -43,10 +44,11 @@ QString Document::getText()
     return this->edit->toPlainText();
 }
 
-void Document::setFileId(QString fileId)
+void Document::setFileName(QString fileName)
 {
-    this->fileId =  QCryptographicHash::hash(fileId.toUtf8(),QCryptographicHash::Md5).toHex();
-    opened = true;
+    this->path = fileName;
+    this->fileId =  QCryptographicHash::hash(fileName.toUtf8(),QCryptographicHash::Md5).toHex();
+    this->opened = true;
 }
 
 void Document::setText(QString &text)
@@ -67,6 +69,11 @@ int Document::getID()
 QString Document::getFileId()
 {
     return this->fileId;
+}
+
+QString Document::getPath()
+{
+    return this->path;
 }
 
 

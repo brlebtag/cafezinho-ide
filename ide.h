@@ -14,6 +14,7 @@
 #include <QFile>
 #include <QTextStream>
 #include <QCryptographicHash>
+#include <QDebug>
 #include "document.h"
 
 namespace Ui {
@@ -32,12 +33,15 @@ private:
     Ui::IDE *ui;
     QSet<QString> fileOpened;
     QHash<int, Document*> arquivos;
+    QString lastPath;
 
 private slots:
     void actionAbrirClicked(bool checked = false);
     void actionNovoClicked(bool checked = false);
     void actionFecharClicked(bool checked = false);
     void actionSairClicked(bool checked = false);
+    void actionSalvarClicked(bool checked = false);
+    void actionSalvarComoClicked(bool checked = false);
     void plainTextEditTextChanged();
 };
 
