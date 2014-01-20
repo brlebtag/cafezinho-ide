@@ -241,6 +241,8 @@
     <addaction name="actionFun_es"/>
     <addaction name="actionDebugger"/>
     <addaction name="actionSa_da_do_Programa"/>
+    <addaction name="separator"/>
+    <addaction name="actionReiniciar"/>
    </widget>
    <widget class="QMenu" name="menuOp_es">
     <property name="title">
@@ -593,6 +595,11 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+W</string>
+   </property>
+  </action>
+  <action name="actionReiniciar">
+   <property name="text">
+    <string>Reiniciar</string>
    </property>
   </action>
  </widget>
