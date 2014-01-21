@@ -18,7 +18,7 @@ IDE::IDE(QWidget *parent) :
     int index = this->ui->tabWidgetArquivos->currentIndex();
 
     //Cria um QPlainTextEdit e inseri na tab
-    QPlainTextEdit *edit = new QPlainTextEdit(this->ui->tabWidgetArquivos->currentWidget());
+    CodeEditor *edit = new CodeEditor(this->ui->tabWidgetArquivos->currentWidget());
 
     //adiciona o connect para salvar as mudanças no texto...
     connect(edit,SIGNAL(textChanged()),this,SLOT(plainTextEditTextChanged()));
@@ -138,7 +138,7 @@ void IDE::actionAbrirClicked(bool checked)
             this->ui->tabWidgetArquivos->setCurrentWidget(tab);
 
             //Cria um QPlainTextEdit e inseri na nova tab
-            QPlainTextEdit *edit = new QPlainTextEdit(tab);
+            CodeEditor *edit = new CodeEditor(tab);
 
             //adiciona o connect para salvar as mudanças no texto...
             connect(edit,SIGNAL(textChanged()),this,SLOT(plainTextEditTextChanged()));
@@ -219,7 +219,7 @@ void IDE::actionNovoClicked(bool checked)
     this->ui->tabWidgetArquivos->setCurrentWidget(tab);
 
     //Cria um QPlainTextEdit e inseri na nova tab
-    QPlainTextEdit *edit = new QPlainTextEdit(tab);
+    CodeEditor *edit = new CodeEditor(tab);
 
     //adiciona o connect para salvar as mudanças no texto...
     connect(edit,SIGNAL(textChanged()),this,SLOT(plainTextEditTextChanged()));

@@ -16,6 +16,7 @@
 #include <QCryptographicHash>
 #include <QDebug>
 #include "document.h"
+#include "codeeditor.h"
 
 namespace Ui {
 class IDE;
