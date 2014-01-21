@@ -154,7 +154,7 @@
         </property>
         <widget class="QWidget" name="tab">
          <attribute name="title">
-          <string>Novo Arquivo*</string>
+          <string/>
          </attribute>
         </widget>
        </widget>

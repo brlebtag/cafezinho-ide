@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QString>
 #include <QHash>
+#include <QList>
 #include <QWidget>
 #include <QPlainTextEdit>
 #include <QSizePolicy>
@@ -31,7 +32,7 @@ public:
 private:
     Ui::IDE *ui;
     QHash<QString,int> fileOpened;
-    QHash<int, Document*> arquivos;
+    QList<Document*> arquivos;
     QString lastPath;
 
 private slots:

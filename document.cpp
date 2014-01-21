@@ -11,7 +11,7 @@ Document::Document(QString fileName, int id, QPlainTextEdit *edit, bool dirty)
 {
     this->path = fileName;
     this->fileId =  QCryptographicHash::hash(fileName.toUtf8(),QCryptographicHash::Md5).toHex();
-    opened = true;
+    gotOpened();
 }
 
 bool Document::isEmpty()
@@ -39,6 +39,16 @@ void Document::gotCleaned()
     this->dirty = false;
 }
 
+void Document::gotOpened()
+{
+    this->opened = true;
+}
+
+void Document::closed()
+{
+    this->opened = false;
+}
+
 QString Document::getText()
 {
     return this->edit->toPlainText();
@@ -48,7 +58,6 @@ void Document::setFileName(QString fileName)
 {
     this->path = fileName;
     this->fileId =  QCryptographicHash::hash(fileName.toUtf8(),QCryptographicHash::Md5).toHex();
-    this->opened = true;
 }
 
 void Document::setText(QString &text)

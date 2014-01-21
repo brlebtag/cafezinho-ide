@@ -15,6 +15,8 @@ public:
     bool isOpened();
     void gotDirty();
     void gotCleaned();
+    void gotOpened();
+    void closed();
     QString getText();
     void setFileName(QString fileName);
     void setText(QString &text);

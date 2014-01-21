@@ -35,7 +35,7 @@ IDE::IDE(QWidget *parent) :
     //Inseri o layout na tab
     this->ui->tabWidgetArquivos->currentWidget()->setLayout(layout);
 
-    //Cria um conteiner para guardar informações sobre o documento
+    //Cria um conteiner para guardar informações sobre o documento. O documento está limpo
     Document* doc = new Document(index,edit);
 
     //inseri a tab na Hashtable
@@ -43,6 +43,9 @@ IDE::IDE(QWidget *parent) :
 
     //Ajusta o ultimo caminho
     lastPath = QDir::currentPath();
+
+    //Coloca o Titulo
+    this->ui->tabWidgetArquivos->setTabText(index, "Novo Arquivo");
 }
 
 IDE::~IDE()
@@ -81,17 +84,39 @@ void IDE::actionAbrirClicked(bool checked)
         int index = this->ui->tabWidgetArquivos->currentIndex();
 
         //Pega o edit da hashtable
-        Document* doc = arquivos.value(index);
+        Document* doc = arquivos.at(index);
 
         if(doc->isEmpty())
         {
-            //Se o atual estiver vazio carrega o texto dentro dele...
+            //Carrega o texto do arquivo para o buffer
             QString buffer = file.readAll();
+
+            //Seta o documento sujo para não adicionar o * ... por que ao adicionar o texto lido do arquivo no PlainTextEdit
+            //ele irá chamar textChanged mas nessa situação não queremos que adicione o * ...
+            doc->gotDirty();
+
+            //Poem o texto dentro do PlainTextEdit
             doc->setText(buffer);
+
+            //agora marca o texto como limpo...
+            doc->gotCleaned();
+
+            //Seta o titulo da aba
             this->ui->tabWidgetArquivos->setTabText(index,QString(fileName.section(QDir::separator(),-1)));
+
+            //Seta o nome do documento
             doc->setFileName(fileName);
+
+            //Seta o documento como aberto
+            doc->gotOpened();
+
+            //Seta o toolTip da aba
             this->ui->tabWidgetArquivos->setTabToolTip(index, fileName);
-            lastPath = fileName.remove(fileName.section(QDir::separator(),-1));//atualizo o ultimo arquivo
+
+            //Ajusta a variavel lastPath para o ultimo arquivo aberto
+            lastPath = fileName.remove(fileName.section(QDir::separator(),-1));
+
+            //Inseri o arquivo na tabela de arquivos abertos
             fileOpened.insert(doc->getFileId(), index);
         }
         else
@@ -130,11 +155,21 @@ void IDE::actionAbrirClicked(bool checked)
             //inseri a tab na Hashtable
             arquivos.insert(index, doc);
 
+            //Seta o documento sujo para não adicionar o * ... por que ao adicionar o texto lido do arquivo no PlainTextEdit
+            //ele irá chamar textChanged mas nessa situação não queremos que adicione o * ...
+            doc->gotDirty();
+
             //Coloca o texto do arquivo no PlainTextEdit
             edit->appendPlainText(file.readAll());
 
+            //agora marca o texto como limpo...
+            doc->gotCleaned();
+
             //Seto o nome
             doc->setFileName(fileName);
+
+            //Marca o arquivo como aberto
+            doc->gotOpened();
 
             //Inseri no hashtable de arquivos abertos
             fileOpened.insert(doc->getFileId(), index);
@@ -146,7 +181,10 @@ void IDE::actionAbrirClicked(bool checked)
     }
     else
     {
+        //Pega o index da aba que o documento está...
         int index_tab = fileOpened.value(QString(QCryptographicHash::hash(fileName.toUtf8(),QCryptographicHash::Md5).toHex()));
+
+        //Seta a tab encontrada como atual...
         this->ui->tabWidgetArquivos->setCurrentIndex(index_tab);
     }
 
@@ -160,7 +198,7 @@ void IDE::actionNovoClicked(bool checked)
     QWidget* tab = new QWidget(this->ui->tabWidgetArquivos);
 
     //Inseri a aba no tabWidget
-    int index = this->ui->tabWidgetArquivos->addTab(tab,QString(tr("Novo Arquivo*")));
+    int index = this->ui->tabWidgetArquivos->addTab(tab,QString(tr("Novo Arquivo")));
 
     //seta a nova aba como atual
     this->ui->tabWidgetArquivos->setCurrentWidget(tab);
@@ -195,7 +233,7 @@ void IDE::actionFecharClicked(bool checked)
     int index = this->ui->tabWidgetArquivos->currentIndex();
 
     //Pega o edit da hashtable
-    Document* doc = arquivos.value(index);
+    Document* doc = arquivos.at(index);
 
     //Verifica se existe mais de uma aba...
     if(arquivos.size()>1)
@@ -266,7 +304,7 @@ void IDE::actionFecharClicked(bool checked)
         this->ui->tabWidgetArquivos->removeTab(index);
 
         //remove o tab da hash
-        arquivos.remove(index);
+        arquivos.removeAt(index);
 
         //remove o arquivo da tabela de aberto: se não estava aberto não acontece nada.
         fileOpened.remove(doc->getFileId());
@@ -290,7 +328,7 @@ void IDE::actionSalvarClicked(bool checked)
     int index = this->ui->tabWidgetArquivos->currentIndex();
 
     //Pega o edit da hashtable
-    Document* doc = arquivos.value(index);
+    Document* doc = arquivos.at(index);
 
     QString fileName;
     bool salvar_como = false;
@@ -379,7 +417,7 @@ void IDE::actionSalvarComoClicked(bool checked)
     int index = this->ui->tabWidgetArquivos->currentIndex();
 
     //Pega o edit da hashtable
-    Document* doc = arquivos.value(index);
+    Document* doc = arquivos.at(index);
 
     //A onde salvar
     QString fileName = QFileDialog::getSaveFileName(
@@ -443,19 +481,15 @@ void IDE::plainTextEditTextChanged()
     int index = this->ui->tabWidgetArquivos->currentIndex();
 
     //Pega o edit da hashtable
-    Document* doc = arquivos.value(index);
+    Document* doc = arquivos.at(index);
 
-    if(doc->isEmpty()&&(!doc->isOpened()))
-        doc->gotCleaned(); //Marca o documento como limpo por que está vazio.
-    else
-        doc->gotDirty(); //Marca o documento como sujo por que não ta vazio e foi alterado algo
-
-    if(doc->isDirty()&&(doc->isOpened()))
+    if(!doc->isDirty())
     {
 
         //poem o texto no lugar
         QString text =doc->getPath().section(QDir::separator(),-1);
         text+="*";
         this->ui->tabWidgetArquivos->setTabText(index, text);
+        doc->gotDirty();
     }
 }
