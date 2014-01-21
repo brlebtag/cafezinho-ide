@@ -32,7 +32,7 @@ public:
 
 private:
     Ui::IDE *ui;
-    QHash<QString,int> fileOpened;
+    QHash<QString, int> fileOpened;
     QList<Document*> arquivos;
     QString lastPath;
 

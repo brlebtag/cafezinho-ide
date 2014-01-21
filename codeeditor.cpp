@@ -3,23 +3,26 @@
 
 CodeEditor::CodeEditor(QWidget *parent) : QPlainTextEdit(parent)
 {
+    line_number = true;
     lineNumberArea = new LineNumberArea(this);
     connect(this, SIGNAL(blockCountChanged(int)), this, SLOT(updateLineNumberAreaWidth(int)));
     connect(this, SIGNAL(updateRequest(QRect,int)), this, SLOT(updateLineNumberArea(QRect,int)));
-
-
     updateLineNumberAreaWidth(0);
 }
 
 int CodeEditor::lineNumberAreaWidth()
 {
+    //Calcula o numero de digitos
     int digits = 1;
+    //Pega a quandidade de blocos (linhas)
     int max = qMax(1, blockCount());
+    //vai dividindo por 10 para contar quantos digitos tem...
     while (max >= 10) {
         max /= 10;
         ++digits;
     }
 
+    //retorna qtd digitos + 10(espaçamento, opcional)
     int space = 10 + fontMetrics().width(QLatin1Char('9')) * digits;
 
     return space;
