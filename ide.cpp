@@ -46,6 +46,9 @@ IDE::IDE(QWidget *parent) :
 
     //Coloca o Titulo
     this->ui->tabWidgetArquivos->setTabText(index, "Novo Arquivo");
+
+    //Seta o foco no edit...
+    edit->setFocus();
 }
 
 IDE::~IDE()
@@ -118,6 +121,9 @@ void IDE::actionAbrirClicked(bool checked)
 
             //Inseri o arquivo na tabela de arquivos abertos
             fileOpened.insert(doc->getFileId(), index);
+
+            //seta focus no edit
+            doc->setFocus();
         }
         else
         {
@@ -177,6 +183,9 @@ void IDE::actionAbrirClicked(bool checked)
             //Seta o toolTip como o caminho do arquivo
             this->ui->tabWidgetArquivos->setTabToolTip(index,fileName);
 
+            //Seta o foco no edit...
+            edit->setFocus();
+
         }
     }
     else
@@ -186,6 +195,12 @@ void IDE::actionAbrirClicked(bool checked)
 
         //Seta a tab encontrada como atual...
         this->ui->tabWidgetArquivos->setCurrentIndex(index_tab);
+
+        //Pega o documento e seta o focus
+        Document * doc = arquivos.at(index_tab);
+
+        //Seta o focus
+        doc->setFocus();
     }
 
     //Fecha o arquivo...
@@ -225,6 +240,9 @@ void IDE::actionNovoClicked(bool checked)
 
     //inseri a tab na Hashtable
     arquivos.insert(index, doc);
+
+    //Seta o foco no edit...
+    edit->setFocus();
 }
 
 void IDE::actionFecharClicked(bool checked)
@@ -247,6 +265,10 @@ void IDE::actionFecharClicked(bool checked)
                                                 QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel,
                                                 QMessageBox::Save
                                              );
+
+            //Não quero sair...
+            if(result == QMessageBox::Cancel)
+                return;
 
             //deseja salvar...
             if(result == QMessageBox::Save)
@@ -294,10 +316,6 @@ void IDE::actionFecharClicked(bool checked)
                 out<<doc->getText();
 
             }
-            else if(result == QMessageBox::Cancel)
-            {
-                return;
-            }
         }
 
         //remove o tab
@@ -318,8 +336,114 @@ void IDE::actionFecharClicked(bool checked)
 
 void IDE::actionSairClicked(bool checked)
 {
+    int index = 0;
+
+    for(QList<Document*>::iterator it = arquivos.begin(); it!= arquivos.end(); it++, index++)
+    {
+        Document *doc = (*it);
+
+        if(doc->isDirty())
+        {
 
 
+            //Seta a tab index como a atual...
+            this->ui->tabWidgetArquivos->setCurrentIndex(index);
+
+            //Seta o foco no edit...
+            doc->setFocus();
+
+            //Perqunta se pode fechar assim mesmo
+            int result = QMessageBox::warning(
+                                                this,tr("CafezinhoIDE"),
+                                                tr("Deseja salvar as alterações antes de fechar?"),
+                                                QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel,
+                                                QMessageBox::Save
+                                             );
+
+            //Não quero sair...
+            if(result == QMessageBox::Cancel)
+                return;
+
+            //deseja salvar...
+            if(result == QMessageBox::Save)
+            {
+
+                //A onde salvar
+                QString fileName = QFileDialog::getSaveFileName(
+                                                            this,
+                                                            tr("Salvar Arquivo"),
+                                                            lastPath,
+                                                            tr("Arquivo Cafezinho(*.cafe)"),
+                                                            new QString(tr("Arquivo Cafezinho (*.cafe)"))
+                                                        );
+                //Se estiver vazia não salva nada...
+                if(fileName.isEmpty())
+                    return;
+
+                //Adiciona a terminação .cafe se o usuario não informar
+                if(!fileName.contains(".cafe"))
+                {
+                    fileName+=".cafe";
+                }
+
+                //apenas salva o arquivo
+                QFile file(fileName);
+
+                //Verifica se é possivel gravar no arquivo...
+                if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
+                {
+                    //Cria mensagem de erro...
+                    QMessageBox msgBox;
+                    msgBox.setWindowTitle("CafezinhoIDE");
+                    msgBox.setText("Erro ao tentar salvar o arquivo");
+                    msgBox.setInformativeText(file.errorString());
+                    msgBox.setStandardButtons(QMessageBox::Ok);
+                    msgBox.setDefaultButton(QMessageBox::Ok);
+                    msgBox.exec();
+                    //Sai e Não deleta a janela...
+                    return;
+                }
+
+                //remove o antigo file...
+                fileOpened.remove(doc->getFileId());
+
+                doc->setFileName(fileName);
+
+                //Reinsere o novo...
+                fileOpened.insert(doc->getFileId(), index);
+
+                //Grava arquivo no disco...
+                QTextStream out(&file);
+                out<<doc->getText();
+
+                //Marca o arquivo como limpo...
+                doc->gotCleaned();
+
+                //Seta o toolTip como o caminho do arquivo
+                this->ui->tabWidgetArquivos->setTabToolTip(index,fileName);
+
+                //Seta ou reseta o nome da aba
+                this->ui->tabWidgetArquivos->setTabText(index, fileName.section(QDir::separator(),-1));
+
+                //Fecha o arquivo
+                file.close();
+            }
+
+            //remove o tab
+            this->ui->tabWidgetArquivos->removeTab(index);
+
+            //remove o tab da hash
+            arquivos.removeAt(index);
+
+            //remove o arquivo da tabela de aberto: se não estava aberto não acontece nada.
+            fileOpened.remove(doc->getFileId());
+
+            //Deleta o container do documento...
+            delete doc;
+        }
+    }
+
+    qApp->exit(0);
 }
 
 void IDE::actionSalvarClicked(bool checked)
@@ -349,6 +473,7 @@ void IDE::actionSalvarClicked(bool checked)
         if(fileName.isEmpty())
             return;
 
+        //Adiciona a terminação .cafe se o usuario não informar
         if(!fileName.contains(".cafe"))
         {
             fileName+=".cafe";
@@ -431,6 +556,12 @@ void IDE::actionSalvarComoClicked(bool checked)
     if(fileName.isEmpty())
         return;
 
+    //Adiciona a terminação .cafe se o usuario não informar
+    if(!fileName.contains(".cafe"))
+    {
+        fileName+=".cafe";
+    }
+
     //apenas salva o arquivo
     QFile file(fileName);
 
@@ -487,7 +618,7 @@ void IDE::plainTextEditTextChanged()
     {
 
         //poem o texto no lugar
-        QString text =doc->getPath().section(QDir::separator(),-1);
+        QString text = this->ui->tabWidgetArquivos->tabText(index);
         text+="*";
         this->ui->tabWidgetArquivos->setTabText(index, text);
         doc->gotDirty();

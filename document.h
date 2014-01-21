@@ -24,6 +24,7 @@ public:
     int getID();
     QString getFileId();
     QString getPath();
+    void setFocus();
 private:
     bool dirty;
     int id;

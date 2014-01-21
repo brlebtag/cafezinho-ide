@@ -85,4 +85,9 @@ QString Document::getPath()
     return this->path;
 }
 
+void Document::setFocus()
+{
+    this->edit->setFocus();
+}
+
 
