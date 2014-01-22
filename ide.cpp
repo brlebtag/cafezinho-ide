@@ -13,6 +13,7 @@ IDE::IDE(QWidget *parent) :
     connect(this->ui->actionSair,SIGNAL(triggered(bool)),this,SLOT(actionSairClicked(bool)));
     connect(this->ui->actionSalvar,SIGNAL(triggered(bool)),this,SLOT(actionSalvarClicked(bool)));
     connect(this->ui->actionSalvar_Como,SIGNAL(triggered(bool)),this,SLOT(actionSalvarComoClicked(bool)));
+    connect(this->ui->actionNumero_da_Linha,SIGNAL(toggled(bool)),this,SLOT(actionNumero_da_linhaToggled(bool)));
 
     //Index da aba atual...
     int index = this->ui->tabWidgetArquivos->currentIndex();
@@ -22,6 +23,9 @@ IDE::IDE(QWidget *parent) :
 
     //adiciona o connect para salvar as mudanças no texto...
     connect(edit,SIGNAL(textChanged()),this,SLOT(plainTextEditTextChanged()));
+
+    //Para pegar os breakpoints
+    connect(edit,SIGNAL(breakpoint(int,bool)),this,SLOT(breakpoint(int,bool)));
 
     //configura a politica de tamanho
     edit->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
@@ -143,6 +147,9 @@ void IDE::actionAbrirClicked(bool checked)
             //adiciona o connect para salvar as mudanças no texto...
             connect(edit,SIGNAL(textChanged()),this,SLOT(plainTextEditTextChanged()));
 
+            //Para pegar os breakpoints
+            connect(edit,SIGNAL(breakpoint(int,bool)),this,SLOT(breakpoint(int,bool)));
+
             //configura a politica de tamanho
             edit->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
 
@@ -223,6 +230,9 @@ void IDE::actionNovoClicked(bool checked)
 
     //adiciona o connect para salvar as mudanças no texto...
     connect(edit,SIGNAL(textChanged()),this,SLOT(plainTextEditTextChanged()));
+
+    //Para pegar os breakpoints
+    connect(edit,SIGNAL(breakpoint(int,bool)),this,SLOT(breakpoint(int,bool)));
 
     //configura a politica de tamanho
     edit->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
@@ -623,4 +633,23 @@ void IDE::plainTextEditTextChanged()
         this->ui->tabWidgetArquivos->setTabText(index, text);
         doc->gotDirty();
     }
+}
+
+void IDE::actionNumero_da_linhaToggled(bool checked)
+{
+    CodeEditor::setLineNumber(checked);
+
+    //pega o index do tab atual
+    int index = this->ui->tabWidgetArquivos->currentIndex();
+
+    //Pega o edit da hashtable
+    Document* doc = arquivos.at(index);
+
+    //Repintar o edit
+    doc->repaintEdit();
+}
+
+void IDE::breakpoint(int line, bool checked)
+{
+    qDebug()<<line<<", "<<checked;
 }

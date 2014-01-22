@@ -1,13 +1,16 @@
 #include "codeeditor.h"
 
+bool CodeEditor::line_number = true;
 
 CodeEditor::CodeEditor(QWidget *parent) : QPlainTextEdit(parent)
 {
-    line_number = true;
     lineNumberArea = new LineNumberArea(this);
+    connect(lineNumberArea,SIGNAL(lineNumberClicked(int)),this,SLOT(lineNumberClicked(int)));
     connect(this, SIGNAL(blockCountChanged(int)), this, SLOT(updateLineNumberAreaWidth(int)));
     connect(this, SIGNAL(updateRequest(QRect,int)), this, SLOT(updateLineNumberArea(QRect,int)));
     updateLineNumberAreaWidth(0);
+    breakImg.load(":/bolinha.png");
+    breakpoints.clear();
 }
 
 int CodeEditor::lineNumberAreaWidth()
@@ -25,7 +28,20 @@ int CodeEditor::lineNumberAreaWidth()
     //retorna qtd digitos + 10(espaçamento, opcional)
     int space = 10 + fontMetrics().width(QLatin1Char('9')) * digits;
 
+    if(!CodeEditor::line_number)
+        space = 0;
+
     return space;
+}
+
+void CodeEditor::setLineNumber(bool checked)
+{
+    CodeEditor::line_number = checked;
+}
+
+void CodeEditor::forceUpdate()
+{
+    this->repaint(this->contentsRect());
 }
 
 void CodeEditor::updateLineNumberAreaWidth(int /* newBlockCount */)
@@ -37,49 +53,89 @@ void CodeEditor::updateLineNumberAreaWidth(int /* newBlockCount */)
 
 void CodeEditor::updateLineNumberArea(const QRect &rect, int dy)
 {
-    if (dy)
-        lineNumberArea->scroll(0, dy);
-    else
-        lineNumberArea->update(0, rect.y(), lineNumberArea->width(), rect.height());
+    if(CodeEditor::line_number)
+    {
+        if (dy)
+            lineNumberArea->scroll(0, dy);
+        else
+            lineNumberArea->update(0, rect.y(), lineNumberArea->width(), rect.height());
 
-    if (rect.contains(viewport()->rect()))
-        updateLineNumberAreaWidth(0);
+        if (rect.contains(viewport()->rect()))
+            updateLineNumberAreaWidth(0);
+    }
+}
+
+void CodeEditor::lineNumberClicked(int line)
+{
+    bool contain = breakpoints.contains(line);
+
+    if(contain)
+    {
+        breakpoints.remove(line);
+    }
+    else
+    {
+        breakpoints.insert(line);
+    }
+
+    contain = ! contain;
+
+    this->lineNumberArea->repaint(this->lineNumberArea->rect());
+
+    emit breakpoint(line,contain);
 }
 
 
 
 void CodeEditor::resizeEvent(QResizeEvent *e)
 {
-    QPlainTextEdit::resizeEvent(e);
+    if(CodeEditor::line_number)
+    {
+        QPlainTextEdit::resizeEvent(e);
 
-    QRect cr = contentsRect();
-    lineNumberArea->setGeometry(QRect(cr.left(), cr.top(), lineNumberAreaWidth(), cr.height()));
+        QRect cr = contentsRect();
+        lineNumberArea->setGeometry(QRect(cr.left(), cr.top(), lineNumberAreaWidth(), cr.height()));
+    }
 }
-
-
 
 void CodeEditor::lineNumberAreaPaintEvent(QPaintEvent *event)
 {
-    QPainter painter(lineNumberArea);
-    painter.fillRect(event->rect(), Qt::lightGray);
+    if(CodeEditor::line_number)
+    {
+        QPainter painter(lineNumberArea);
+        painter.fillRect(event->rect(), Qt::lightGray);
 
 
-    QTextBlock block = firstVisibleBlock();
-    int blockNumber = block.blockNumber();
-    int top = (int) blockBoundingGeometry(block).translated(contentOffset()).top();
-    int bottom = top + (int) blockBoundingRect(block).height();
+        QTextBlock block = firstVisibleBlock();
+        int blockNumber = block.blockNumber();
+        int top = (int) blockBoundingGeometry(block).translated(contentOffset()).top();
+        int bottom = top + (int) blockBoundingRect(block).height();
 
-    while (block.isValid() && top <= event->rect().bottom()) {
-        if (block.isVisible() && bottom >= event->rect().top()) {
-            QString number = QString::number(blockNumber + 1);
-            painter.setPen(Qt::black);
-            painter.drawText(0, top, lineNumberArea->width(), fontMetrics().height(),
-                             Qt::AlignRight, number);
+        while (block.isValid() && top <= event->rect().bottom())
+        {
+            if (block.isVisible() && bottom >= event->rect().top())
+            {
+                int num = (blockNumber + 1);
+                if(!breakpoints.contains(num))
+                {
+                    QString number = QString::number(num);
+                    painter.setPen(Qt::black);
+                    painter.drawText(0, top, lineNumberArea->width(), fontMetrics().height(),
+                                     Qt::AlignRight, number);
+                }
+                else
+                {
+                    int dim = qMin(lineNumberArea->width(),fontMetrics().height());
+                    QPointF pos(this->lineNumberAreaWidth()-dim,top);
+                    QImage img = breakImg.scaled(dim,dim);
+                    painter.drawImage(pos,img);
+                }
+            }
+
+            block = block.next();
+            top = bottom;
+            bottom = top + (int) blockBoundingRect(block).height();
+            ++blockNumber;
         }
-
-        block = block.next();
-        top = bottom;
-        bottom = top + (int) blockBoundingRect(block).height();
-        ++blockNumber;
     }
 }

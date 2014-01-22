@@ -1,12 +1,12 @@
 #include "document.h"
 
-Document::Document(int id, QPlainTextEdit *edit, bool dirty)
+Document::Document(int id, CodeEditor *edit, bool dirty)
     :id(id), edit(edit), dirty(dirty)
 {
     opened = false;
 }
 
-Document::Document(QString fileName, int id, QPlainTextEdit *edit, bool dirty)
+Document::Document(QString fileName, int id, CodeEditor *edit, bool dirty)
     :id(id), edit(edit), dirty(dirty)
 {
     this->path = fileName;
@@ -88,6 +88,11 @@ QString Document::getPath()
 void Document::setFocus()
 {
     this->edit->setFocus();
+}
+
+void Document::repaintEdit()
+{
+    this->edit->forceUpdate();
 }
 
 

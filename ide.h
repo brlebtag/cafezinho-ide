@@ -44,6 +44,8 @@ private slots:
     void actionSalvarClicked(bool checked = false);
     void actionSalvarComoClicked(bool checked = false);
     void plainTextEditTextChanged();
+    void actionNumero_da_linhaToggled(bool checked);
+    void breakpoint(int line, bool checked);
 };
 
 #endif // IDE_H

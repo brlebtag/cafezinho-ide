@@ -15,3 +15,11 @@ void LineNumberArea::paintEvent(QPaintEvent *event)
 {
     codeEditor->lineNumberAreaPaintEvent(event);
 }
+
+void LineNumberArea::mousePressEvent(QMouseEvent *event)
+{
+    QTextBlock block = codeEditor->firstVisibleBlock();
+    int height = codeEditor->blockBoundingRect(block).height();
+    int line = ((int)event->pos().y()/height) + block.blockNumber() + 1;
+    emit lineNumberClicked(line);
+}

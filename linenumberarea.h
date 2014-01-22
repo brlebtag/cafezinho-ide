@@ -18,7 +18,10 @@ private:
      CodeEditor *codeEditor;
 protected:
      void paintEvent(QPaintEvent *event);
+     void mousePressEvent (QMouseEvent * event);
+
 signals:
+    void lineNumberClicked(int line);
 
 public slots:
 

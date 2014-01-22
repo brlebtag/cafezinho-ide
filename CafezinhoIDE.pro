@@ -24,3 +24,6 @@ HEADERS  += ide.h \
     linenumberarea.h
 
 FORMS    += ide.ui
+
+RESOURCES += \
+    resource.qrc
