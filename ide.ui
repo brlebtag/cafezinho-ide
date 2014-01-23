@@ -223,7 +223,7 @@
      <string>Pesquisar</string>
     </property>
     <addaction name="actionLocalizar"/>
-    <addaction name="actionLocalizar_Pr_ximo"/>
+    <addaction name="actionLocalizar_Proximo"/>
     <addaction name="actionLocalizar_Anterior"/>
     <addaction name="actionSubstituir"/>
     <addaction name="separator"/>
@@ -238,13 +238,13 @@
     <addaction name="actionResaltar_a_Sintaxe"/>
     <addaction name="actionNumero_da_Linha"/>
     <addaction name="separator"/>
-    <addaction name="actionFun_es"/>
+    <addaction name="actionFuncoes"/>
     <addaction name="actionDebugger"/>
-    <addaction name="actionSa_da_do_Programa"/>
+    <addaction name="actionSaida_do_Programa"/>
     <addaction name="separator"/>
     <addaction name="actionReiniciar"/>
    </widget>
-   <widget class="QMenu" name="menuOp_es">
+   <widget class="QMenu" name="menuOpcoes">
     <property name="title">
      <string>Opções</string>
     </property>
@@ -265,13 +265,13 @@
     <addaction name="separator"/>
     <addaction name="menuDebugger"/>
     <addaction name="separator"/>
-    <addaction name="actionConfigura_es"/>
+    <addaction name="actionConfiguracoes"/>
    </widget>
    <widget class="QMenu" name="menuDocumentos">
     <property name="title">
      <string>Documentos</string>
     </property>
-    <addaction name="actionPr_ximo_Arquivo"/>
+    <addaction name="actionProximo_Arquivo"/>
     <addaction name="actionArquivo_Anterior"/>
     <addaction name="actionSalvar_Todos"/>
     <addaction name="actionFechar_Todos"/>
@@ -289,7 +289,7 @@
    <addaction name="menuEditar"/>
    <addaction name="menuPesquisar"/>
    <addaction name="menuVer"/>
-   <addaction name="menuOp_es"/>
+   <addaction name="menuOpcoes"/>
    <addaction name="menuDocumentos"/>
    <addaction name="menuAjuda"/>
   </widget>
@@ -431,7 +431,7 @@
     <string>Numero da Linha</string>
    </property>
   </action>
-  <action name="actionFun_es">
+  <action name="actionFuncoes">
    <property name="checkable">
     <bool>true</bool>
    </property>
@@ -453,7 +453,7 @@
     <string>Debugger</string>
    </property>
   </action>
-  <action name="actionSa_da_do_Programa">
+  <action name="actionSaida_do_Programa">
    <property name="checkable">
     <bool>true</bool>
    </property>
@@ -472,7 +472,7 @@
     <string>Ctrl+L</string>
    </property>
   </action>
-  <action name="actionLocalizar_Pr_ximo">
+  <action name="actionLocalizar_Proximo">
    <property name="text">
     <string>Localizar Próximo</string>
    </property>
@@ -519,7 +519,7 @@
     <string>Debugger</string>
    </property>
   </action>
-  <action name="actionConfigura_es">
+  <action name="actionConfiguracoes">
    <property name="text">
     <string>Configurações</string>
    </property>
@@ -544,7 +544,7 @@
     <string>Remover Breakpoint</string>
    </property>
   </action>
-  <action name="actionPr_ximo_Arquivo">
+  <action name="actionProximo_Arquivo">
    <property name="text">
     <string>Próximo Arquivo</string>
    </property>
