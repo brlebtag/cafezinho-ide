@@ -29,15 +29,14 @@ class IDE : public QMainWindow
 public:
     explicit IDE(QWidget *parent = 0);
     ~IDE();
+    static const void* null;
 
 private:
     Ui::IDE *ui;
     QHash<QString, int> fileOpened;
+    DocumentManager docMan;
     QList<Document*> arquivos;
     QString lastPath;
-
-    static const void* null;
-
     Document* criarAba(QString title);
     QString fileNameToFileId(QString &fileName);
     QString showAbrirArquivo();

@@ -109,7 +109,7 @@ QString IDE::fileNameToFileId(QString &fileName)
 QString IDE::showAbrirArquivo()
 {
     //Abrir a janela pedindo ao usuario que entre com o arquivo... e retorna a string
-    return QFileDialog::getOpenFileName(this, tr("Abrir Arquivo"), lastPath, tr("Files (*.cafe)"));
+    showAbrirArquivo(lastPath);
 }
 
 QString IDE::showAbrirArquivo(QString &path)

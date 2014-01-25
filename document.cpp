@@ -1,7 +1,7 @@
 #include "document.h"
 
-Document::Document(int id, CodeEditor *edit, bool dirty)
-    :id(id), edit(edit), dirty(dirty)
+Document::Document(DocumentManager *docMan, CodeEditor *edit, bool dirty)
+    :docMan(docMan), edit(edit), dirty(dirty)
 {
     opened = false;
 }
@@ -69,7 +69,7 @@ void Document::appendText(QString &text)
 
 int Document::getID()
 {
-    return this->id;
+    return docMan->position(this);
 }
 
 QString Document::getFileId()

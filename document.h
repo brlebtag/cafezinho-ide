@@ -6,11 +6,12 @@
 #include <QCryptographicHash>
 #include "codeeditor.h"
 #include <QWidget>
+#include "documentmanager.h"
 
 class Document
 {
 public:
-    Document(int id, CodeEditor *edit, bool dirty = false );
+    Document(DocumentManager *docMan, CodeEditor *edit, bool dirty = false );
     bool isEmpty();
     bool isDirty();
     bool isOpened();
@@ -32,7 +33,7 @@ public:
 private:
     QWidget* tab;
     bool dirty;
-    int id;
+    DocumentManager *docMan;
     CodeEditor *edit;
     QString fileId;
     QString path;
