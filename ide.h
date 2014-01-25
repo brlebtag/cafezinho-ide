@@ -36,6 +36,30 @@ private:
     QList<Document*> arquivos;
     QString lastPath;
 
+    static const void* null;
+
+    Document* criarAba(QString title);
+    QString fileNameToFileId(QString &fileName);
+    QString showAbrirArquivo();
+    QString showAbrirArquivo(QString &path);
+    QString showSalvarArquivo();
+    QString showSalvarArquivo(QString path);
+    int showSalvarAlteracao();
+    void setDocumentText(Document* document, QFile *file);
+    QFile* abrirArquivoLeitura(QString &fileName);
+    QFile *abrirArquivoGravacao(QString &fileName);
+    void reabrirAba(QString &fileName);
+    void fecharFile(QFile* file);
+    QString getRealFileName(QString &fileName);
+    void setAbaTitle(int index, QString title);
+    void setCurrentAba(QWidget* widget);
+    void setCurrentAba(int index);
+    int getCurrentAba();
+    void setTabToolTip(int index, QString &tip);
+    void removeAba(int index, Document* document);
+    bool writeDocument(Document *document, QString &fileName);
+    void readDocument(Document *document, int index, QString &fileName, QFile *file);
+
 private slots:
     void actionAbrirClicked(bool checked = false);
     void actionNovoClicked(bool checked = false);

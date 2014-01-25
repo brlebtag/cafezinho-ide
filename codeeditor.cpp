@@ -41,7 +41,7 @@ void CodeEditor::setLineNumber(bool checked)
 
 void CodeEditor::forceUpdate()
 {
-    this->repaint(this->contentsRect());
+    this->lineNumberArea->hide();
 }
 
 void CodeEditor::updateLineNumberAreaWidth(int /* newBlockCount */)
@@ -89,13 +89,10 @@ void CodeEditor::lineNumberClicked(int line)
 
 void CodeEditor::resizeEvent(QResizeEvent *e)
 {
-    if(CodeEditor::line_number)
-    {
-        QPlainTextEdit::resizeEvent(e);
+    QPlainTextEdit::resizeEvent(e);
 
-        QRect cr = contentsRect();
-        lineNumberArea->setGeometry(QRect(cr.left(), cr.top(), lineNumberAreaWidth(), cr.height()));
-    }
+    QRect cr = contentsRect();
+    lineNumberArea->setGeometry(QRect(cr.left(), cr.top(), lineNumberAreaWidth(), cr.height()));
 }
 
 void CodeEditor::lineNumberAreaPaintEvent(QPaintEvent *event)

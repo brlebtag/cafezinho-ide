@@ -6,14 +6,6 @@ Document::Document(int id, CodeEditor *edit, bool dirty)
     opened = false;
 }
 
-Document::Document(QString fileName, int id, CodeEditor *edit, bool dirty)
-    :id(id), edit(edit), dirty(dirty)
-{
-    this->path = fileName;
-    this->fileId =  QCryptographicHash::hash(fileName.toUtf8(),QCryptographicHash::Md5).toHex();
-    gotOpened();
-}
-
 bool Document::isEmpty()
 {
     return this->edit->toPlainText().isEmpty();
@@ -65,6 +57,11 @@ void Document::setText(QString &text)
     this->edit->setPlainText(text);
 }
 
+void Document::setText(QByteArray text)
+{
+    this->edit->setPlainText(text);
+}
+
 void Document::appendText(QString &text)
 {
     this->edit->appendPlainText(text);
@@ -93,6 +90,11 @@ void Document::setFocus()
 void Document::repaintEdit()
 {
     this->edit->forceUpdate();
+}
+
+QWidget *Document::widget()
+{
+    return this->tab;
 }
 
 
