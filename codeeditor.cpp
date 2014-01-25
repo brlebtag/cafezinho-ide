@@ -41,7 +41,7 @@ void CodeEditor::setLineNumber(bool checked)
 
 void CodeEditor::forceUpdate()
 {
-    this->lineNumberArea->hide();
+    updateLineNumberAreaWidth(0);
 }
 
 void CodeEditor::updateLineNumberAreaWidth(int /* newBlockCount */)
