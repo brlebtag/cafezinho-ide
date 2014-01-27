@@ -3,7 +3,7 @@
 
 #include <QMainWindow>
 #include <QString>
-#include <QHash>
+#include <QSet>
 #include <QList>
 #include <QWidget>
 #include <QPlainTextEdit>
@@ -17,6 +17,7 @@
 #include <QDebug>
 #include "document.h"
 #include "codeeditor.h"
+#include "documentmanager.h"
 
 namespace Ui {
 class IDE;
@@ -33,7 +34,7 @@ public:
 
 private:
     Ui::IDE *ui;
-    QHash<QString, int> fileOpened;
+    QSet<QString> fileOpened;
     DocumentManager docMan;
     QList<Document*> arquivos;
     QString lastPath;

@@ -1,7 +1,7 @@
 #include "document.h"
 
-Document::Document(DocumentManager *docMan, CodeEditor *edit, bool dirty)
-    :docMan(docMan), edit(edit), dirty(dirty)
+Document::Document(QWidget *widget, CodeEditor *edit, bool dirty)
+    :widget(widget), edit(edit), dirty(dirty)
 {
     opened = false;
 }
@@ -67,9 +67,9 @@ void Document::appendText(QString &text)
     this->edit->appendPlainText(text);
 }
 
-int Document::getID()
+QWidget *Document::getWidget()
 {
-    return docMan->position(this);
+    return widget;s
 }
 
 QString Document::getFileId()

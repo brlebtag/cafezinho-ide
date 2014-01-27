@@ -1,66 +1,72 @@
 #include "documentmanager.h"
 
-const int DocumentManager::NOT_FOUND = 1;
+const int DocumentManager::NOT_FOUND = -1;
 
 DocumentManager::DocumentManager()
 {
 
 }
 
-Document *DocumentManager::search(QString fileName)
+Document *DocumentManager::search(QString fileId)
 {
-    int pos = position(fileName);
+    int pos = position(fileId);
+
     if(pos!=DocumentManager::NOT_FOUND)
         return IDE::null;
-    return documents.at(pos).first;
+    return search(pos);
+}
+
+Document *DocumentManager::search(int position)
+{
+    return documents.at(position).first;
 }
 
 int DocumentManager::position(Document *document)
 {
     int i=0;
-    for(QList<QPair<Document*,QString> >it = documents.begin(); it!= documents.end(); it++,i++)
-    {
-        QPair<Document*,QString> &obj = (*it);
 
-        if(obj.first == document)
+    for(QList<Document*>::iterator it = documents.begin(); it!= documents.end(); it++,i++)
+    {
+        Document* doc = (*it);
+
+        if(doc == document)
             return i;
     }
 
     return DocumentManager::NOT_FOUND;
 }
 
-int DocumentManager::position(QString fileName)
+int DocumentManager::position(QString fileId)
 {
     int i=0;
-    for(QList<QPair<Document*,QString> >it = documents.begin(); it!= documents.end(); it++,i++)
-    {
-        QPair<Document*,QString> &obj = (*it);
 
-        if(obj.second == fileName)
+    for(QList<Document*>::iterator it = documents.begin(); it!= documents.end(); it++,i++)
+    {
+        Document* doc = (*it);
+
+        if(doc->getFileId() == fileId)
             return i;
     }
 
     return DocumentManager::NOT_FOUND;
-}
-
-void DocumentManager::insert(Document *document, QString fileName)
-{
-    documents.append(qMakePair(document,fileName));
 }
 
 void DocumentManager::insert(Document *document)
 {
-    insert(document,"");
+    documents.append(document);
 }
 
-void DocumentManager::insert(int position, Document *document, QString fileName)
+void DocumentManager::insert(int position, Document *document)
 {
-    documents.insert(position,qMakePair(document,fileName));
+    documents.insert(position, document);
 }
 
 void DocumentManager::remove(QString fileName)
 {
-    remove(position(fileName));
+    int pos = position(fileName);
+
+    if(pos!=DocumentManager::NOT_FOUND)
+        remove(position(fileName));
 }
 
 void DocumentManager::remove(int position)
@@ -70,5 +76,18 @@ void DocumentManager::remove(int position)
 
 void DocumentManager::remove(Document *document)
 {
-    remove(position(document));
+    int pos = position(document);
+
+    if(pos!=DocumentManager::NOT_FOUND)
+        remove(position(fileName));
+}
+
+QList::iterator DocumentManager::begin()
+{
+    return documents.begin();
+}
+
+QList::iterator DocumentManager::end()
+{
+    return documents.end();
 }

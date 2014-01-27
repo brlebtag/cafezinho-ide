@@ -42,10 +42,10 @@ IDE::IDE(QWidget *parent) :
     this->ui->tabWidgetArquivos->currentWidget()->setLayout(layout);
 
     //Cria um conteiner para guardar informações sobre o documento. O documento está limpo
-    Document* doc = new Document(index,edit);
+    Document* doc = new Document(this->ui->tabWidgetArquivos->currentWidget(),edit);
 
     //inseri a tab na Hashtable
-    arquivos.insert(index,doc);
+    docMan.insert(document);
 
     //Ajusta o ultimo caminho
     lastPath = QDir::currentPath();
@@ -96,7 +96,7 @@ Document *IDE::criarAba(QString title)
     tab->setLayout(layout);
 
     //Cria um conteiner para guardar informações sobre o documento aberto
-    Document* doc = new Document(index,edit);
+    Document* doc = new Document(tab,edit);
 
     return doc;
 }
@@ -210,14 +210,11 @@ QFile *IDE::abrirArquivoGravacao(QString &fileName)
 
 void IDE::reabrirAba(QString &fileName)
 {
-    //Pega o index da aba que o documento está...
-    int index_tab = fileOpened.value(fileNameToFileId(fileName));
+    //Pega o documento e seta o focus
+    Document * doc = docMan.search(fileNameToFileId(fileName));
 
     //Seta a tab encontrada como atual...
-    this->ui->tabWidgetArquivos->setCurrentIndex(index_tab);
-
-    //Pega o documento e seta o focus
-    Document * doc = arquivos.at(index_tab);
+    this->ui->tabWidgetArquivos->setCurrentIndex(doc->getWidget());
 
     //Seta o focus
     doc->setFocus();
@@ -265,7 +262,7 @@ void IDE::removeAba(int index, Document *document)
     this->ui->tabWidgetArquivos->removeTab(index);
 
     //remove o tab da hash
-    arquivos.removeAt(index);
+    docMan.remove(index);
 
     //remove o arquivo da tabela de aberto: se não estava aberto não acontece nada.
     fileOpened.remove(document->getFileId());
@@ -317,7 +314,7 @@ void IDE::readDocument(Document *document, int index, QString &fileName, QFile *
     lastPath = fileName.remove(getRealFileName(fileName));
 
     //Inseri o arquivo na tabela de arquivos abertos
-    fileOpened.insert(document->getFileId(), index);
+    fileOpened.insert(document->getFileId());
 
     //seta focus no edit
     document->setFocus();
@@ -338,7 +335,7 @@ void IDE::actionAbrirClicked(bool checked)
         int index = getCurrentAba();
 
         //Pega o edit da hashtable
-        Document* doc = arquivos.at(index);
+        Document* doc = docMan.search(index);
 
         //Abrir o arquivo...
         QFile* file = abrirArquivoLeitura(fileName);
@@ -368,8 +365,8 @@ void IDE::actionNovoClicked(bool checked)
 {
     Document *doc = criarAba(tr("Novo Arquivo"));
 
-    //inseri a tab na Hashtable . obs: só aki que doc->getID pode ser usado, pq ao deletar as posições mudam...
-    arquivos.insert(doc->getID(), doc);
+    //inseri a tab na Hashtable...
+    docMan.insert(doc);
 
     //Seta o foco no edit...
     doc->setFocus();
@@ -381,7 +378,7 @@ void IDE::actionFecharClicked(bool checked)
     int index = getCurrentAba();
 
     //Pega o edit da hashtable
-    Document* doc = arquivos.at(index);
+    Document* doc = docMan.search(index);
 
     //Verifica se existe mais de uma aba...
     if(arquivos.size()>1)
@@ -429,7 +426,7 @@ void IDE::actionSairClicked(bool checked)
 {
     int index = 0;
 
-    for(QList<Document*>::iterator it = arquivos.begin(); it!= arquivos.end(); it++, index++)
+    for(DocumentManager::iterator it = docMan.begin(); it!= docMan.end(); it++, index++)
     {
         Document *doc = (*it);
 
@@ -486,7 +483,7 @@ void IDE::actionSalvarClicked(bool checked)
     int index = this->ui->tabWidgetArquivos->currentIndex();
 
     //Pega o edit da hashtable
-    Document* doc = arquivos.at(index);
+    Document* doc = docMan.search(index);
 
     QString fileName;
 
@@ -522,7 +519,7 @@ void IDE::actionSalvarClicked(bool checked)
             doc->setFileName(fileName);
 
             //Reinsere o novo...
-            fileOpened.insert(doc->getFileId(), index);
+            fileOpened.insert(doc->getFileId());
 
         }
 
@@ -541,7 +538,7 @@ void IDE::actionSalvarComoClicked(bool checked)
     int index = this->ui->tabWidgetArquivos->currentIndex();
 
     //Pega o edit da hashtable
-    Document* doc = arquivos.at(index);
+    Document* doc = docMan.search(index);
 
     //A onde salvar
     QString fileName = showSalvarArquivo();
@@ -572,7 +569,7 @@ void IDE::actionSalvarComoClicked(bool checked)
         doc->setFileName(fileName);
 
         //Reinsere o novo...
-        fileOpened.insert(doc->getFileId(), index);
+        fileOpened.insert(doc->getFileId());
 
         //seta o tooltip
         setTabToolTip(index, fileName);
@@ -593,7 +590,7 @@ void IDE::plainTextEditTextChanged()
     int index = this->ui->tabWidgetArquivos->currentIndex();
 
     //Pega o edit da hashtable
-    Document* doc = arquivos.at(index);
+    Document* doc = docMan.search(index);
 
     if(!doc->isDirty())
     {
@@ -614,7 +611,7 @@ void IDE::actionNumero_da_linhaToggled(bool checked)
     int index = this->ui->tabWidgetArquivos->currentIndex();
 
     //Pega o edit da hashtable
-    Document* doc = arquivos.at(index);
+    Document* doc = docMan.search(index);
 
     //Repintar o edit
     doc->repaintEdit();

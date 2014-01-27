@@ -2,7 +2,6 @@
 #define DOCUMENTMANAGER_H
 
 #include <QList>
-#include <QPair>
 #include "document.h"
 #include "ide.h"
 
@@ -11,17 +10,19 @@ class DocumentManager
 public:
     static const int NOT_FOUND;
     DocumentManager();
-    Document *search(QString fileName);
+    Document *search(QString fileId);
+    Document *search(int position);
     int position(Document* document);
-    int position(QString fileName);
-    void insert(Document* document, QString fileName);
+    int position(QString fileId);
     void insert(Document* document);
-    void insert(int position, Document* document, QString fileName);
+    void insert(int position, Document* document);
     void remove(QString fileName);
     void remove(int position);
     void remove(Document* document);
+    QList<Document*>::iterator begin();
+    QList<Document*>::iterator end();
 private:
-    QList<QPair<Document,QString>> documents;
+    QList<Document*> documents;
 };
 
 #endif // DOCUMENTMANAGER_H
