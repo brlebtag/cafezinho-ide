@@ -16,14 +16,14 @@ SOURCES += main.cpp\
         ide.cpp \
     codeeditor.cpp \
     linenumberarea.cpp \
-    documentmanager.cpp \
-    documento.cpp
+    documento.cpp \
+    GerenciadorDocumento.cpp
 
 HEADERS  += ide.h \
     codeeditor.h \
     linenumberarea.h \
-    documentmanager.h \
-    documento.h
+    GerenciadorDocumento.h \
+    Documento.h
 
 FORMS    += ide.ui
 

@@ -15,11 +15,11 @@
 #include <QTextStream>
 #include <QCryptographicHash>
 #include <QDebug>
-#include "documento.h"
+#include "Documento.h"
 #include "codeeditor.h"
-#include "documentmanager.h"
+#include "GerenciadorDocumento.h"
 
-class DocumentManager;
+class GerenciadorDocumento;
 
 namespace Ui {
 class IDE;
@@ -36,7 +36,7 @@ public:
 private:
     Ui::IDE *ui;
     QSet<QString> fileOpened;
-    DocumentManager docMan;
+    GerenciadorDocumento docMan;
     QList<Documento*> arquivos;
     QString lastPath;
     Documento* criarAba(QString title, int *index = 0);

@@ -44,7 +44,7 @@ IDE::IDE(QWidget *parent) :
     Documento* doc = new Documento(this->ui->tabWidgetArquivos->currentWidget(), edit);
 
     //inseri a tab na Hashtable
-    docMan.insert(doc);
+    docMan.inserir(doc);
 
     //Ajusta o ultimo caminho
     lastPath = QDir::currentPath();
@@ -213,7 +213,7 @@ QFile *IDE::abrirArquivoGravacao(QString &fileName)
 void IDE::reabrirAba(QString &fileName)
 {
     //Pega o documento e seta o focus
-    Documento * doc = docMan.search(fileNameToFileId(fileName));
+    Documento * doc = docMan.procurar(fileNameToFileId(fileName));
 
     //Seta a tab encontrada como atual...
     this->ui->tabWidgetArquivos->setCurrentWidget(doc->getWidget());
@@ -264,7 +264,7 @@ void IDE::removeAba(int index, Documento *document)
     this->ui->tabWidgetArquivos->removeTab(index);
 
     //remove o tab da hash
-    docMan.remove(index);
+    docMan.remover(index);
 
     //remove o arquivo da tabela de aberto: se não estava aberto não acontece nada.
     fileOpened.remove(document->getDocumentoId());
@@ -368,7 +368,7 @@ void IDE::actionAbrirClicked(bool checked)
         int index = getCurrentAba();
 
         //Pega o edit da hashtable
-        Documento* doc = docMan.search(index);
+        Documento* doc = docMan.procurar(index);
 
         //Ler documento...
         readDocument(doc,fileName);
@@ -384,7 +384,7 @@ void IDE::actionNovoClicked(bool checked)
     Documento *doc = criarAba(tr("Novo Arquivo"));
 
     //inseri a tab na Hashtable...
-    docMan.insert(doc);
+    docMan.inserir(doc);
 
     //Seta o foco no edit...
     doc->setFocus();
@@ -396,7 +396,7 @@ void IDE::actionFecharClicked(bool checked)
     int index = getCurrentAba();
 
     //Pega o edit da hashtable
-    Documento* doc = docMan.search(index);
+    Documento* doc = docMan.procurar(index);
 
     //Verifica se existe mais de uma aba...
     if(arquivos.size()>1)
@@ -500,7 +500,7 @@ void IDE::actionSalvarClicked(bool checked)
     int index = this->ui->tabWidgetArquivos->currentIndex();
 
     //Pega o edit da hashtable
-    Documento* doc = docMan.search(index);
+    Documento* doc = docMan.procurar(index);
 
     QString fileName;
 
@@ -527,7 +527,7 @@ void IDE::actionSalvarComoClicked(bool checked)
     int index = this->ui->tabWidgetArquivos->currentIndex();
 
     //Pega o edit da hashtable
-    Documento* doc = docMan.search(index);
+    Documento* doc = docMan.procurar(index);
 
     //A onde salvar
     QString fileName = showSalvarArquivo();
@@ -562,7 +562,7 @@ void IDE::plainTextEditTextChanged()
     int index = this->ui->tabWidgetArquivos->currentIndex();
 
     //Pega o edit da hashtable
-    Documento* doc = docMan.search(index);
+    Documento* doc = docMan.procurar(index);
 
     if(!doc->isSujo())
     {
@@ -583,7 +583,7 @@ void IDE::actionNumero_da_linhaToggled(bool checked)
     int index = this->ui->tabWidgetArquivos->currentIndex();
 
     //Pega o edit da hashtable
-    Documento* doc = docMan.search(index);
+    Documento* doc = docMan.procurar(index);
 
     //Repintar o edit
     doc->repaintEdit();
