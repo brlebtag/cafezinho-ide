@@ -66,7 +66,7 @@ void DocumentManager::remove(QString fileName)
     int pos = position(fileName);
 
     if(pos!=DocumentManager::NOT_FOUND)
-        remove(position(fileName));
+        remove(pos);
 }
 
 void DocumentManager::remove(int position)
@@ -79,7 +79,7 @@ void DocumentManager::remove(Document *document)
     int pos = position(document);
 
     if(pos!=DocumentManager::NOT_FOUND)
-        remove(position(fileName));
+        remove(pos);
 }
 
 QList::iterator DocumentManager::begin()

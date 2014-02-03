@@ -69,7 +69,7 @@ void Document::appendText(QString &text)
 
 QWidget *Document::getWidget()
 {
-    return widget;s
+    return widget;
 }
 
 QString Document::getFileId()
@@ -90,11 +90,6 @@ void Document::setFocus()
 void Document::repaintEdit()
 {
     this->edit->forceUpdate();
-}
-
-QWidget *Document::widget()
-{
-    return this->tab;
 }
 
 

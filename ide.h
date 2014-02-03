@@ -58,7 +58,7 @@ private:
     void setTabToolTip(int index, QString &tip);
     void removeAba(int index, Document* document);
     bool writeDocument(Document *document, QString &fileName);
-    void readDocument(Document *document, int index, QString &fileName, QFile *file);
+    bool readDocument(Document *document, int index, QString &fileName, QFile *file);
 
 private slots:
     void actionAbrirClicked(bool checked = false);

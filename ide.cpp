@@ -42,7 +42,7 @@ IDE::IDE(QWidget *parent) :
     this->ui->tabWidgetArquivos->currentWidget()->setLayout(layout);
 
     //Cria um conteiner para guardar informações sobre o documento. O documento está limpo
-    Document* doc = new Document(this->ui->tabWidgetArquivos->currentWidget(),edit);
+    Document* doc = new Document(this->ui->tabWidgetArquivos->currentWidget(), edit);
 
     //inseri a tab na Hashtable
     docMan.insert(document);
@@ -96,7 +96,7 @@ Document *IDE::criarAba(QString title)
     tab->setLayout(layout);
 
     //Cria um conteiner para guardar informações sobre o documento aberto
-    Document* doc = new Document(tab,edit);
+    Document* doc = new Document(tab, edit);
 
     return doc;
 }
@@ -340,7 +340,7 @@ void IDE::actionAbrirClicked(bool checked)
         //Abrir o arquivo...
         QFile* file = abrirArquivoLeitura(fileName);
 
-        if(file==IDE::null)
+        if(file!=IDE::null)
         {
             if(doc->isEmpty())
             {
@@ -426,7 +426,7 @@ void IDE::actionSairClicked(bool checked)
 {
     int index = 0;
 
-    for(DocumentManager::iterator it = docMan.begin(); it!= docMan.end(); it++, index++)
+    for(QList<Document*>::iterator it = docMan.begin(); it!= docMan.end(); it++, index++)
     {
         Document *doc = (*it);
 
@@ -471,7 +471,6 @@ void IDE::actionSairClicked(bool checked)
 
         }
         removeAba(index, doc);
-
     }
 
     qApp->exit(0);
@@ -525,10 +524,15 @@ void IDE::actionSalvarClicked(bool checked)
 
         //seta o tooltip
         setTabToolTip(index, fileName);
+
         //seta o titulo da aba
         setAbaTitle(index, getRealFileName(fileName));
+
         //fecha o arquivo
         fecharFile(file);
+
+        //Marca o documento como limpo
+        doc->gotCleaned();
     }
 }
 

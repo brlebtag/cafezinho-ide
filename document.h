@@ -28,9 +28,7 @@ public:
     QString getPath();
     void setFocus();
     void repaintEdit();
-    QWidget *widget();
 private:
-    QWidget* tab;
     bool dirty;
     QWidget *widget;
     CodeEditor *edit;
