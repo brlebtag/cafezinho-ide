@@ -12,13 +12,13 @@ Document *DocumentManager::search(QString fileId)
     int pos = position(fileId);
 
     if(pos!=DocumentManager::NOT_FOUND)
-        return IDE::null;
+        return NULL;
     return search(pos);
 }
 
 Document *DocumentManager::search(int position)
 {
-    return documents.at(position).first;
+    return documents.at(position);
 }
 
 int DocumentManager::position(Document *document)
@@ -82,12 +82,12 @@ void DocumentManager::remove(Document *document)
         remove(pos);
 }
 
-QList::iterator DocumentManager::begin()
+QList<Document*>::iterator DocumentManager::begin()
 {
     return documents.begin();
 }
 
-QList::iterator DocumentManager::end()
+QList<Document*>::iterator DocumentManager::end()
 {
     return documents.end();
 }

@@ -19,6 +19,8 @@
 #include "codeeditor.h"
 #include "documentmanager.h"
 
+class DocumentManager;
+
 namespace Ui {
 class IDE;
 }
@@ -30,7 +32,6 @@ class IDE : public QMainWindow
 public:
     explicit IDE(QWidget *parent = 0);
     ~IDE();
-    static const void* null;
 
 private:
     Ui::IDE *ui;
@@ -38,7 +39,7 @@ private:
     DocumentManager docMan;
     QList<Document*> arquivos;
     QString lastPath;
-    Document* criarAba(QString title);
+    Document* criarAba(QString title, int *index = 0);
     QString fileNameToFileId(QString &fileName);
     QString showAbrirArquivo();
     QString showAbrirArquivo(QString &path);
@@ -46,7 +47,7 @@ private:
     QString showSalvarArquivo(QString path);
     int showSalvarAlteracao();
     void setDocumentText(Document* document, QFile *file);
-    QFile* abrirArquivoLeitura(QString &fileName);
+    QFile *abrirArquivoLeitura(QString &fileName);
     QFile *abrirArquivoGravacao(QString &fileName);
     void reabrirAba(QString &fileName);
     void fecharFile(QFile* file);
@@ -58,7 +59,9 @@ private:
     void setTabToolTip(int index, QString &tip);
     void removeAba(int index, Document* document);
     bool writeDocument(Document *document, QString &fileName);
-    bool readDocument(Document *document, int index, QString &fileName, QFile *file);
+    bool readDocument(Document *document, QString &fileName);
+    void configurarDocumento(Document* document, QString &fileName, int index);
+    void salvarDocumento(Document* document, QString &fileName,int index, bool salvar_como);
 
 private slots:
     void actionAbrirClicked(bool checked = false);

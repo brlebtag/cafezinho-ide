@@ -3,7 +3,8 @@
 
 #include <QList>
 #include "document.h"
-#include "ide.h"
+
+class IDE;
 
 class DocumentManager
 {

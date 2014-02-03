@@ -1,7 +1,6 @@
 #include "ide.h"
 #include "ui_ide.h"
 
-const void* IDE::null = 0;
 
 IDE::IDE(QWidget *parent) :
     QMainWindow(parent),
@@ -45,7 +44,7 @@ IDE::IDE(QWidget *parent) :
     Document* doc = new Document(this->ui->tabWidgetArquivos->currentWidget(), edit);
 
     //inseri a tab na Hashtable
-    docMan.insert(document);
+    docMan.insert(doc);
 
     //Ajusta o ultimo caminho
     lastPath = QDir::currentPath();
@@ -63,13 +62,16 @@ IDE::~IDE()
     delete ui;
 }
 
-Document *IDE::criarAba(QString title)
+Document *IDE::criarAba(QString title, int *index)
 {
     //Criar a aba..
     QWidget* tab = new QWidget(this->ui->tabWidgetArquivos);
 
     //Inseri a aba no tabWidget o titulo é apenas a ultima parte do caminho full do arquivo (só o nome do arquivo)
-    int index = this->ui->tabWidgetArquivos->addTab(tab, title);
+    int id = this->ui->tabWidgetArquivos->addTab(tab, title);
+
+    if(index != 0)
+        (*index) = id;
 
     //seta a nova aba como atual
     this->ui->tabWidgetArquivos->setCurrentWidget(tab);
@@ -172,7 +174,7 @@ QFile *IDE::abrirArquivoLeitura(QString &fileName)
         delete file;
 
         //retorna NULL...
-        return (QFile*)IDE::null;
+        return NULL;
     }
 
     //Senao retorna o arquivo...
@@ -201,7 +203,7 @@ QFile *IDE::abrirArquivoGravacao(QString &fileName)
         delete file;
 
         //retorna NULL...
-        return (QFile*)IDE::null;
+        return NULL;
     }
 
     //Senao retorna o arquivo...
@@ -214,7 +216,7 @@ void IDE::reabrirAba(QString &fileName)
     Document * doc = docMan.search(fileNameToFileId(fileName));
 
     //Seta a tab encontrada como atual...
-    this->ui->tabWidgetArquivos->setCurrentIndex(doc->getWidget());
+    this->ui->tabWidgetArquivos->setCurrentWidget(doc->getWidget());
 
     //Seta o focus
     doc->setFocus();
@@ -281,7 +283,7 @@ bool IDE::writeDocument(Document *document, QString &fileName)
 
     QFile * file = abrirArquivoGravacao(fileName);
 
-    if(file!=IDE::null)
+    if(file!=NULL)
     {
         //Grava arquivo no disco...
         QTextStream out(file);
@@ -293,11 +295,39 @@ bool IDE::writeDocument(Document *document, QString &fileName)
     return false;
 }
 
-void IDE::readDocument(Document *document, int index, QString &fileName, QFile *file)
-{
-    //Seta o conteudo do arquivo...
-    setDocumentText(document, file);
 
+bool IDE::readDocument(Document *document, QString &fileName)
+{
+    //Abrir o arquivo...
+    QFile* file = abrirArquivoLeitura(fileName);
+    int index = 0;
+
+    if(file!=NULL)
+    {
+        if(document->isEmpty()&&(!document->isOpened()))
+        {
+            setDocumentText(document, file);
+            index = getCurrentAba();
+        }
+        else
+        {
+            //Cria um conteiner para guardar informações sobre o documento aberto
+            Document* doc = criarAba(getRealFileName(fileName), &index);
+            setDocumentText(doc, file);
+
+        }
+
+        configurarDocumento(document, fileName, index);
+        fecharFile(file);
+
+        return true;
+    }
+
+    return false;
+}
+
+void IDE::configurarDocumento(Document *document, QString &fileName, int index)
+{
     //Seta o titulo da aba
     setAbaTitle(index, getRealFileName(fileName));
 
@@ -306,6 +336,9 @@ void IDE::readDocument(Document *document, int index, QString &fileName, QFile *
 
     //Seta o documento como aberto
     document->gotOpened();
+
+    //seta o documento como cleaned
+    document->gotCleaned();
 
     //Seta o toolTip da aba
     setTabToolTip(index, fileName);
@@ -337,23 +370,8 @@ void IDE::actionAbrirClicked(bool checked)
         //Pega o edit da hashtable
         Document* doc = docMan.search(index);
 
-        //Abrir o arquivo...
-        QFile* file = abrirArquivoLeitura(fileName);
-
-        if(file!=IDE::null)
-        {
-            if(doc->isEmpty())
-            {
-                readDocument(doc, index, fileName, file);
-            }
-            else
-            {
-                //Cria um conteiner para guardar informações sobre o documento aberto
-                Document* doc = criarAba(getRealFileName(fileName));
-                readDocument(doc, index, fileName, file);
-            }
-            fecharFile(file);
-        }
+        //Ler documento...
+        readDocument(doc,fileName);
     }
     else
     {
@@ -500,40 +518,7 @@ void IDE::actionSalvarClicked(bool checked)
     if(fileName.isEmpty())
         return;
 
-
-    QFile* file = abrirArquivoGravacao(fileName);
-
-    if(file!=IDE::null)
-    {
-
-        if(!writeDocument(doc,fileName))
-            return;
-
-        //Se foi salvar como então o arquivo possivelmente mudou de local e agora estamos trabalhando naquele local...
-        if(salvar_como)
-        {
-            //remove o antigo file...
-            fileOpened.remove(doc->getFileId());
-
-            doc->setFileName(fileName);
-
-            //Reinsere o novo...
-            fileOpened.insert(doc->getFileId());
-
-        }
-
-        //seta o tooltip
-        setTabToolTip(index, fileName);
-
-        //seta o titulo da aba
-        setAbaTitle(index, getRealFileName(fileName));
-
-        //fecha o arquivo
-        fecharFile(file);
-
-        //Marca o documento como limpo
-        doc->gotCleaned();
-    }
+    salvarDocumento(doc, fileName, index, salvar_como);
 }
 
 void IDE::actionSalvarComoClicked(bool checked)
@@ -551,40 +536,23 @@ void IDE::actionSalvarComoClicked(bool checked)
     if(fileName.isEmpty())
         return;
 
-    //Adiciona a terminação .cafe se o usuario não informar
-    if(!fileName.contains(".cafe"))
+    salvarDocumento(doc, fileName, index, true);
+
+}
+
+void IDE::salvarDocumento(Document *document, QString &fileName, int index, bool salvar_como)
+{
+
+    if(!writeDocument(document,fileName))
+        return;
+
+    if(salvar_como)
     {
-        fileName+=".cafe";
-    }
-
-    //apenas salva o arquivo
-    QFile *file = abrirArquivoGravacao(fileName);
-
-    if(file!=IDE::null)
-    {
-
-        if(!writeDocument(doc,fileName))
-            return;
-
         //remove o antigo file...
-        fileOpened.remove(doc->getFileId());
-
-        //reinsere o nome...
-        doc->setFileName(fileName);
-
-        //Reinsere o novo...
-        fileOpened.insert(doc->getFileId());
-
-        //seta o tooltip
-        setTabToolTip(index, fileName);
-
-        //seta o titulo da aba
-        setAbaTitle(index, getRealFileName(fileName));
-
-        //fecha o arquivo
-        fecharFile(file);
+        fileOpened.remove(document->getFileId());
     }
 
+    configurarDocumento(document, fileName, index);
 }
 
 void IDE::plainTextEditTextChanged()
