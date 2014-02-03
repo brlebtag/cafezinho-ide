@@ -27,7 +27,7 @@ public:
     QString getDocumentoId();
     QString getCaminhoCompleto();
     void setFocus();
-    void repaintEdit();
+    void repintarEditor();
 private:
     bool sujo;
     QWidget *widget;

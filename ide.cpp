@@ -586,7 +586,7 @@ void IDE::acaoHabilitarNumeroLinha(bool checked)
     Documento* doc = docMan.procurar(index);
 
     //Repintar o edit
-    doc->repaintEdit();
+    doc->repintarEditor();
 }
 
 void IDE::breakpoint(int line, bool checked)

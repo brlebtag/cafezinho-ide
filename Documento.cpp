@@ -87,7 +87,7 @@ void Documento::setFocus()
     this->edit->setFocus();
 }
 
-void Documento::repaintEdit()
+void Documento::repintarEditor()
 {
     this->edit->forceUpdate();
 }
