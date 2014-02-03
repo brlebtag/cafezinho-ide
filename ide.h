@@ -15,7 +15,7 @@
 #include <QTextStream>
 #include <QCryptographicHash>
 #include <QDebug>
-#include "document.h"
+#include "documento.h"
 #include "codeeditor.h"
 #include "documentmanager.h"
 
@@ -37,16 +37,16 @@ private:
     Ui::IDE *ui;
     QSet<QString> fileOpened;
     DocumentManager docMan;
-    QList<Document*> arquivos;
+    QList<Documento*> arquivos;
     QString lastPath;
-    Document* criarAba(QString title, int *index = 0);
+    Documento* criarAba(QString title, int *index = 0);
     QString fileNameToFileId(QString &fileName);
     QString showAbrirArquivo();
     QString showAbrirArquivo(QString &path);
     QString showSalvarArquivo();
     QString showSalvarArquivo(QString path);
     int showSalvarAlteracao();
-    void setDocumentText(Document* document, QFile *file);
+    void setDocumentText(Documento* document, QFile *file);
     QFile *abrirArquivoLeitura(QString &fileName);
     QFile *abrirArquivoGravacao(QString &fileName);
     void reabrirAba(QString &fileName);
@@ -57,11 +57,11 @@ private:
     void setCurrentAba(int index);
     int getCurrentAba();
     void setTabToolTip(int index, QString &tip);
-    void removeAba(int index, Document* document);
-    bool writeDocument(Document *document, QString &fileName);
-    bool readDocument(Document *document, QString &fileName);
-    void configurarDocumento(Document* document, QString &fileName, int index);
-    void salvarDocumento(Document* document, QString &fileName,int index, bool salvar_como);
+    void removeAba(int index, Documento* document);
+    bool writeDocument(Documento *document, QString &fileName);
+    bool readDocument(Documento *document, QString &fileName);
+    void configurarDocumento(Documento* document, QString &fileName, int index);
+    void salvarDocumento(Documento* document, QString &fileName,int index, bool salvar_como);
 
 private slots:
     void actionAbrirClicked(bool checked = false);

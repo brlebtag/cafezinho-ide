@@ -7,7 +7,7 @@ DocumentManager::DocumentManager()
 
 }
 
-Document *DocumentManager::search(QString fileId)
+Documento *DocumentManager::search(QString fileId)
 {
     int pos = position(fileId);
 
@@ -16,18 +16,18 @@ Document *DocumentManager::search(QString fileId)
     return search(pos);
 }
 
-Document *DocumentManager::search(int position)
+Documento *DocumentManager::search(int position)
 {
     return documents.at(position);
 }
 
-int DocumentManager::position(Document *document)
+int DocumentManager::position(Documento *document)
 {
     int i=0;
 
-    for(QList<Document*>::iterator it = documents.begin(); it!= documents.end(); it++,i++)
+    for(QList<Documento*>::iterator it = documents.begin(); it!= documents.end(); it++,i++)
     {
-        Document* doc = (*it);
+        Documento* doc = (*it);
 
         if(doc == document)
             return i;
@@ -40,23 +40,23 @@ int DocumentManager::position(QString fileId)
 {
     int i=0;
 
-    for(QList<Document*>::iterator it = documents.begin(); it!= documents.end(); it++,i++)
+    for(QList<Documento*>::iterator it = documents.begin(); it!= documents.end(); it++,i++)
     {
-        Document* doc = (*it);
+        Documento* doc = (*it);
 
-        if(doc->getFileId() == fileId)
+        if(doc->getDocumentoId() == fileId)
             return i;
     }
 
     return DocumentManager::NOT_FOUND;
 }
 
-void DocumentManager::insert(Document *document)
+void DocumentManager::insert(Documento *document)
 {
     documents.append(document);
 }
 
-void DocumentManager::insert(int position, Document *document)
+void DocumentManager::insert(int position, Documento *document)
 {
     documents.insert(position, document);
 }
@@ -74,7 +74,7 @@ void DocumentManager::remove(int position)
     documents.removeAt(position);
 }
 
-void DocumentManager::remove(Document *document)
+void DocumentManager::remove(Documento *document)
 {
     int pos = position(document);
 
@@ -82,12 +82,12 @@ void DocumentManager::remove(Document *document)
         remove(pos);
 }
 
-QList<Document*>::iterator DocumentManager::begin()
+QList<Documento*>::iterator DocumentManager::begin()
 {
     return documents.begin();
 }
 
-QList<Document*>::iterator DocumentManager::end()
+QList<Documento*>::iterator DocumentManager::end()
 {
     return documents.end();
 }

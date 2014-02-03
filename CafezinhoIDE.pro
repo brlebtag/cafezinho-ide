@@ -14,16 +14,16 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         ide.cpp \
-    document.cpp \
     codeeditor.cpp \
     linenumberarea.cpp \
-    documentmanager.cpp
+    documentmanager.cpp \
+    documento.cpp
 
 HEADERS  += ide.h \
-    document.h \
     codeeditor.h \
     linenumberarea.h \
-    documentmanager.h
+    documentmanager.h \
+    documento.h
 
 FORMS    += ide.ui
 

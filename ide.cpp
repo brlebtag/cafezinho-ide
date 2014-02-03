@@ -41,7 +41,7 @@ IDE::IDE(QWidget *parent) :
     this->ui->tabWidgetArquivos->currentWidget()->setLayout(layout);
 
     //Cria um conteiner para guardar informações sobre o documento. O documento está limpo
-    Document* doc = new Document(this->ui->tabWidgetArquivos->currentWidget(), edit);
+    Documento* doc = new Documento(this->ui->tabWidgetArquivos->currentWidget(), edit);
 
     //inseri a tab na Hashtable
     docMan.insert(doc);
@@ -62,7 +62,7 @@ IDE::~IDE()
     delete ui;
 }
 
-Document *IDE::criarAba(QString title, int *index)
+Documento *IDE::criarAba(QString title, int *index)
 {
     //Criar a aba..
     QWidget* tab = new QWidget(this->ui->tabWidgetArquivos);
@@ -98,7 +98,7 @@ Document *IDE::criarAba(QString title, int *index)
     tab->setLayout(layout);
 
     //Cria um conteiner para guardar informações sobre o documento aberto
-    Document* doc = new Document(tab, edit);
+    Documento* doc = new Documento(tab, edit);
 
     return doc;
 }
@@ -142,17 +142,17 @@ int IDE::showSalvarAlteracao()
     return result;
 }
 
-void IDE::setDocumentText(Document *document, QFile *file)
+void IDE::setDocumentText(Documento *document, QFile *file)
 {
     //Seta o documento sujo para não adicionar o * ... por que ao adicionar o texto lido do arquivo no PlainTextEdit
     //ele irá chamar textChanged mas nessa situação não queremos que adicione o * ...
-    document->gotDirty();
+    document->sujou();
 
     //Coloca o texto do arquivo no PlainTextEdit
-    document->setText(file->readAll());
+    document->setTextoDocumento(file->readAll());
 
     //agora marca o texto como limpo...
-    document->gotCleaned();
+    document->limpou();
 }
 
 QFile *IDE::abrirArquivoLeitura(QString &fileName)
@@ -213,7 +213,7 @@ QFile *IDE::abrirArquivoGravacao(QString &fileName)
 void IDE::reabrirAba(QString &fileName)
 {
     //Pega o documento e seta o focus
-    Document * doc = docMan.search(fileNameToFileId(fileName));
+    Documento * doc = docMan.search(fileNameToFileId(fileName));
 
     //Seta a tab encontrada como atual...
     this->ui->tabWidgetArquivos->setCurrentWidget(doc->getWidget());
@@ -258,7 +258,7 @@ void IDE::setTabToolTip(int index, QString &tip)
     this->ui->tabWidgetArquivos->setTabToolTip(index,tip);
 }
 
-void IDE::removeAba(int index, Document *document)
+void IDE::removeAba(int index, Documento *document)
 {
     //remove o tab
     this->ui->tabWidgetArquivos->removeTab(index);
@@ -267,13 +267,13 @@ void IDE::removeAba(int index, Document *document)
     docMan.remove(index);
 
     //remove o arquivo da tabela de aberto: se não estava aberto não acontece nada.
-    fileOpened.remove(document->getFileId());
+    fileOpened.remove(document->getDocumentoId());
 
     //Deleta o container do documento...
     delete document;
 }
 
-bool IDE::writeDocument(Document *document, QString &fileName)
+bool IDE::writeDocument(Documento *document, QString &fileName)
 {
     //Adiciona a terminação .cafe se o usuario não informar
     if(!fileName.contains(".cafe"))
@@ -287,7 +287,7 @@ bool IDE::writeDocument(Document *document, QString &fileName)
     {
         //Grava arquivo no disco...
         QTextStream out(file);
-        out<<document->getText();
+        out<<document->getTextoDocumento();
         fecharFile(file);
         return true;
     }
@@ -296,7 +296,7 @@ bool IDE::writeDocument(Document *document, QString &fileName)
 }
 
 
-bool IDE::readDocument(Document *document, QString &fileName)
+bool IDE::readDocument(Documento *document, QString &fileName)
 {
     //Abrir o arquivo...
     QFile* file = abrirArquivoLeitura(fileName);
@@ -304,7 +304,7 @@ bool IDE::readDocument(Document *document, QString &fileName)
 
     if(file!=NULL)
     {
-        if(document->isEmpty()&&(!document->isOpened()))
+        if(document->isVazio()&&(!document->isAberto()))
         {
             setDocumentText(document, file);
             index = getCurrentAba();
@@ -312,7 +312,7 @@ bool IDE::readDocument(Document *document, QString &fileName)
         else
         {
             //Cria um conteiner para guardar informações sobre o documento aberto
-            Document* doc = criarAba(getRealFileName(fileName), &index);
+            Documento* doc = criarAba(getRealFileName(fileName), &index);
             setDocumentText(doc, file);
 
         }
@@ -326,19 +326,19 @@ bool IDE::readDocument(Document *document, QString &fileName)
     return false;
 }
 
-void IDE::configurarDocumento(Document *document, QString &fileName, int index)
+void IDE::configurarDocumento(Documento *document, QString &fileName, int index)
 {
     //Seta o titulo da aba
     setAbaTitle(index, getRealFileName(fileName));
 
     //Seta o nome do documento
-    document->setFileName(fileName);
+    document->setNomeDocumento(fileName);
 
     //Seta o documento como aberto
-    document->gotOpened();
+    document->abriu();
 
     //seta o documento como cleaned
-    document->gotCleaned();
+    document->limpou();
 
     //Seta o toolTip da aba
     setTabToolTip(index, fileName);
@@ -347,7 +347,7 @@ void IDE::configurarDocumento(Document *document, QString &fileName, int index)
     lastPath = fileName.remove(getRealFileName(fileName));
 
     //Inseri o arquivo na tabela de arquivos abertos
-    fileOpened.insert(document->getFileId());
+    fileOpened.insert(document->getDocumentoId());
 
     //seta focus no edit
     document->setFocus();
@@ -368,7 +368,7 @@ void IDE::actionAbrirClicked(bool checked)
         int index = getCurrentAba();
 
         //Pega o edit da hashtable
-        Document* doc = docMan.search(index);
+        Documento* doc = docMan.search(index);
 
         //Ler documento...
         readDocument(doc,fileName);
@@ -381,7 +381,7 @@ void IDE::actionAbrirClicked(bool checked)
 
 void IDE::actionNovoClicked(bool checked)
 {
-    Document *doc = criarAba(tr("Novo Arquivo"));
+    Documento *doc = criarAba(tr("Novo Arquivo"));
 
     //inseri a tab na Hashtable...
     docMan.insert(doc);
@@ -396,12 +396,12 @@ void IDE::actionFecharClicked(bool checked)
     int index = getCurrentAba();
 
     //Pega o edit da hashtable
-    Document* doc = docMan.search(index);
+    Documento* doc = docMan.search(index);
 
     //Verifica se existe mais de uma aba...
     if(arquivos.size()>1)
     {
-        if(doc->isDirty())
+        if(doc->isSujo())
         {
             //Perqunta se pode fechar assim mesmo
             switch(showSalvarAlteracao())
@@ -409,10 +409,10 @@ void IDE::actionFecharClicked(bool checked)
                 case QMessageBox::Save:
                 {
                     QString fileName;
-                    if(doc->isOpened())
-                        fileName = doc->getPath();
+                    if(doc->isAberto())
+                        fileName = doc->getCaminhoCompleto();
                     else
-                        fileName = showSalvarArquivo(doc->getPath());
+                        fileName = showSalvarArquivo(doc->getCaminhoCompleto());
 
                     //Se estiver vazia não fecha a aba...
                     if(fileName.isEmpty())
@@ -444,11 +444,11 @@ void IDE::actionSairClicked(bool checked)
 {
     int index = 0;
 
-    for(QList<Document*>::iterator it = docMan.begin(); it!= docMan.end(); it++, index++)
+    for(QList<Documento*>::iterator it = docMan.begin(); it!= docMan.end(); it++, index++)
     {
-        Document *doc = (*it);
+        Documento *doc = (*it);
 
-        if(doc->isDirty())
+        if(doc->isSujo())
         {
 
             //Seta a tab index como a atual...
@@ -467,10 +467,10 @@ void IDE::actionSairClicked(bool checked)
                 case QMessageBox::Save:
                 {
                     QString fileName;
-                    if(doc->isOpened())
-                        fileName = doc->getPath();
+                    if(doc->isAberto())
+                        fileName = doc->getCaminhoCompleto();
                     else
-                        fileName = showSalvarArquivo(doc->getPath());
+                        fileName = showSalvarArquivo(doc->getCaminhoCompleto());
 
                     //Se estiver vazia não fecha a aba...
                     if(fileName.isEmpty())
@@ -500,19 +500,19 @@ void IDE::actionSalvarClicked(bool checked)
     int index = this->ui->tabWidgetArquivos->currentIndex();
 
     //Pega o edit da hashtable
-    Document* doc = docMan.search(index);
+    Documento* doc = docMan.search(index);
 
     QString fileName;
 
     bool salvar_como = false;
 
-    if(doc->isOpened())
+    if(doc->isAberto())
     {
-        fileName = doc->getPath();
+        fileName = doc->getCaminhoCompleto();
         salvar_como = true;
     }
     else
-        fileName = showSalvarArquivo(doc->getPath());
+        fileName = showSalvarArquivo(doc->getCaminhoCompleto());
 
     //Se estiver vazia não salva nada...
     if(fileName.isEmpty())
@@ -527,7 +527,7 @@ void IDE::actionSalvarComoClicked(bool checked)
     int index = this->ui->tabWidgetArquivos->currentIndex();
 
     //Pega o edit da hashtable
-    Document* doc = docMan.search(index);
+    Documento* doc = docMan.search(index);
 
     //A onde salvar
     QString fileName = showSalvarArquivo();
@@ -540,7 +540,7 @@ void IDE::actionSalvarComoClicked(bool checked)
 
 }
 
-void IDE::salvarDocumento(Document *document, QString &fileName, int index, bool salvar_como)
+void IDE::salvarDocumento(Documento *document, QString &fileName, int index, bool salvar_como)
 {
 
     if(!writeDocument(document,fileName))
@@ -549,7 +549,7 @@ void IDE::salvarDocumento(Document *document, QString &fileName, int index, bool
     if(salvar_como)
     {
         //remove o antigo file...
-        fileOpened.remove(document->getFileId());
+        fileOpened.remove(document->getDocumentoId());
     }
 
     configurarDocumento(document, fileName, index);
@@ -562,16 +562,16 @@ void IDE::plainTextEditTextChanged()
     int index = this->ui->tabWidgetArquivos->currentIndex();
 
     //Pega o edit da hashtable
-    Document* doc = docMan.search(index);
+    Documento* doc = docMan.search(index);
 
-    if(!doc->isDirty())
+    if(!doc->isSujo())
     {
 
         //poem o texto no lugar
         QString text = this->ui->tabWidgetArquivos->tabText(index);
         text+="*";
         this->ui->tabWidgetArquivos->setTabText(index, text);
-        doc->gotDirty();
+        doc->sujou();
     }
 }
 
@@ -583,7 +583,7 @@ void IDE::actionNumero_da_linhaToggled(bool checked)
     int index = this->ui->tabWidgetArquivos->currentIndex();
 
     //Pega o edit da hashtable
-    Document* doc = docMan.search(index);
+    Documento* doc = docMan.search(index);
 
     //Repintar o edit
     doc->repaintEdit();
