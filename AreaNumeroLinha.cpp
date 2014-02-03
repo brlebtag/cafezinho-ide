@@ -1,4 +1,4 @@
-#include "AreaNumero.h"
+#include "AreaNumeroLinha.h"
 
 
 AreaNumeroLinha::AreaNumeroLinha(EditorCodigo *editor) : QWidget(editor)

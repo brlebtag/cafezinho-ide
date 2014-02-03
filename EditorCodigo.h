@@ -3,7 +3,7 @@
 
 #include <QPlainTextEdit>
 #include <QObject>
-#include "AreaNumero.h"
+#include "AreaNumeroLinha.h"
 #include <QPainter>
 #include <QTextBlock>
 #include <QDebug>

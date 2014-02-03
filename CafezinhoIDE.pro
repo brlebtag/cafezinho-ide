@@ -17,13 +17,13 @@ SOURCES += main.cpp\
     GerenciadorDocumento.cpp \
     EditorCodigo.cpp \
     Documento.cpp \
-    AreaNumero.cpp
+    AreaNumeroLinha.cpp
 
 HEADERS  += ide.h \
     GerenciadorDocumento.h \
     Documento.h \
     EditorCodigo.h \
-    AreaNumero.h
+    AreaNumeroLinha.h
 
 FORMS    += ide.ui
 
