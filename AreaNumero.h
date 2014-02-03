@@ -16,7 +16,7 @@ public:
     QSize sizeHint() const;
     QSize minimumSizeHint() const;
 private:
-     EditorCodigo *codeEditor;
+     EditorCodigo *editorCodigo;
 protected:
      void paintEvent(QPaintEvent *event);
      void mousePressEvent (QMouseEvent * event);
