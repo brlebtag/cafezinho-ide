@@ -47,7 +47,7 @@ IDE::IDE(QWidget *parent) :
     docMan.inserir(doc);
 
     //Ajusta o ultimo caminho
-    lastPath = QDir::currentPath();
+    ultimoCaminho = QDir::currentPath();
 
     //Coloca o Titulo
     this->ui->tabWidgetArquivos->setTabText(index, "Novo Arquivo");
@@ -111,7 +111,7 @@ QString IDE::fileNameToFileId(QString &fileName)
 QString IDE::showAbrirArquivo()
 {
     //Abrir a janela pedindo ao usuario que entre com o arquivo... e retorna a string
-    showAbrirArquivo(lastPath);
+    showAbrirArquivo(ultimoCaminho);
 }
 
 QString IDE::showAbrirArquivo(QString &path)
@@ -122,7 +122,7 @@ QString IDE::showAbrirArquivo(QString &path)
 
 QString IDE::showSalvarArquivo()
 {
-    return showSalvarArquivo(lastPath);
+    return showSalvarArquivo(ultimoCaminho);
 }
 
 QString IDE::showSalvarArquivo(QString path)
@@ -267,7 +267,7 @@ void IDE::removeAba(int index, Documento *document)
     docMan.remover(index);
 
     //remove o arquivo da tabela de aberto: se não estava aberto não acontece nada.
-    fileOpened.remove(document->getDocumentoId());
+    docAbertos.remove(document->getDocumentoId());
 
     //Deleta o container do documento...
     delete document;
@@ -344,10 +344,10 @@ void IDE::configurarDocumento(Documento *document, QString &fileName, int index)
     setTabToolTip(index, fileName);
 
     //Ajusta a variavel lastPath para o ultimo arquivo aberto
-    lastPath = fileName.remove(getRealFileName(fileName));
+    ultimoCaminho = fileName.remove(getRealFileName(fileName));
 
     //Inseri o arquivo na tabela de arquivos abertos
-    fileOpened.insert(document->getDocumentoId());
+    docAbertos.insert(document->getDocumentoId());
 
     //seta focus no edit
     document->setFocus();
@@ -362,7 +362,7 @@ void IDE::actionAbrirClicked(bool checked)
         return;
 
     //Verifica se o editor já está com aquele arquivo aberto e senão o tiver aberto, ele o abre.
-    if(!fileOpened.contains(fileNameToFileId(fileName)))
+    if(!docAbertos.contains(fileNameToFileId(fileName)))
     {
         //pega o index do tab atual
         int index = getCurrentAba();
@@ -549,7 +549,7 @@ void IDE::salvarDocumento(Documento *document, QString &fileName, int index, boo
     if(salvar_como)
     {
         //remove o antigo file...
-        fileOpened.remove(document->getDocumentoId());
+        docAbertos.remove(document->getDocumentoId());
     }
 
     configurarDocumento(document, fileName, index);

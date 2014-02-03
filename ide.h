@@ -35,10 +35,10 @@ public:
 
 private:
     Ui::IDE *ui;
-    QSet<QString> fileOpened;
+    QSet<QString> docAbertos;
     GerenciadorDocumento docMan;
     QList<Documento*> arquivos;
-    QString lastPath;
+    QString ultimoCaminho;
     Documento* criarAba(QString title, int *index = 0);
     QString fileNameToFileId(QString &fileName);
     QString showAbrirArquivo();
