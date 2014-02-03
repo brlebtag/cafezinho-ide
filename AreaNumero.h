@@ -2,27 +2,27 @@
 #define LINENUMBERAREA_H
 
 #include <QWidget>
-#include "codeeditor.h"
+#include "EditorCodigo.h"
 
-class CodeEditor;
+class EditorCodigo;
 class QResizeEvent;
 class QSize;
 
-class LineNumberArea : public QWidget
+class AreaNumero : public QWidget
 {
     Q_OBJECT
 public:
-    LineNumberArea(CodeEditor *editor);
+    AreaNumero(EditorCodigo *editor);
     QSize sizeHint() const;
     QSize minimumSizeHint() const;
 private:
-     CodeEditor *codeEditor;
+     EditorCodigo *codeEditor;
 protected:
      void paintEvent(QPaintEvent *event);
      void mousePressEvent (QMouseEvent * event);
 
 signals:
-    void lineNumberClicked(int line);
+    void clicouAreaNumero(int line);
 
 public slots:
 

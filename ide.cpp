@@ -20,7 +20,7 @@ IDE::IDE(QWidget *parent) :
     int index = this->ui->tabWidgetArquivos->currentIndex();
 
     //Cria um QPlainTextEdit e inseri na tab
-    CodeEditor *edit = new CodeEditor(this->ui->tabWidgetArquivos->currentWidget());
+    EditorCodigo *edit = new EditorCodigo(this->ui->tabWidgetArquivos->currentWidget());
 
     //adiciona o connect para salvar as mudanças no texto...
     connect(edit,SIGNAL(textChanged()),this,SLOT(plainTextEditTextChanged()));
@@ -77,7 +77,7 @@ Documento *IDE::criarAba(QString title, int *index)
     this->ui->tabWidgetArquivos->setCurrentWidget(tab);
 
     //Cria um QPlainTextEdit e inseri na nova tab
-    CodeEditor *edit = new CodeEditor(tab);
+    EditorCodigo *edit = new EditorCodigo(tab);
 
     //adiciona o connect para salvar as mudanças no texto...
     connect(edit,SIGNAL(textChanged()),this,SLOT(plainTextEditTextChanged()));
@@ -577,7 +577,7 @@ void IDE::plainTextEditTextChanged()
 
 void IDE::actionNumero_da_linhaToggled(bool checked)
 {
-    CodeEditor::setLineNumber(checked);
+    EditorCodigo::setLineNumber(checked);
 
     //pega o index do tab atual
     int index = this->ui->tabWidgetArquivos->currentIndex();

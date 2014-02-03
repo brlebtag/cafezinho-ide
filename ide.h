@@ -16,7 +16,7 @@
 #include <QCryptographicHash>
 #include <QDebug>
 #include "Documento.h"
-#include "codeeditor.h"
+#include "EditorCodigo.h"
 #include "GerenciadorDocumento.h"
 
 class GerenciadorDocumento;

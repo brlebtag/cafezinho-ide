@@ -3,7 +3,7 @@
 
 #include <QPlainTextEdit>
 #include <QObject>
-#include "linenumberarea.h"
+#include "AreaNumero.h"
 #include <QPainter>
 #include <QTextBlock>
 #include <QDebug>
@@ -16,16 +16,16 @@ class QWidget;
 
 
 
-class LineNumberArea;
+class AreaNumero;
 
-class CodeEditor : public QPlainTextEdit
+class EditorCodigo : public QPlainTextEdit
 {
     Q_OBJECT
 
 public:
-    friend class LineNumberArea;
-    CodeEditor(QWidget *parent = 0);
-    virtual ~CodeEditor() { };
+    friend class AreaNumero;
+    EditorCodigo(QWidget *parent = 0);
+    virtual ~EditorCodigo() { };
     void lineNumberAreaPaintEvent(QPaintEvent *event);
     int lineNumberAreaWidth();
     static void setLineNumber(bool checked);
@@ -35,15 +35,15 @@ protected:
     void resizeEvent(QResizeEvent *event);
 
 private slots:
-    void updateLineNumberAreaWidth(int newBlockCount);
-    void updateLineNumberArea(const QRect &, int);
-    void lineNumberClicked(int line);
+    void atualizarLarguraAreaNumero(int newBlockCount);
+    void atualizarAreaNumero(const QRect &, int);
+    void clicouAreaNumero(int line);
 
 private:
-    static bool line_number;
-    QWidget *lineNumberArea;
+    static bool numeroLinha;
+    QWidget *areaNumero;
     QSet<int> breakpoints;
-    QImage breakImg;
+    QImage breakpointImg;
 
 signals:
     void breakpoint(int line, bool checked);

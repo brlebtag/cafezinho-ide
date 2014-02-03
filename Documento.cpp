@@ -1,6 +1,6 @@
-#include "documento.h"
+#include "Documento.h"
 
-Documento::Documento(QWidget *widget, CodeEditor *edit, bool dirty)
+Documento::Documento(QWidget *widget, EditorCodigo *edit, bool dirty)
     :widget(widget), edit(edit), sujo(dirty)
 {
     aberto = false;

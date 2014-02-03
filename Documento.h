@@ -4,13 +4,13 @@
 #include <QString>
 #include <QPlainTextEdit>
 #include <QCryptographicHash>
-#include "codeeditor.h"
+#include "EditorCodigo.h"
 #include <QWidget>
 
 class Documento
 {
 public:
-    Documento(QWidget *widget, CodeEditor *edit, bool sujo = false );
+    Documento(QWidget *widget, EditorCodigo *edit, bool sujo = false );
     bool isVazio();
     bool isSujo();
     bool isAberto();
@@ -31,7 +31,7 @@ public:
 private:
     bool sujo;
     QWidget *widget;
-    CodeEditor *edit;
+    EditorCodigo *edit;
     QString documentoId;
     QString caminhoCompleto;
     bool aberto;

@@ -1,19 +1,19 @@
-#include "codeeditor.h"
+#include "EditorCodigo.h"
 
-bool CodeEditor::line_number = true;
+bool EditorCodigo::numeroLinha = true;
 
-CodeEditor::CodeEditor(QWidget *parent) : QPlainTextEdit(parent)
+EditorCodigo::EditorCodigo(QWidget *parent) : QPlainTextEdit(parent)
 {
-    lineNumberArea = new LineNumberArea(this);
-    connect(lineNumberArea,SIGNAL(lineNumberClicked(int)),this,SLOT(lineNumberClicked(int)));
-    connect(this, SIGNAL(blockCountChanged(int)), this, SLOT(updateLineNumberAreaWidth(int)));
-    connect(this, SIGNAL(updateRequest(QRect,int)), this, SLOT(updateLineNumberArea(QRect,int)));
-    updateLineNumberAreaWidth(0);
-    breakImg.load(":/bolinha.png");
+    areaNumero = new AreaNumero(this);
+    connect(areaNumero,SIGNAL(clicouAreaNumero(int)),this,SLOT(clicouAreaNumero(int)));
+    connect(this, SIGNAL(blockCountChanged(int)), this, SLOT(atualizarLarguraAreaNumero(int)));
+    connect(this, SIGNAL(updateRequest(QRect,int)), this, SLOT(atualizarAreaNumero(QRect,int)));
+    atualizarLarguraAreaNumero(0);
+    breakpointImg.load(":/bolinha.png");
     breakpoints.clear();
 }
 
-int CodeEditor::lineNumberAreaWidth()
+int EditorCodigo::lineNumberAreaWidth()
 {
     //Calcula o numero de digitos
     int digits = 1;
@@ -28,44 +28,44 @@ int CodeEditor::lineNumberAreaWidth()
     //retorna qtd digitos + 10(espaçamento, opcional)
     int space = 10 + fontMetrics().width(QLatin1Char('9')) * digits;
 
-    if(!CodeEditor::line_number)
+    if(!EditorCodigo::numeroLinha)
         space = 0;
 
     return space;
 }
 
-void CodeEditor::setLineNumber(bool checked)
+void EditorCodigo::setLineNumber(bool checked)
 {
-    CodeEditor::line_number = checked;
+    EditorCodigo::numeroLinha = checked;
 }
 
-void CodeEditor::forceUpdate()
+void EditorCodigo::forceUpdate()
 {
-    updateLineNumberAreaWidth(0);
+    atualizarLarguraAreaNumero(0);
 }
 
-void CodeEditor::updateLineNumberAreaWidth(int /* newBlockCount */)
+void EditorCodigo::atualizarLarguraAreaNumero(int /* newBlockCount */)
 {
     setViewportMargins(lineNumberAreaWidth(), 0, 0, 0);
 }
 
 
 
-void CodeEditor::updateLineNumberArea(const QRect &rect, int dy)
+void EditorCodigo::atualizarAreaNumero(const QRect &rect, int dy)
 {
-    if(CodeEditor::line_number)
+    if(EditorCodigo::numeroLinha)
     {
         if (dy)
-            lineNumberArea->scroll(0, dy);
+            areaNumero->scroll(0, dy);
         else
-            lineNumberArea->update(0, rect.y(), lineNumberArea->width(), rect.height());
+            areaNumero->update(0, rect.y(), areaNumero->width(), rect.height());
 
         if (rect.contains(viewport()->rect()))
-            updateLineNumberAreaWidth(0);
+            atualizarLarguraAreaNumero(0);
     }
 }
 
-void CodeEditor::lineNumberClicked(int line)
+void EditorCodigo::clicouAreaNumero(int line)
 {
     bool contain = breakpoints.contains(line);
 
@@ -80,26 +80,26 @@ void CodeEditor::lineNumberClicked(int line)
 
     contain = ! contain;
 
-    this->lineNumberArea->repaint(this->lineNumberArea->rect());
+    this->areaNumero->repaint(this->areaNumero->rect());
 
     emit breakpoint(line,contain);
 }
 
 
 
-void CodeEditor::resizeEvent(QResizeEvent *e)
+void EditorCodigo::resizeEvent(QResizeEvent *e)
 {
     QPlainTextEdit::resizeEvent(e);
 
     QRect cr = contentsRect();
-    lineNumberArea->setGeometry(QRect(cr.left(), cr.top(), lineNumberAreaWidth(), cr.height()));
+    areaNumero->setGeometry(QRect(cr.left(), cr.top(), lineNumberAreaWidth(), cr.height()));
 }
 
-void CodeEditor::lineNumberAreaPaintEvent(QPaintEvent *event)
+void EditorCodigo::lineNumberAreaPaintEvent(QPaintEvent *event)
 {
-    if(CodeEditor::line_number)
+    if(EditorCodigo::numeroLinha)
     {
-        QPainter painter(lineNumberArea);
+        QPainter painter(areaNumero);
         painter.fillRect(event->rect(), Qt::lightGray);
 
 
@@ -117,14 +117,14 @@ void CodeEditor::lineNumberAreaPaintEvent(QPaintEvent *event)
                 {
                     QString number = QString::number(num);
                     painter.setPen(Qt::black);
-                    painter.drawText(0, top, lineNumberArea->width(), fontMetrics().height(),
+                    painter.drawText(0, top, areaNumero->width(), fontMetrics().height(),
                                      Qt::AlignRight, number);
                 }
                 else
                 {
-                    int dim = qMin(lineNumberArea->width(),fontMetrics().height());
+                    int dim = qMin(areaNumero->width(),fontMetrics().height());
                     QPointF pos(this->lineNumberAreaWidth()-dim,top);
-                    QImage img = breakImg.scaled(dim,dim);
+                    QImage img = breakpointImg.scaled(dim,dim);
                     painter.drawImage(pos,img);
                 }
             }
