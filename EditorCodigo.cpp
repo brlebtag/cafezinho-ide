@@ -4,7 +4,7 @@ bool EditorCodigo::numeroLinha = true;
 
 EditorCodigo::EditorCodigo(QWidget *parent) : QPlainTextEdit(parent)
 {
-    areaNumero = new AreaNumero(this);
+    areaNumero = new AreaNumeroLinha(this);
     connect(areaNumero,SIGNAL(clicouAreaNumero(int)),this,SLOT(clicouAreaNumero(int)));
     connect(this, SIGNAL(blockCountChanged(int)), this, SLOT(atualizarLarguraAreaNumero(int)));
     connect(this, SIGNAL(updateRequest(QRect,int)), this, SLOT(atualizarAreaNumero(QRect,int)));

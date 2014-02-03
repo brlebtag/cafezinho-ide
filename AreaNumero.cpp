@@ -1,27 +1,27 @@
 #include "AreaNumero.h"
 
 
-AreaNumero::AreaNumero(EditorCodigo *editor) : QWidget(editor)
+AreaNumeroLinha::AreaNumeroLinha(EditorCodigo *editor) : QWidget(editor)
 {
     this->editorCodigo = editor;
 }
 
-QSize AreaNumero::sizeHint() const
+QSize AreaNumeroLinha::sizeHint() const
 {
     return QSize(editorCodigo->lineNumberAreaWidth(), 0);
 }
 
-QSize AreaNumero::minimumSizeHint() const
+QSize AreaNumeroLinha::minimumSizeHint() const
 {
     return QSize(editorCodigo->lineNumberAreaWidth(), 0);
 }
 
-void AreaNumero::paintEvent(QPaintEvent *event)
+void AreaNumeroLinha::paintEvent(QPaintEvent *event)
 {
     editorCodigo->lineNumberAreaPaintEvent(event);
 }
 
-void AreaNumero::mousePressEvent(QMouseEvent *event)
+void AreaNumeroLinha::mousePressEvent(QMouseEvent *event)
 {
     //Pega o bloco que está no editorCodigo
     QTextBlock block = editorCodigo->firstVisibleBlock();

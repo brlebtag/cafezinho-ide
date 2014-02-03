@@ -16,14 +16,14 @@ class QWidget;
 
 
 
-class AreaNumero;
+class AreaNumeroLinha;
 
 class EditorCodigo : public QPlainTextEdit
 {
     Q_OBJECT
 
 public:
-    friend class AreaNumero;
+    friend class AreaNumeroLinha;
     EditorCodigo(QWidget *parent = 0);
     virtual ~EditorCodigo() { };
     void lineNumberAreaPaintEvent(QPaintEvent *event);

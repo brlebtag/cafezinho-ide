@@ -8,11 +8,11 @@ class EditorCodigo;
 class QResizeEvent;
 class QSize;
 
-class AreaNumero : public QWidget
+class AreaNumeroLinha : public QWidget
 {
     Q_OBJECT
 public:
-    AreaNumero(EditorCodigo *editor);
+    AreaNumeroLinha(EditorCodigo *editor);
     QSize sizeHint() const;
     QSize minimumSizeHint() const;
 private:

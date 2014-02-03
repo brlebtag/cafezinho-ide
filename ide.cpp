@@ -8,13 +8,13 @@ IDE::IDE(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    connect(this->ui->actionAbrir,SIGNAL(triggered()),this,SLOT(actionAbrirClicked()));
-    connect(this->ui->actionNovo,SIGNAL(triggered(bool)),this,SLOT(actionNovoClicked(bool)));
-    connect(this->ui->actionFechar,SIGNAL(triggered(bool)),this,SLOT(actionFecharClicked(bool)));
-    connect(this->ui->actionSair,SIGNAL(triggered(bool)),this,SLOT(actionSairClicked(bool)));
-    connect(this->ui->actionSalvar,SIGNAL(triggered(bool)),this,SLOT(actionSalvarClicked(bool)));
-    connect(this->ui->actionSalvar_Como,SIGNAL(triggered(bool)),this,SLOT(actionSalvarComoClicked(bool)));
-    connect(this->ui->actionNumero_da_Linha,SIGNAL(toggled(bool)),this,SLOT(actionNumero_da_linhaToggled(bool)));
+    connect(this->ui->actionAbrir,SIGNAL(triggered()),this,SLOT(acaoAbrir()));
+    connect(this->ui->actionNovo,SIGNAL(triggered(bool)),this,SLOT(acaoNovo(bool)));
+    connect(this->ui->actionFechar,SIGNAL(triggered(bool)),this,SLOT(acaoFechar(bool)));
+    connect(this->ui->actionSair,SIGNAL(triggered(bool)),this,SLOT(acaoSair(bool)));
+    connect(this->ui->actionSalvar,SIGNAL(triggered(bool)),this,SLOT(acaoSalvar(bool)));
+    connect(this->ui->actionSalvar_Como,SIGNAL(triggered(bool)),this,SLOT(acaoSalvarComo(bool)));
+    connect(this->ui->actionNumero_da_Linha,SIGNAL(toggled(bool)),this,SLOT(acaoHabilitarNumeroLinha(bool)));
 
     //Index da aba atual...
     int index = this->ui->tabWidgetArquivos->currentIndex();
@@ -23,7 +23,7 @@ IDE::IDE(QWidget *parent) :
     EditorCodigo *edit = new EditorCodigo(this->ui->tabWidgetArquivos->currentWidget());
 
     //adiciona o connect para salvar as mudanças no texto...
-    connect(edit,SIGNAL(textChanged()),this,SLOT(plainTextEditTextChanged()));
+    connect(edit,SIGNAL(textChanged()),this,SLOT(alterarEditorCodigo()));
 
     //Para pegar os breakpoints
     connect(edit,SIGNAL(breakpoint(int,bool)),this,SLOT(breakpoint(int,bool)));
@@ -80,7 +80,7 @@ Documento *IDE::criarAba(QString title, int *index)
     EditorCodigo *edit = new EditorCodigo(tab);
 
     //adiciona o connect para salvar as mudanças no texto...
-    connect(edit,SIGNAL(textChanged()),this,SLOT(plainTextEditTextChanged()));
+    connect(edit,SIGNAL(textChanged()),this,SLOT(alterarEditorCodigo()));
 
     //Para pegar os breakpoints
     connect(edit,SIGNAL(breakpoint(int,bool)),this,SLOT(breakpoint(int,bool)));
@@ -103,34 +103,34 @@ Documento *IDE::criarAba(QString title, int *index)
     return doc;
 }
 
-QString IDE::fileNameToFileId(QString &fileName)
+QString IDE::nomeDocParaDocId(QString &fileName)
 {
     return QCryptographicHash::hash(fileName.toUtf8(),QCryptographicHash::Md5).toHex();
 }
 
-QString IDE::showAbrirArquivo()
+QString IDE::mostrarAbrirArquivo()
 {
     //Abrir a janela pedindo ao usuario que entre com o arquivo... e retorna a string
-    showAbrirArquivo(ultimoCaminho);
+    mostrarAbrirArquivo(ultimoCaminho);
 }
 
-QString IDE::showAbrirArquivo(QString &path)
+QString IDE::mostrarAbrirArquivo(QString &path)
 {
     //Abrir a janela pedindo ao usuario que entre com o arquivo... e retorna a string
     return QFileDialog::getOpenFileName(this, tr("Abrir Arquivo"), path, tr("Files (*.cafe)"));
 }
 
-QString IDE::showSalvarArquivo()
+QString IDE::mostrarSalvarArquivo()
 {
-    return showSalvarArquivo(ultimoCaminho);
+    return mostrarSalvarArquivo(ultimoCaminho);
 }
 
-QString IDE::showSalvarArquivo(QString path)
+QString IDE::mostrarSalvarArquivo(QString path)
 {
     return QFileDialog::getSaveFileName(this, tr("Salvar Arquivo"),path, tr("Arquivo Cafezinho(*.cafe)"), new QString(tr("Arquivo Cafezinho (*.cafe)")));
 }
 
-int IDE::showSalvarAlteracao()
+int IDE::mostrarSalvarAlteracao()
 {
     //Perqunta se pode fechar assim mesmo
     int result = QMessageBox::warning(
@@ -142,7 +142,7 @@ int IDE::showSalvarAlteracao()
     return result;
 }
 
-void IDE::setDocumentText(Documento *document, QFile *file)
+void IDE::setTextoDocumento(Documento *document, QFile *file)
 {
     //Seta o documento sujo para não adicionar o * ... por que ao adicionar o texto lido do arquivo no PlainTextEdit
     //ele irá chamar textChanged mas nessa situação não queremos que adicione o * ...
@@ -213,7 +213,7 @@ QFile *IDE::abrirArquivoGravacao(QString &fileName)
 void IDE::reabrirAba(QString &fileName)
 {
     //Pega o documento e seta o focus
-    Documento * doc = docMan.procurar(fileNameToFileId(fileName));
+    Documento * doc = docMan.procurar(nomeDocParaDocId(fileName));
 
     //Seta a tab encontrada como atual...
     this->ui->tabWidgetArquivos->setCurrentWidget(doc->getWidget());
@@ -228,32 +228,32 @@ void IDE::fecharFile(QFile *file)
     delete file;
 }
 
-QString IDE::getRealFileName(QString &fileName)
+QString IDE::getNomeDocumento(QString &fileName)
 {
     return fileName.section(QDir::separator(),-1);
 }
 
-void IDE::setAbaTitle(int index, QString title)
+void IDE::setTituloAba(int index, QString title)
 {
     this->ui->tabWidgetArquivos->setTabToolTip(index, title);
 }
 
-void IDE::setCurrentAba(QWidget *widget)
+void IDE::setAbaAtual(QWidget *widget)
 {
     this->ui->tabWidgetArquivos->setCurrentWidget(widget);
 }
 
-void IDE::setCurrentAba(int index)
+void IDE::setAbaAtual(int index)
 {
     this->ui->tabWidgetArquivos->setCurrentIndex(index);
 }
 
-int IDE::getCurrentAba()
+int IDE::getAbaAtual()
 {
     return this->ui->tabWidgetArquivos->currentIndex();
 }
 
-void IDE::setTabToolTip(int index, QString &tip)
+void IDE::setDicaAba(int index, QString &tip)
 {
     this->ui->tabWidgetArquivos->setTabToolTip(index,tip);
 }
@@ -273,7 +273,7 @@ void IDE::removeAba(int index, Documento *document)
     delete document;
 }
 
-bool IDE::writeDocument(Documento *document, QString &fileName)
+bool IDE::gravarDocumento(Documento *document, QString &fileName)
 {
     //Adiciona a terminação .cafe se o usuario não informar
     if(!fileName.contains(".cafe"))
@@ -296,7 +296,7 @@ bool IDE::writeDocument(Documento *document, QString &fileName)
 }
 
 
-bool IDE::readDocument(Documento *document, QString &fileName)
+bool IDE::lerDocument(Documento *document, QString &fileName)
 {
     //Abrir o arquivo...
     QFile* file = abrirArquivoLeitura(fileName);
@@ -306,14 +306,14 @@ bool IDE::readDocument(Documento *document, QString &fileName)
     {
         if(document->isVazio()&&(!document->isAberto()))
         {
-            setDocumentText(document, file);
-            index = getCurrentAba();
+            setTextoDocumento(document, file);
+            index = getAbaAtual();
         }
         else
         {
             //Cria um conteiner para guardar informações sobre o documento aberto
-            Documento* doc = criarAba(getRealFileName(fileName), &index);
-            setDocumentText(doc, file);
+            Documento* doc = criarAba(getNomeDocumento(fileName), &index);
+            setTextoDocumento(doc, file);
 
         }
 
@@ -329,7 +329,7 @@ bool IDE::readDocument(Documento *document, QString &fileName)
 void IDE::configurarDocumento(Documento *document, QString &fileName, int index)
 {
     //Seta o titulo da aba
-    setAbaTitle(index, getRealFileName(fileName));
+    setTituloAba(index, getNomeDocumento(fileName));
 
     //Seta o nome do documento
     document->setNomeDocumento(fileName);
@@ -341,10 +341,10 @@ void IDE::configurarDocumento(Documento *document, QString &fileName, int index)
     document->limpou();
 
     //Seta o toolTip da aba
-    setTabToolTip(index, fileName);
+    setDicaAba(index, fileName);
 
     //Ajusta a variavel lastPath para o ultimo arquivo aberto
-    ultimoCaminho = fileName.remove(getRealFileName(fileName));
+    ultimoCaminho = fileName.remove(getNomeDocumento(fileName));
 
     //Inseri o arquivo na tabela de arquivos abertos
     docAbertos.insert(document->getDocumentoId());
@@ -353,25 +353,25 @@ void IDE::configurarDocumento(Documento *document, QString &fileName, int index)
     document->setFocus();
 }
 
-void IDE::actionAbrirClicked(bool checked)
+void IDE::acaoAbrir(bool checked)
 {
     //Abrir a janela pedindo ao usuario que entre com o arquivo...
-    QString fileName = showAbrirArquivo();
+    QString fileName = mostrarAbrirArquivo();
 
     if(fileName.isEmpty())
         return;
 
     //Verifica se o editor já está com aquele arquivo aberto e senão o tiver aberto, ele o abre.
-    if(!docAbertos.contains(fileNameToFileId(fileName)))
+    if(!docAbertos.contains(nomeDocParaDocId(fileName)))
     {
         //pega o index do tab atual
-        int index = getCurrentAba();
+        int index = getAbaAtual();
 
         //Pega o edit da hashtable
         Documento* doc = docMan.procurar(index);
 
         //Ler documento...
-        readDocument(doc,fileName);
+        lerDocument(doc,fileName);
     }
     else
     {
@@ -379,7 +379,7 @@ void IDE::actionAbrirClicked(bool checked)
     }
 }
 
-void IDE::actionNovoClicked(bool checked)
+void IDE::acaoNovo(bool checked)
 {
     Documento *doc = criarAba(tr("Novo Arquivo"));
 
@@ -390,10 +390,10 @@ void IDE::actionNovoClicked(bool checked)
     doc->setFocus();
 }
 
-void IDE::actionFecharClicked(bool checked)
+void IDE::acaoFechar(bool checked)
 {
     //pega o index do tab atual
-    int index = getCurrentAba();
+    int index = getAbaAtual();
 
     //Pega o edit da hashtable
     Documento* doc = docMan.procurar(index);
@@ -404,7 +404,7 @@ void IDE::actionFecharClicked(bool checked)
         if(doc->isSujo())
         {
             //Perqunta se pode fechar assim mesmo
-            switch(showSalvarAlteracao())
+            switch(mostrarSalvarAlteracao())
             {
                 case QMessageBox::Save:
                 {
@@ -412,13 +412,13 @@ void IDE::actionFecharClicked(bool checked)
                     if(doc->isAberto())
                         fileName = doc->getCaminhoCompleto();
                     else
-                        fileName = showSalvarArquivo(doc->getCaminhoCompleto());
+                        fileName = mostrarSalvarArquivo(doc->getCaminhoCompleto());
 
                     //Se estiver vazia não fecha a aba...
                     if(fileName.isEmpty())
                         return;
 
-                    if(!writeDocument(doc, fileName))
+                    if(!gravarDocumento(doc, fileName))
                     {
                         //se der erro (nesse ponto a mensagem de erro já ocorreu) eu apenas fecho... que o usuario
                         //vai tentar novamente ...
@@ -440,7 +440,7 @@ void IDE::actionFecharClicked(bool checked)
     //se existir apenas essa aba não a fecha e tbm não aparece janela de salva (apenas não fecha)...
 }
 
-void IDE::actionSairClicked(bool checked)
+void IDE::acaoSair(bool checked)
 {
     int index = 0;
 
@@ -452,12 +452,12 @@ void IDE::actionSairClicked(bool checked)
         {
 
             //Seta a tab index como a atual...
-            setCurrentAba(index);
+            setAbaAtual(index);
 
             //Seta o foco no edit...
             doc->setFocus();
 
-            switch(showSalvarAlteracao())
+            switch(mostrarSalvarAlteracao())
             {
                 case QMessageBox::Cancel:
                 {
@@ -470,13 +470,13 @@ void IDE::actionSairClicked(bool checked)
                     if(doc->isAberto())
                         fileName = doc->getCaminhoCompleto();
                     else
-                        fileName = showSalvarArquivo(doc->getCaminhoCompleto());
+                        fileName = mostrarSalvarArquivo(doc->getCaminhoCompleto());
 
                     //Se estiver vazia não fecha a aba...
                     if(fileName.isEmpty())
                         return;
 
-                    if(!writeDocument(doc, fileName))
+                    if(!gravarDocumento(doc, fileName))
                     {
                         //se der erro (nesse ponto a mensagem de erro já ocorreu) eu apenas fecho... que o usuario
                         //vai tentar novamente ...
@@ -494,7 +494,7 @@ void IDE::actionSairClicked(bool checked)
     qApp->exit(0);
 }
 
-void IDE::actionSalvarClicked(bool checked)
+void IDE::acaoSalvar(bool checked)
 {
     //pega o index do tab atual
     int index = this->ui->tabWidgetArquivos->currentIndex();
@@ -512,7 +512,7 @@ void IDE::actionSalvarClicked(bool checked)
         salvar_como = true;
     }
     else
-        fileName = showSalvarArquivo(doc->getCaminhoCompleto());
+        fileName = mostrarSalvarArquivo(doc->getCaminhoCompleto());
 
     //Se estiver vazia não salva nada...
     if(fileName.isEmpty())
@@ -521,7 +521,7 @@ void IDE::actionSalvarClicked(bool checked)
     salvarDocumento(doc, fileName, index, salvar_como);
 }
 
-void IDE::actionSalvarComoClicked(bool checked)
+void IDE::acaoSalvarComo(bool checked)
 {
     //pega o index do tab atual
     int index = this->ui->tabWidgetArquivos->currentIndex();
@@ -530,7 +530,7 @@ void IDE::actionSalvarComoClicked(bool checked)
     Documento* doc = docMan.procurar(index);
 
     //A onde salvar
-    QString fileName = showSalvarArquivo();
+    QString fileName = mostrarSalvarArquivo();
 
     //Se estiver vazia não salva nada...
     if(fileName.isEmpty())
@@ -543,7 +543,7 @@ void IDE::actionSalvarComoClicked(bool checked)
 void IDE::salvarDocumento(Documento *document, QString &fileName, int index, bool salvar_como)
 {
 
-    if(!writeDocument(document,fileName))
+    if(!gravarDocumento(document,fileName))
         return;
 
     if(salvar_como)
@@ -555,7 +555,7 @@ void IDE::salvarDocumento(Documento *document, QString &fileName, int index, boo
     configurarDocumento(document, fileName, index);
 }
 
-void IDE::plainTextEditTextChanged()
+void IDE::alterarEditorCodigo()
 {
 
     //pega o index do tab atual
@@ -575,7 +575,7 @@ void IDE::plainTextEditTextChanged()
     }
 }
 
-void IDE::actionNumero_da_linhaToggled(bool checked)
+void IDE::acaoHabilitarNumeroLinha(bool checked)
 {
     EditorCodigo::setLineNumber(checked);
 
