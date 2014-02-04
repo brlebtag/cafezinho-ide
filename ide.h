@@ -68,16 +68,16 @@ private:
     void salvarDocumento(Documento* document, QString &fileName,int index, bool salvar_como);
 
 private slots:
-    void acaoAbrir(bool checked = false);
+    void acaoAbrir(bool checked = false); //OK
     void acaoNovo(bool checked = false); //OK
     void acaoFechar(bool checked = false); //OK
-    void acaoSair(bool checked = false);
-    void acaoSalvar(bool checked = false);
-    void acaoSalvarComo(bool checked = false);
-    void alterarEditorCodigo();
-    void acaoHabilitarNumeroLinha(bool checked);
-    void breakpoint(int line, bool checked);
-    void mudouAbaAtual(int index);
+    void acaoSair(bool checked = false); //OK
+    void acaoSalvar(bool checked = false); //OK
+    void acaoSalvarComo(bool checked = false); //OK
+    void alterarEditorCodigo(); //OK
+    void acaoHabilitarNumeroLinha(bool checked); //OK
+    void breakpoint(int line, bool checked); //OK
+    void mudouAbaAtual(int index); //OK
 };
 
 #endif // IDE_H

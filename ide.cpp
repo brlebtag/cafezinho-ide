@@ -508,7 +508,7 @@ void IDE::acaoSair(bool checked)
                     if(doc->isAberto())
                         fileName = doc->getCaminhoCompleto();
                     else
-                        fileName = mostrarSalvarArquivo(doc->getCaminhoCompleto());
+                        fileName = mostrarSalvarArquivo();
 
                     //Se estiver vazia não fecha a aba...
                     if(fileName.isEmpty())
@@ -535,7 +535,7 @@ void IDE::acaoSair(bool checked)
 void IDE::acaoSalvar(bool checked)
 {
     //pega o index do tab atual
-    int index = this->ui->tabWidgetArquivos->currentIndex();
+    int index = getAbaAtual();
 
     //Pega o edit da hashtable
     Documento* doc = genDoc.procurar(index);
@@ -544,13 +544,13 @@ void IDE::acaoSalvar(bool checked)
 
     bool salvar_como = false;
 
-    if(doc->isAberto())
+    if(!doc->isAberto())
     {
-        fileName = doc->getCaminhoCompleto();
+        fileName = mostrarSalvarArquivo(doc->getCaminhoCompleto());
         salvar_como = true;
     }
     else
-        fileName = mostrarSalvarArquivo(doc->getCaminhoCompleto());
+        fileName = doc->getCaminhoCompleto();
 
     //Se estiver vazia não salva nada...
     if(fileName.isEmpty())
