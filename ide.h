@@ -36,7 +36,7 @@ public:
 private:
     Ui::IDE *ui;
     QSet<QString> docAbertos;
-    GerenciadorDocumento docMan;
+    GerenciadorDocumento genDoc;
     QList<Documento*> arquivos;
     QString ultimoCaminho;
     Documento* criarAba(QString title, int *index = 0);

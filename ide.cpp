@@ -44,7 +44,7 @@ IDE::IDE(QWidget *parent) :
     Documento* doc = new Documento(this->ui->tabWidgetArquivos->currentWidget(), edit);
 
     //inseri a tab na Hashtable
-    docMan.inserir(doc);
+    genDoc.inserir(doc);
 
     //Ajusta o ultimo caminho
     ultimoCaminho = QDir::currentPath();
@@ -70,6 +70,7 @@ Documento *IDE::criarAba(QString title, int *index)
     //Inseri a aba no tabWidget o titulo é apenas a ultima parte do caminho full do arquivo (só o nome do arquivo)
     int id = this->ui->tabWidgetArquivos->addTab(tab, title);
 
+    //se recebeu index como parametro...
     if(index != 0)
         (*index) = id;
 
@@ -86,7 +87,7 @@ Documento *IDE::criarAba(QString title, int *index)
     connect(edit,SIGNAL(breakpoint(int,bool)),this,SLOT(breakpoint(int,bool)));
 
     //configura a politica de tamanho
-    edit->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
+    edit->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
     //Cria um layout
     QVBoxLayout * layout = new QVBoxLayout();
@@ -213,7 +214,7 @@ QFile *IDE::abrirArquivoGravacao(QString &fileName)
 void IDE::reabrirAba(QString &fileName)
 {
     //Pega o documento e seta o focus
-    Documento * doc = docMan.procurar(nomeDocParaDocId(fileName));
+    Documento * doc = genDoc.procurar(nomeDocParaDocId(fileName));
 
     //Seta a tab encontrada como atual...
     this->ui->tabWidgetArquivos->setCurrentWidget(doc->getWidget());
@@ -264,7 +265,7 @@ void IDE::removeAba(int index, Documento *document)
     this->ui->tabWidgetArquivos->removeTab(index);
 
     //remove o tab da hash
-    docMan.remover(index);
+    genDoc.remover(index);
 
     //remove o arquivo da tabela de aberto: se não estava aberto não acontece nada.
     docAbertos.remove(document->getDocumentoId());
@@ -368,7 +369,7 @@ void IDE::acaoAbrir(bool checked)
         int index = getAbaAtual();
 
         //Pega o edit da hashtable
-        Documento* doc = docMan.procurar(index);
+        Documento* doc = genDoc.procurar(index);
 
         //Ler documento...
         lerDocument(doc,fileName);
@@ -381,10 +382,11 @@ void IDE::acaoAbrir(bool checked)
 
 void IDE::acaoNovo(bool checked)
 {
+    //Cria uma nova aba...
     Documento *doc = criarAba(tr("Novo Arquivo"));
 
-    //inseri a tab na Hashtable...
-    docMan.inserir(doc);
+    //inseri a aba no gerenciador de documentos...
+    genDoc.inserir(doc);
 
     //Seta o foco no edit...
     doc->setFocus();
@@ -396,7 +398,7 @@ void IDE::acaoFechar(bool checked)
     int index = getAbaAtual();
 
     //Pega o edit da hashtable
-    Documento* doc = docMan.procurar(index);
+    Documento* doc = genDoc.procurar(index);
 
     //Verifica se existe mais de uma aba...
     if(arquivos.size()>1)
@@ -444,7 +446,7 @@ void IDE::acaoSair(bool checked)
 {
     int index = 0;
 
-    for(QList<Documento*>::iterator it = docMan.begin(); it!= docMan.end(); it++, index++)
+    for(QList<Documento*>::iterator it = genDoc.begin(); it!= genDoc.end(); it++, index++)
     {
         Documento *doc = (*it);
 
@@ -500,7 +502,7 @@ void IDE::acaoSalvar(bool checked)
     int index = this->ui->tabWidgetArquivos->currentIndex();
 
     //Pega o edit da hashtable
-    Documento* doc = docMan.procurar(index);
+    Documento* doc = genDoc.procurar(index);
 
     QString fileName;
 
@@ -527,7 +529,7 @@ void IDE::acaoSalvarComo(bool checked)
     int index = this->ui->tabWidgetArquivos->currentIndex();
 
     //Pega o edit da hashtable
-    Documento* doc = docMan.procurar(index);
+    Documento* doc = genDoc.procurar(index);
 
     //A onde salvar
     QString fileName = mostrarSalvarArquivo();
@@ -562,7 +564,7 @@ void IDE::alterarEditorCodigo()
     int index = this->ui->tabWidgetArquivos->currentIndex();
 
     //Pega o edit da hashtable
-    Documento* doc = docMan.procurar(index);
+    Documento* doc = genDoc.procurar(index);
 
     if(!doc->isSujo())
     {
@@ -583,7 +585,7 @@ void IDE::acaoHabilitarNumeroLinha(bool checked)
     int index = this->ui->tabWidgetArquivos->currentIndex();
 
     //Pega o edit da hashtable
-    Documento* doc = docMan.procurar(index);
+    Documento* doc = genDoc.procurar(index);
 
     //Repintar o edit
     doc->repintarEditor();
