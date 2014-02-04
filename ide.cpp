@@ -319,6 +319,8 @@ bool IDE::lerDocument(Documento *document, QString &fileName)
     QFile* file = abrirArquivoLeitura(fileName);
     int index = 0;
 
+    Documento *d;
+
     if(file!=NULL)
     {
         if(document->isVazio()&&(!document->isAberto()))
@@ -329,6 +331,8 @@ bool IDE::lerDocument(Documento *document, QString &fileName)
             //Pega o index da aba atual
             index = getAbaAtual();
 
+            // O documento que será configurado é o document...
+            d = document;
 
         }
         else
@@ -341,10 +345,13 @@ bool IDE::lerDocument(Documento *document, QString &fileName)
 
             //Inseri o texto do arquivo no documento
             setTextoDocumento(doc, file);
+
+            //O documento que será configurado é doc e não document...
+            d = doc;
         }
 
         //inicializa as configurações necessarias do documento
-        configurarDocumento(document, fileName, index);
+        configurarDocumento(d, fileName, index);
 
         //Fecha o arquivo...
         fecharFile(file);

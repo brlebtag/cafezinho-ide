@@ -11,7 +11,7 @@ Documento *GerenciadorDocumento::procurar(QString fileId)
 {
     int pos = posicao(fileId);
 
-    if(pos!=GerenciadorDocumento::NAO_ACHADO)
+    if(pos==GerenciadorDocumento::NAO_ACHADO)
         return NULL;
     return procurar(pos);
 }
@@ -81,7 +81,7 @@ void GerenciadorDocumento::remover(Documento *document)
 {
     int pos = posicao(document);
 
-    if(pos!=GerenciadorDocumento::NAO_ACHADO)
+    if(pos==GerenciadorDocumento::NAO_ACHADO)
         remover(pos);
 }
 
