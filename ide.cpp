@@ -118,7 +118,7 @@ QString IDE::nomeDocParaDocId(QString &fileName)
 QString IDE::mostrarAbrirArquivo()
 {
     //Abrir a janela pedindo ao usuario que entre com o arquivo... e retorna a string
-    mostrarAbrirArquivo(ultimoCaminho);
+    return mostrarAbrirArquivo(ultimoCaminho);
 }
 
 QString IDE::mostrarAbrirArquivo(QString &path)
@@ -240,6 +240,11 @@ QString IDE::getNomeDocumento(QString &fileName)
     return fileName.section(QDir::separator(),-1);
 }
 
+QString IDE::getCaminhoDocumento(QString &fileName)
+{
+    return fileName.remove(getNomeDocumento(fileName));
+}
+
 void IDE::setTituloAba(int index, QString title)
 {
     this->ui->tabWidgetArquivos->setTabText(index, title);
@@ -318,18 +323,30 @@ bool IDE::lerDocument(Documento *document, QString &fileName)
     {
         if(document->isVazio()&&(!document->isAberto()))
         {
+            //Inseri o texto do arquivo no documento
             setTextoDocumento(document, file);
+
+            //Pega o index da aba atual
             index = getAbaAtual();
+
+
         }
         else
         {
             //Cria um conteiner para guardar informações sobre o documento aberto
             Documento* doc = criarDocumento(getNomeDocumento(fileName), &index);
-            setTextoDocumento(doc, file);
 
+            //Inserir documento no gerenciador de documento...
+            genDoc.inserir(doc);
+
+            //Inseri o texto do arquivo no documento
+            setTextoDocumento(doc, file);
         }
 
+        //inicializa as configurações necessarias do documento
         configurarDocumento(document, fileName, index);
+
+        //Fecha o arquivo...
         fecharFile(file);
 
         return true;
@@ -349,14 +366,14 @@ void IDE::configurarDocumento(Documento *document, QString &fileName, int index)
     //Seta o documento como aberto
     document->abriu();
 
-    //seta o documento como cleaned
+    //seta o documento como limpo
     document->limpou();
 
     //Seta o toolTip da aba
     setDicaAba(index, fileName);
 
     //Ajusta a variavel lastPath para o ultimo arquivo aberto
-    ultimoCaminho = fileName.remove(getNomeDocumento(fileName));
+    ultimoCaminho = getCaminhoDocumento(fileName);
 
     //Inseri o arquivo na tabela de arquivos abertos
     docAbertos.insert(document->getDocumentoId());
@@ -379,7 +396,7 @@ void IDE::acaoAbrir(bool checked)
         //pega o index do tab atual
         int index = getAbaAtual();
 
-        //Pega o edit da hashtable
+        //Pega o edit no gerenciador de Documentos
         Documento* doc = genDoc.procurar(index);
 
         //Ler documento...
@@ -422,10 +439,11 @@ void IDE::acaoFechar(bool checked)
                 case QMessageBox::Save:
                 {
                     QString fileName;
+
                     if(doc->isAberto())
                         fileName = doc->getCaminhoCompleto();
                     else
-                        fileName = mostrarSalvarArquivo(doc->getCaminhoCompleto());
+                        fileName = mostrarSalvarArquivo();
 
                     //Se estiver vazia não fecha a aba...
                     if(fileName.isEmpty())

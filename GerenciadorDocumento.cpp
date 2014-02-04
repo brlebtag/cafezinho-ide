@@ -46,8 +46,8 @@ int GerenciadorDocumento::posicao(QString fileId)
     for(QList<Documento*>::iterator it = documentos.begin(); it!= documentos.end(); it++,i++)
     {
         Documento* doc = (*it);
-
-        if(doc->getDocumentoId() == fileId)
+        QString id = doc->getDocumentoId() ;
+        if(id == fileId)
             return i;
     }
 

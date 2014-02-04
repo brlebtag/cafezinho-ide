@@ -54,6 +54,7 @@ private:
     void reabrirAba(QString &fileName);
     void fecharFile(QFile* file);
     QString getNomeDocumento(QString &fileName);
+    QString getCaminhoDocumento(QString &fileName);
     void setTituloAba(int index, QString title);
     void setAbaAtual(QWidget* widget);
     void setAbaAtual(int index);
@@ -68,8 +69,8 @@ private:
 
 private slots:
     void acaoAbrir(bool checked = false);
-    void acaoNovo(bool checked = false);
-    void acaoFechar(bool checked = false);
+    void acaoNovo(bool checked = false); //OK
+    void acaoFechar(bool checked = false); //OK
     void acaoSair(bool checked = false);
     void acaoSalvar(bool checked = false);
     void acaoSalvarComo(bool checked = false);
