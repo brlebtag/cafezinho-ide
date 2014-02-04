@@ -39,7 +39,10 @@ private:
     GerenciadorDocumento genDoc;
     QList<Documento*> arquivos;
     QString ultimoCaminho;
-    Documento* criarAba(QString title, int *index = 0);
+    QWidget* criarAba(QString title, int *index = 0);
+    EditorCodigo* criarEditor(QWidget* aba);
+    Documento* criarDocumento(QString title, int *index = 0);
+    Documento* criarDocumento(QWidget* aba, EditorCodigo* edit);
     QString nomeDocParaDocId(QString &fileName);
     QString mostrarAbrirArquivo();
     QString mostrarAbrirArquivo(QString &path);
@@ -56,6 +59,7 @@ private:
     void setAbaAtual(QWidget* widget);
     void setAbaAtual(int index);
     int getAbaAtual();
+    QWidget* getAbaAtualWidget();
     void setDicaAba(int index, QString &tip);
     void removeAba(int index, Documento* document);
     bool gravarDocumento(Documento *document, QString &fileName);

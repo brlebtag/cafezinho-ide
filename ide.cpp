@@ -17,43 +17,28 @@ IDE::IDE(QWidget *parent) :
     connect(this->ui->actionNumero_da_Linha,SIGNAL(toggled(bool)),this,SLOT(acaoHabilitarNumeroLinha(bool)));
 
     //Index da aba atual...
-    int index = this->ui->tabWidgetArquivos->currentIndex();
+    int index = getAbaAtual();
+
+    //Pega o widget da aba atual...
+    QWidget *aba = getAbaAtualWidget();
 
     //Cria um QPlainTextEdit e inseri na tab
-    EditorCodigo *edit = new EditorCodigo(this->ui->tabWidgetArquivos->currentWidget());
+    EditorCodigo *edit = criarEditor(aba);
 
-    //adiciona o connect para salvar as mudanças no texto...
-    connect(edit,SIGNAL(textChanged()),this,SLOT(alterarEditorCodigo()));
+    //Criar Documento
+    Documento* doc = criarDocumento(aba,edit);
 
-    //Para pegar os breakpoints
-    connect(edit,SIGNAL(breakpoint(int,bool)),this,SLOT(breakpoint(int,bool)));
-
-    //configura a politica de tamanho
-    edit->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-
-    //Cria um layout
-    QVBoxLayout * layout = new QVBoxLayout();
-
-    //Inseri o TextEdit no layout
-    layout->addWidget(edit);
-
-    //Inseri o layout na tab
-    this->ui->tabWidgetArquivos->currentWidget()->setLayout(layout);
-
-    //Cria um conteiner para guardar informações sobre o documento. O documento está limpo
-    Documento* doc = new Documento(this->ui->tabWidgetArquivos->currentWidget(), edit);
-
-    //inseri a tab na Hashtable
+    //inseri a tab na gerenciador de documentos
     genDoc.inserir(doc);
 
     //Ajusta o ultimo caminho
     ultimoCaminho = QDir::currentPath();
 
     //Coloca o Titulo
-    this->ui->tabWidgetArquivos->setTabText(index, "Novo Arquivo");
+    setTituloAba(index, tr("Novo Arquivo"));
 
     //Seta o foco no edit...
-    edit->setFocus();
+    doc->setFocus();
 }
 
 IDE::~IDE()
@@ -62,7 +47,7 @@ IDE::~IDE()
     delete ui;
 }
 
-Documento *IDE::criarAba(QString title, int *index)
+QWidget* IDE::criarAba(QString title, int *index)
 {
     //Criar a aba..
     QWidget* tab = new QWidget(this->ui->tabWidgetArquivos);
@@ -77,8 +62,13 @@ Documento *IDE::criarAba(QString title, int *index)
     //seta a nova aba como atual
     this->ui->tabWidgetArquivos->setCurrentWidget(tab);
 
+    return tab;
+}
+
+EditorCodigo* IDE::criarEditor(QWidget* aba)
+{
     //Cria um QPlainTextEdit e inseri na nova tab
-    EditorCodigo *edit = new EditorCodigo(tab);
+    EditorCodigo *edit = new EditorCodigo(aba);
 
     //adiciona o connect para salvar as mudanças no texto...
     connect(edit,SIGNAL(textChanged()),this,SLOT(alterarEditorCodigo()));
@@ -96,12 +86,27 @@ Documento *IDE::criarAba(QString title, int *index)
     layout->addWidget(edit);
 
     //Inseri o layout na tab
-    tab->setLayout(layout);
+    aba->setLayout(layout);
 
-    //Cria um conteiner para guardar informações sobre o documento aberto
-    Documento* doc = new Documento(tab, edit);
+    return edit;
+}
 
-    return doc;
+Documento* IDE::criarDocumento(QString title, int *index)
+{
+    //Criar a aba
+    QWidget* aba = criarAba(title, index);
+
+    //Criar o EditorCodigo
+    EditorCodigo* edit = criarEditor(aba);
+
+    //Retorna um documento...
+    return new Documento(aba,edit);
+}
+
+Documento* IDE::criarDocumento(QWidget* aba, EditorCodigo* edit)
+{
+    //Retorna um documento...
+    return new Documento(aba,edit);
 }
 
 QString IDE::nomeDocParaDocId(QString &fileName)
@@ -254,6 +259,11 @@ int IDE::getAbaAtual()
     return this->ui->tabWidgetArquivos->currentIndex();
 }
 
+QWidget *IDE::getAbaAtualWidget()
+{
+    return this->ui->tabWidgetArquivos->currentWidget();
+}
+
 void IDE::setDicaAba(int index, QString &tip)
 {
     this->ui->tabWidgetArquivos->setTabToolTip(index,tip);
@@ -313,7 +323,7 @@ bool IDE::lerDocument(Documento *document, QString &fileName)
         else
         {
             //Cria um conteiner para guardar informações sobre o documento aberto
-            Documento* doc = criarAba(getNomeDocumento(fileName), &index);
+            Documento* doc = criarDocumento(getNomeDocumento(fileName), &index);
             setTextoDocumento(doc, file);
 
         }
@@ -383,7 +393,7 @@ void IDE::acaoAbrir(bool checked)
 void IDE::acaoNovo(bool checked)
 {
     //Cria uma nova aba...
-    Documento *doc = criarAba(tr("Novo Arquivo"));
+    Documento *doc = criarDocumento(tr("Novo Arquivo"));
 
     //inseri a aba no gerenciador de documentos...
     genDoc.inserir(doc);
