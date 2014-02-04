@@ -9,7 +9,6 @@ class IDE;
 class GerenciadorDocumento
 {
 public:
-    static const int NAO_ACHADO;
     GerenciadorDocumento();
     Documento *procurar(QString fileId);
     Documento *procurar(int posicao);
@@ -22,7 +21,9 @@ public:
     void remover(Documento* document);
     QList<Documento*>::iterator begin();
     QList<Documento*>::iterator end();
+    int tamanho();
 private:
+    static const int NAO_ACHADO;
     QList<Documento*> documentos;
 };
 

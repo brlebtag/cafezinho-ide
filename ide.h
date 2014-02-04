@@ -37,7 +37,6 @@ private:
     Ui::IDE *ui;
     QSet<QString> docAbertos;
     GerenciadorDocumento genDoc;
-    QList<Documento*> arquivos;
     QString ultimoCaminho;
     QWidget* criarAba(QString title, int *index = 0);
     EditorCodigo* criarEditor(QWidget* aba);
@@ -77,6 +76,7 @@ private slots:
     void alterarEditorCodigo();
     void acaoHabilitarNumeroLinha(bool checked);
     void breakpoint(int line, bool checked);
+    void mudouAbaAtual(int index);
 };
 
 #endif // IDE_H

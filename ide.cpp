@@ -15,6 +15,7 @@ IDE::IDE(QWidget *parent) :
     connect(this->ui->actionSalvar,SIGNAL(triggered(bool)),this,SLOT(acaoSalvar(bool)));
     connect(this->ui->actionSalvar_Como,SIGNAL(triggered(bool)),this,SLOT(acaoSalvarComo(bool)));
     connect(this->ui->actionNumero_da_Linha,SIGNAL(toggled(bool)),this,SLOT(acaoHabilitarNumeroLinha(bool)));
+    connect(this->ui->tabWidgetArquivos,SIGNAL(currentChanged(int)),this, SLOT(mudouAbaAtual(int)));
 
     //Index da aba atual...
     int index = getAbaAtual();
@@ -411,7 +412,7 @@ void IDE::acaoFechar(bool checked)
     Documento* doc = genDoc.procurar(index);
 
     //Verifica se existe mais de uma aba...
-    if(arquivos.size()>1)
+    if(genDoc.tamanho()>1)
     {
         if(doc->isSujo())
         {
@@ -604,4 +605,16 @@ void IDE::acaoHabilitarNumeroLinha(bool checked)
 void IDE::breakpoint(int line, bool checked)
 {
     qDebug()<<line<<", "<<checked;
+}
+
+void IDE::mudouAbaAtual(int index)
+{
+    //Pega o edit da hashtable
+    Documento* doc = genDoc.procurar(getAbaAtual());
+
+    if(doc!=NULL)
+    {
+        //Repintar o edit
+        doc->repintarEditor();
+    }
 }

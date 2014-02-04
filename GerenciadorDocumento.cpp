@@ -18,7 +18,10 @@ Documento *GerenciadorDocumento::procurar(QString fileId)
 
 Documento *GerenciadorDocumento::procurar(int position)
 {
-    return documentos.at(position);
+    if(position >=0 && position < documentos.size())
+        return documentos.at(position);
+    else
+        return NULL;
 }
 
 int GerenciadorDocumento::posicao(Documento *document)
@@ -90,4 +93,9 @@ QList<Documento*>::iterator GerenciadorDocumento::begin()
 QList<Documento*>::iterator GerenciadorDocumento::end()
 {
     return documentos.end();
+}
+
+int GerenciadorDocumento::tamanho()
+{
+    return documentos.size();
 }
