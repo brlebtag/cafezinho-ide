@@ -241,7 +241,7 @@ QString IDE::getNomeDocumento(QString &fileName)
 
 void IDE::setTituloAba(int index, QString title)
 {
-    this->ui->tabWidgetArquivos->setTabToolTip(index, title);
+    this->ui->tabWidgetArquivos->setTabText(index, title);
 }
 
 void IDE::setAbaAtual(QWidget *widget)
@@ -266,7 +266,7 @@ QWidget *IDE::getAbaAtualWidget()
 
 void IDE::setDicaAba(int index, QString &tip)
 {
-    this->ui->tabWidgetArquivos->setTabToolTip(index,tip);
+    this->ui->tabWidgetArquivos->setTabToolTip(index, tip);
 }
 
 void IDE::removeAba(int index, Documento *document)
