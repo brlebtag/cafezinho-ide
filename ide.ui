@@ -579,7 +579,7 @@
     <string>Fechar Todos</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+S, Ctrl+S</string>
+    <string>Shift+W</string>
    </property>
   </action>
   <action name="actionAjuda">

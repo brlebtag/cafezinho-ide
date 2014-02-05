@@ -37,6 +37,7 @@ public:
     ~IDE();
 
 private:
+
     //propriedades
     Ui::IDE *ui;
     QSet<QString> docAbertos;
