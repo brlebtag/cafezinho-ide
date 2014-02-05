@@ -279,8 +279,8 @@
     </property>
     <addaction name="actionProximoDocumento"/>
     <addaction name="actionAnteriorDocumento"/>
-    <addaction name="actionSalvar_Todos"/>
-    <addaction name="actionFechar_Todos"/>
+    <addaction name="actionSalvarTodos"/>
+    <addaction name="actionFecharTodos"/>
     <addaction name="separator"/>
    </widget>
    <widget class="QMenu" name="menuAjuda">
@@ -566,20 +566,14 @@
     <string>Shift+F2</string>
    </property>
   </action>
-  <action name="actionSalvar_Todos">
+  <action name="actionSalvarTodos">
    <property name="text">
     <string>Salvar Todos</string>
    </property>
-   <property name="shortcut">
-    <string>Shift+S</string>
-   </property>
   </action>
-  <action name="actionFechar_Todos">
+  <action name="actionFecharTodos">
    <property name="text">
     <string>Fechar Todos</string>
-   </property>
-   <property name="shortcut">
-    <string>Shift+W</string>
    </property>
   </action>
   <action name="actionAjuda">

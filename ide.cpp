@@ -23,6 +23,8 @@ IDE::IDE(QWidget *parent) :
     connect(this->ui->actionReiniciar,SIGNAL(triggered(bool)), this,SLOT(reiniciarInterfaceClicado(bool)));
     connect(this->ui->actionProximoDocumento,SIGNAL(triggered(bool)),this,SLOT(proximoDocumento(bool)));
     connect(this->ui->actionAnteriorDocumento,SIGNAL(triggered(bool)),this,SLOT(anteriroDocumento(bool)));
+    connect(this->ui->actionSalvarTodos,SIGNAL(triggered(bool)),this,SLOT(salvarTodosDocumentos(bool)));
+    connect(this->ui->actionFecharTodos,SIGNAL(triggered(bool)),this,SLOT(fecharTodosDocumentos(bool)));
 
 
     //Carregando Configurações sobre as abas...
@@ -112,8 +114,6 @@ void IDE::gravarConfiguracoes()
 
 IDE::~IDE()
 {
-
-
     //deleta o HashTable
     delete ui;
 }
@@ -272,7 +272,7 @@ int IDE::mostrarSalvarAlteracao()
     //Perqunta se pode fechar assim mesmo
     int result = QMessageBox::warning(
                                         this,tr("CafezinhoIDE"),
-                                        tr("Deseja salvar as alterações antes de fechar?"),
+                                        tr("Deseja salvar as alterações?"),
                                         QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel,
                                         QMessageBox::Save
                                      );
@@ -609,7 +609,7 @@ void IDE::acaoFechar(bool checked)
     //se existir apenas essa aba não a fecha e tbm não aparece janela de salva (apenas não fecha)...
 }
 
-bool IDE::salvarEFecharAbas()
+bool IDE::salvarEFecharAbas(bool fechar)
 {
     int index = 0;
 
@@ -657,7 +657,10 @@ bool IDE::salvarEFecharAbas()
             }
 
         }
-        removeAba(index, doc);
+
+        //Fecha remove a aba se for o caso
+        if(fechar)
+            removeAba(index, doc);
     }
 
     return true;
@@ -865,4 +868,14 @@ void IDE::anteriroDocumento(bool checked)
         index = genDoc.tamanho()-1;
     }
     setAbaAtual(index);
+}
+
+void IDE::salvarTodosDocumentos(bool checked)
+{
+    salvarEFecharAbas(false);
+}
+
+void IDE::fecharTodosDocumentos(bool checked)
+{
+    salvarEFecharAbas();
 }
