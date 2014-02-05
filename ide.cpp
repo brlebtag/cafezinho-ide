@@ -8,6 +8,7 @@ IDE::IDE(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    //Configurando os sinais...
     connect(this->ui->actionAbrir,SIGNAL(triggered()),this,SLOT(acaoAbrir()));
     connect(this->ui->actionNovo,SIGNAL(triggered(bool)),this,SLOT(acaoNovo(bool)));
     connect(this->ui->actionFechar,SIGNAL(triggered(bool)),this,SLOT(acaoFechar(bool)));
@@ -25,7 +26,7 @@ IDE::IDE(QWidget *parent) :
     connect(this->ui->actionAnteriorDocumento,SIGNAL(triggered(bool)),this,SLOT(anteriroDocumento(bool)));
     connect(this->ui->actionSalvarTodos,SIGNAL(triggered(bool)),this,SLOT(salvarTodosDocumentos(bool)));
     connect(this->ui->actionFecharTodos,SIGNAL(triggered(bool)),this,SLOT(fecharTodosDocumentos(bool)));
-
+    connect(this->ui->menuEditar,SIGNAL(aboutToShow()),this,SLOT(menuEditarClicado()));
 
     //Carregando Configurações sobre as abas...
     restaurarConfiguracoes();
@@ -878,4 +879,34 @@ void IDE::salvarTodosDocumentos(bool checked)
 void IDE::fecharTodosDocumentos(bool checked)
 {
     salvarEFecharAbas();
+}
+
+void IDE::copiarDocumento()
+{
+
+}
+
+void IDE::colarDocumento()
+{
+
+}
+
+void IDE::recortarDocumento()
+{
+
+
+}
+
+void IDE::menuEditarClicado()
+{
+    Documento* doc = genDoc.procurar(getAbaAtual());
+    if(doc->isTextoSelecionado())
+        this->ui->menuEditar->actions().at(0)->setEnabled(true);
+    else
+        this->ui->menuEditar->actions().at(0)->setEnabled(false);
+    if(doc->isColarDisponivel())
+        this->ui->menuEditar->actions().at(1)->setEnabled(true);
+    else
+        this->ui->menuEditar->actions().at(1)->setEnabled(false);
+
 }

@@ -8,9 +8,11 @@ EditorCodigo::EditorCodigo(QWidget *parent) : QPlainTextEdit(parent)
     connect(areaNumero,SIGNAL(clicouAreaNumero(int)),this,SLOT(clicouAreaNumero(int)));
     connect(this, SIGNAL(blockCountChanged(int)), this, SLOT(atualizarLarguraAreaNumero(int)));
     connect(this, SIGNAL(updateRequest(QRect,int)), this, SLOT(atualizarAreaNumero(QRect,int)));
+    connect(this,SIGNAL(copyAvailable(bool)),this,SLOT(textoSelecionadoHabilitado(bool)));
     atualizarLarguraAreaNumero(0);
     breakpointImg.load(":/bolinha.png");
     breakpoints.clear();
+    textoSelecionado = false;
 }
 
 int EditorCodigo::lineNumberAreaWidth()
@@ -42,6 +44,11 @@ void EditorCodigo::setLineNumber(bool checked)
 void EditorCodigo::forceUpdate()
 {
     atualizarLarguraAreaNumero(0);
+}
+
+bool EditorCodigo::isTextoSelecionado()
+{
+    return this->textoSelecionado;
 }
 
 void EditorCodigo::atualizarLarguraAreaNumero(int /* newBlockCount */)
@@ -85,7 +92,10 @@ void EditorCodigo::clicouAreaNumero(int line)
     emit breakpoint(line,contain);
 }
 
-
+void EditorCodigo::textoSelecionadoHabilitado(bool yes)
+{
+    this->textoSelecionado = yes;
+}
 
 void EditorCodigo::resizeEvent(QResizeEvent *e)
 {

@@ -92,4 +92,29 @@ void Documento::repintarEditor()
     this->edit->forceUpdate();
 }
 
+void Documento::copiar()
+{
+    this->edit->copy();
+}
+
+void Documento::colar()
+{
+    this->edit->paste();
+}
+
+void Documento::recortar()
+{
+    this->edit->cut();
+}
+
+bool Documento::isTextoSelecionado()
+{
+    return this->edit->isTextoSelecionado();
+}
+
+bool Documento::isColarDisponivel()
+{
+
+}
+
 

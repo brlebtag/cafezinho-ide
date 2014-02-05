@@ -111,6 +111,10 @@ private slots:
     void anteriroDocumento(bool checked);
     void salvarTodosDocumentos(bool checked);
     void fecharTodosDocumentos(bool checked);
+    void copiarDocumento();
+    void colarDocumento();
+    void recortarDocumento();
+    void menuEditarClicado();
 };
 
 #endif // IDE_H

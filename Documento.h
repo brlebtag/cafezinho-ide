@@ -28,6 +28,11 @@ public:
     QString getCaminhoCompleto();
     void setFocus();
     void repintarEditor();
+    void copiar();
+    void colar();
+    void recortar();
+    bool isTextoSelecionado();
+    bool isColarDisponivel();
 private:
     bool sujo;
     QWidget *widget;

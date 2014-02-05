@@ -30,6 +30,7 @@ public:
     int lineNumberAreaWidth();
     static void setLineNumber(bool checked);
     void forceUpdate();
+    bool isTextoSelecionado();
 
 protected:
     void resizeEvent(QResizeEvent *event);
@@ -38,12 +39,14 @@ private slots:
     void atualizarLarguraAreaNumero(int newBlockCount);
     void atualizarAreaNumero(const QRect &, int);
     void clicouAreaNumero(int line);
+    void textoSelecionadoHabilitado(bool yes);
 
 private:
     static bool numeroLinha;
     QWidget *areaNumero;
     QSet<int> breakpoints;
     QImage breakpointImg;
+    bool textoSelecionado;
 
 signals:
     void breakpoint(int line, bool checked);
