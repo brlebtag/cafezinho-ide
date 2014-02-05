@@ -83,7 +83,10 @@ private:
     void configurarDocumento(Documento* document, QString &fileName, int index);
     void salvarDocumento(Documento* document, QString &fileName,int index, bool salvar_como);
     void abrirDocumento(QString &fileName);
+    bool salvarEFecharAbas();
 
+protected:
+    void closeEvent(QCloseEvent *event);
 private slots:
     void acaoAbrir(bool checked = false); //OK
     void acaoNovo(bool checked = false); //OK
@@ -102,6 +105,8 @@ private slots:
     void botaoFecharTabClicado();
     void botaoMaisTabClicado();
     void reiniciarInterfaceClicado(bool checked);
+    void proximoDocumento(bool checked);
+    void anteriroDocumento(bool checked);
 };
 
 #endif // IDE_H

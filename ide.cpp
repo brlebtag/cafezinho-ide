@@ -21,6 +21,9 @@ IDE::IDE(QWidget *parent) :
     connect(this->ui->actionDebugger,SIGNAL(toggled(bool)),this,SLOT(acaoHabilitarDebug(bool)));
     connect(this->ui->actionExecProg,SIGNAL(toggled(bool)),this,SLOT(acaoHabilitarExecProg(bool)));
     connect(this->ui->actionReiniciar,SIGNAL(triggered(bool)), this,SLOT(reiniciarInterfaceClicado(bool)));
+    connect(this->ui->actionProximoDocumento,SIGNAL(triggered(bool)),this,SLOT(proximoDocumento(bool)));
+    connect(this->ui->actionAnteriorDocumento,SIGNAL(triggered(bool)),this,SLOT(anteriroDocumento(bool)));
+
 
     //Carregando Configurações sobre as abas...
 
@@ -75,8 +78,15 @@ IDE::IDE(QWidget *parent) :
     this->ui->tabWidgetArquivos->setCornerWidget(criarBotaoMaisAba(this->ui->tabWidgetArquivos),Qt::TopRightCorner);
 }
 
-IDE::~IDE()
+void IDE::closeEvent(QCloseEvent *event)
 {
+
+    if(!salvarEFecharAbas())
+    {
+        //Teve algum problema em fechar as abas então ignora
+        event->ignore();
+    }
+
     //Grava as informacoes da Configuracao
 
     configuracoes.setValue("ver_funcoes", ver_funcoes);
@@ -84,6 +94,14 @@ IDE::~IDE()
     configuracoes.setValue("ver_debugger", ver_debugger);
 
     configuracoes.setValue("ver_exec_prog", ver_exec_prog);
+
+    //Aceita o evento...
+    event->accept();
+}
+
+IDE::~IDE()
+{
+
 
     //deleta o HashTable
     delete ui;
@@ -580,7 +598,7 @@ void IDE::acaoFechar(bool checked)
     //se existir apenas essa aba não a fecha e tbm não aparece janela de salva (apenas não fecha)...
 }
 
-void IDE::acaoSair(bool checked)
+bool IDE::salvarEFecharAbas()
 {
     int index = 0;
 
@@ -601,7 +619,7 @@ void IDE::acaoSair(bool checked)
             {
                 case QMessageBox::Cancel:
                 {
-                    return;
+                    return false;
                 }
                 break;
                 case QMessageBox::Save:
@@ -614,13 +632,13 @@ void IDE::acaoSair(bool checked)
 
                     //Se estiver vazia não fecha a aba...
                     if(fileName.isEmpty())
-                        return;
+                        return false;
 
                     if(!gravarDocumento(doc, fileName))
                     {
                         //se der erro (nesse ponto a mensagem de erro já ocorreu) eu apenas fecho... que o usuario
                         //vai tentar novamente ...
-                        return;
+                        return false;
                     }
 
                 }
@@ -631,7 +649,12 @@ void IDE::acaoSair(bool checked)
         removeAba(index, doc);
     }
 
-    qApp->exit(0);
+    return true;
+}
+
+void IDE::acaoSair(bool checked)
+{
+    this->close();
 }
 
 void IDE::acaoSalvar(bool checked)
@@ -811,4 +834,24 @@ void IDE::reiniciarInterfaceClicado(bool checked)
     //Debug
     ver_exec_prog = true;
     this->ui->actionExecProg->setChecked(ver_exec_prog);
+}
+
+void IDE::proximoDocumento(bool checked)
+{
+    int index = getAbaAtual();
+    if(++index == genDoc.tamanho())
+    {
+        index = 0;
+    }
+    setAbaAtual(index);
+}
+
+void IDE::anteriroDocumento(bool checked)
+{
+    int index = getAbaAtual();
+    if(--index < 0)
+    {
+        index = genDoc.tamanho()-1;
+    }
+    setAbaAtual(index);
 }

@@ -277,8 +277,8 @@
     <property name="title">
      <string>Documentos</string>
     </property>
-    <addaction name="actionProximo_Arquivo"/>
-    <addaction name="actionArquivo_Anterior"/>
+    <addaction name="actionProximoDocumento"/>
+    <addaction name="actionAnteriorDocumento"/>
     <addaction name="actionSalvar_Todos"/>
     <addaction name="actionFechar_Todos"/>
     <addaction name="separator"/>
@@ -550,17 +550,17 @@
     <string>Remover Breakpoint</string>
    </property>
   </action>
-  <action name="actionProximo_Arquivo">
+  <action name="actionProximoDocumento">
    <property name="text">
-    <string>Próximo Arquivo</string>
+    <string>Próximo</string>
    </property>
    <property name="shortcut">
     <string>Shift+F3</string>
    </property>
   </action>
-  <action name="actionArquivo_Anterior">
+  <action name="actionAnteriorDocumento">
    <property name="text">
-    <string>Arquivo Anterior</string>
+    <string>Anterior</string>
    </property>
    <property name="shortcut">
     <string>Shift+F2</string>
