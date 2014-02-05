@@ -4,7 +4,7 @@
 
 IDE::IDE(QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::IDE)
+    ui(new Ui::IDE), genReabrir(this)
 {
     ui->setupUi(this);
 
@@ -40,6 +40,12 @@ IDE::IDE(QWidget *parent) :
 
     //Seta o foco no edit...
     doc->setFocus();
+
+    //Conecto o menu reabrir para receber quando um item do menu for clicado para reabrir ele...
+    connect(&genReabrir,SIGNAL(menuReabrirClicou(QString)),this,SLOT(menuReabrirClicou(QString)));
+
+    //Inseri o menu no Reabrir...
+    this->ui->actionReabrir->setMenu(this->genReabrir.getMenu());
 }
 
 IDE::~IDE()
@@ -137,6 +143,31 @@ QString IDE::mostrarSalvarArquivo(QString path)
     return QFileDialog::getSaveFileName(this, tr("Salvar Arquivo"),path, tr("Arquivo Cafezinho(*.cafe)"), new QString(tr("Arquivo Cafezinho (*.cafe)")));
 }
 
+void IDE::msgErroSalvar(QFile *file)
+{
+    QMessageBox msgBox;
+    msgBox.setWindowTitle("CafezinhoIDE");
+    msgBox.setText("Erro ao tentar salvar o arquivo: "+file->fileName());
+    if(file!=0)
+        msgBox.setInformativeText(file->errorString());
+    msgBox.setStandardButtons(QMessageBox::Ok);
+    msgBox.setDefaultButton(QMessageBox::Ok);
+    msgBox.exec();
+}
+
+void IDE::msgErroAbrir(QFile *file)
+{
+    //Exibir mensagem de erro...
+    QMessageBox msgBox;
+    msgBox.setWindowTitle("CafezinhoIDE");
+    msgBox.setText("Erro ao tentar abrir o arquivo"+file->fileName());
+    if(file!=0)
+        msgBox.setInformativeText(file->errorString());
+    msgBox.setStandardButtons(QMessageBox::Ok);
+    msgBox.setDefaultButton(QMessageBox::Ok);
+    msgBox.exec();
+}
+
 int IDE::mostrarSalvarAlteracao()
 {
     //Perqunta se pode fechar assim mesmo
@@ -170,12 +201,8 @@ QFile *IDE::abrirArquivoLeitura(QString &fileName)
     //Verificar se o arquivo está aberto...
     if (!file->open(QIODevice::ReadOnly | QIODevice::Text))
     {
-        //Exibir mensagem de erro...
-        QMessageBox msg;
-        msg.setWindowTitle("Erro ao abrir o arquivo");
-        msg.setText("Erro ao tentar abrir o arquivo ");
-        msg.setInformativeText(file->errorString());
-        msg.exec();
+        //Cria mensagem de erro...
+        msgErroAbrir(file);
 
         //se deu erro deleta o arquivo
         delete file;
@@ -198,13 +225,7 @@ QFile *IDE::abrirArquivoGravacao(QString &fileName)
     if (!file->open(QIODevice::WriteOnly | QIODevice::Text))
     {
         //Cria mensagem de erro...
-        QMessageBox msgBox;
-        msgBox.setWindowTitle("CafezinhoIDE");
-        msgBox.setText("Erro ao tentar salvar o arquivo");
-        msgBox.setInformativeText(file->errorString());
-        msgBox.setStandardButtons(QMessageBox::Ok);
-        msgBox.setDefaultButton(QMessageBox::Ok);
-        msgBox.exec();
+        msgErroSalvar(file);
 
         //se deu erro deleta o arquivo
         delete file;
@@ -389,13 +410,10 @@ void IDE::configurarDocumento(Documento *document, QString &fileName, int index)
     document->setFocus();
 }
 
-void IDE::acaoAbrir(bool checked)
+void IDE::abrirDocumento(QString &fileName)
 {
-    //Abrir a janela pedindo ao usuario que entre com o arquivo...
-    QString fileName = mostrarAbrirArquivo();
-
-    if(fileName.isEmpty())
-        return;
+    bool result = false;
+    QString caminho = fileName;
 
     //Verifica se o editor já está com aquele arquivo aberto e senão o tiver aberto, ele o abre.
     if(!docAbertos.contains(nomeDocParaDocId(fileName)))
@@ -407,12 +425,26 @@ void IDE::acaoAbrir(bool checked)
         Documento* doc = genDoc.procurar(index);
 
         //Ler documento...
-        lerDocument(doc,fileName);
+        result = lerDocument(doc,fileName);
     }
     else
     {
         reabrirAba(fileName);
+        result= true;
     }
+    if(result)
+        genReabrir.atualizar(caminho);
+}
+
+void IDE::acaoAbrir(bool checked)
+{
+    //Abrir a janela pedindo ao usuario que entre com o arquivo...
+    QString fileName = mostrarAbrirArquivo();
+
+    if(fileName.isEmpty())
+        return;
+
+    abrirDocumento(fileName);
 }
 
 void IDE::acaoNovo(bool checked)
@@ -580,9 +612,11 @@ void IDE::acaoSalvarComo(bool checked)
 
 void IDE::salvarDocumento(Documento *document, QString &fileName, int index, bool salvar_como)
 {
-
-    if(!gravarDocumento(document,fileName))
+    bool result = gravarDocumento(document,fileName);
+    if(!result)
         return;
+    else
+        genReabrir.atualizar(fileName);
 
     if(salvar_como)
     {
@@ -642,4 +676,12 @@ void IDE::mudouAbaAtual(int index)
         //Repintar o edit
         doc->repintarEditor();
     }
+}
+
+void IDE::menuReabrirClicou(QString caminho)
+{
+    if(!caminho.isEmpty())
+        abrirDocumento(caminho);
+    else
+        msgErroAbrir();
 }

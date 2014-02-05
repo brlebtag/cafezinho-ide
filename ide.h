@@ -18,6 +18,7 @@
 #include "Documento.h"
 #include "EditorCodigo.h"
 #include "GerenciadorDocumento.h"
+#include "GerenciadorMenuReabrir.h"
 
 class GerenciadorDocumento;
 
@@ -37,6 +38,7 @@ private:
     Ui::IDE *ui;
     QSet<QString> docAbertos;
     GerenciadorDocumento genDoc;
+    GerenciadorMenuReabrir genReabrir;
     QString ultimoCaminho;
     QWidget* criarAba(QString title, int *index = 0);
     EditorCodigo* criarEditor(QWidget* aba);
@@ -47,6 +49,8 @@ private:
     QString mostrarAbrirArquivo(QString &path);
     QString mostrarSalvarArquivo();
     QString mostrarSalvarArquivo(QString path);
+    void msgErroSalvar(QFile* file = 0);
+    void msgErroAbrir(QFile* file = 0);
     int mostrarSalvarAlteracao();
     void setTextoDocumento(Documento* document, QFile *file);
     QFile *abrirArquivoLeitura(QString &fileName);
@@ -66,6 +70,7 @@ private:
     bool lerDocument(Documento *document, QString &fileName);
     void configurarDocumento(Documento* document, QString &fileName, int index);
     void salvarDocumento(Documento* document, QString &fileName,int index, bool salvar_como);
+    void abrirDocumento(QString &fileName);
 
 private slots:
     void acaoAbrir(bool checked = false); //OK
@@ -78,6 +83,7 @@ private slots:
     void acaoHabilitarNumeroLinha(bool checked); //OK
     void breakpoint(int line, bool checked); //OK
     void mudouAbaAtual(int index); //OK
+    void menuReabrirClicou(QString caminho);
 };
 
 #endif // IDE_H
