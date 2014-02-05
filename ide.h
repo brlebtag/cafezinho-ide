@@ -84,6 +84,8 @@ private slots:
     void breakpoint(int line, bool checked); //OK
     void mudouAbaAtual(int index); //OK
     void menuReabrirClicou(QString caminho);
+    void acaoHabilitarFuncoes(bool checked);
+    void acaoHabilitarDebug(bool checked);
 };
 
 #endif // IDE_H

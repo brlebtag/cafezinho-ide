@@ -16,6 +16,8 @@ IDE::IDE(QWidget *parent) :
     connect(this->ui->actionSalvar_Como,SIGNAL(triggered(bool)),this,SLOT(acaoSalvarComo(bool)));
     connect(this->ui->actionNumero_da_Linha,SIGNAL(toggled(bool)),this,SLOT(acaoHabilitarNumeroLinha(bool)));
     connect(this->ui->tabWidgetArquivos,SIGNAL(currentChanged(int)),this, SLOT(mudouAbaAtual(int)));
+    connect(this->ui->actionFuncoes,SIGNAL(toggled(bool)),this,SLOT(acaoHabilitarFuncoes(bool)));
+    connect(this->ui->actionDebugger,SIGNAL(toggled(bool)),this,SLOT(acaoHabilitarDebug(bool)));
 
     //Index da aba atual...
     int index = getAbaAtual();
@@ -684,4 +686,20 @@ void IDE::menuReabrirClicou(QString caminho)
         abrirDocumento(caminho);
     else
         msgErroAbrir();
+}
+
+void IDE::acaoHabilitarFuncoes(bool checked)
+{
+    if(checked)
+        this->ui->groupFuncoes->show();
+    else
+        this->ui->groupFuncoes->hide();
+}
+
+void IDE::acaoHabilitarDebug(bool checked)
+{
+    if(checked)
+        this->ui->tabDebug->show();
+    else
+        this->ui->tabDebug->hide();
 }
