@@ -19,6 +19,8 @@
 #include "EditorCodigo.h"
 #include "GerenciadorDocumento.h"
 #include "GerenciadorMenuReabrir.h"
+#include "QPushButton"
+#include "QIcon"
 
 class GerenciadorDocumento;
 
@@ -35,12 +37,21 @@ public:
     ~IDE();
 
 private:
+    //propriedades
     Ui::IDE *ui;
     QSet<QString> docAbertos;
     GerenciadorDocumento genDoc;
     GerenciadorMenuReabrir genReabrir;
     QString ultimoCaminho;
+    QSettings configuracoes;
+    bool ver_funcoes;
+    bool ver_debugger;
+    bool ver_exec_prog;
+
+    //Metodos
     QWidget* criarAba(QString title, int *index = 0);
+    QPushButton* criarBotaoFecharAba(QWidget *pai);
+    QPushButton* criarBotaoMaisAba(QWidget *pai);
     EditorCodigo* criarEditor(QWidget* aba);
     Documento* criarDocumento(QString title, int *index = 0);
     Documento* criarDocumento(QWidget* aba, EditorCodigo* edit);
@@ -86,6 +97,10 @@ private slots:
     void menuReabrirClicou(QString caminho);
     void acaoHabilitarFuncoes(bool checked);
     void acaoHabilitarDebug(bool checked);
+    void acaoHabilitarExecProg(bool checked);
+    void botaoFecharTabClicado();
+    void botaoMaisTabClicado();
+    void reiniciarInterfaceClicado(bool checked);
 };
 
 #endif // IDE_H

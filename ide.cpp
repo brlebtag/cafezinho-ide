@@ -4,7 +4,7 @@
 
 IDE::IDE(QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::IDE), genReabrir(this)
+    ui(new Ui::IDE), genReabrir(this), configuracoes(QSettings::IniFormat, QSettings::UserScope, "UFG", "CafezinhoIDE")
 {
     ui->setupUi(this);
 
@@ -18,12 +18,34 @@ IDE::IDE(QWidget *parent) :
     connect(this->ui->tabWidgetArquivos,SIGNAL(currentChanged(int)),this, SLOT(mudouAbaAtual(int)));
     connect(this->ui->actionFuncoes,SIGNAL(toggled(bool)),this,SLOT(acaoHabilitarFuncoes(bool)));
     connect(this->ui->actionDebugger,SIGNAL(toggled(bool)),this,SLOT(acaoHabilitarDebug(bool)));
+    connect(this->ui->actionDebugger,SIGNAL(toggled(bool)),this,SLOT(acaoHabilitarDebug(bool)));
+    connect(this->ui->actionExecProg,SIGNAL(toggled(bool)),this,SLOT(acaoHabilitarExecProg(bool)));
+    connect(this->ui->actionReiniciar,SIGNAL(triggered(bool)), this,SLOT(reiniciarInterfaceClicado(bool)));
+
+    //Carregando Configurações sobre as abas...
+
+    //Funções...
+    ver_funcoes = configuracoes.value("ver_funcoes", true).toBool();
+    this->ui->actionFuncoes->setChecked(ver_funcoes);
+
+
+    //Debug
+    ver_debugger = configuracoes.value("ver_debugger", true).toBool();
+    this->ui->actionDebugger->setChecked(ver_debugger);
+
+    //Debug
+    ver_exec_prog = configuracoes.value("ver_exec_prog", true).toBool();
+    this->ui->actionExecProg->setChecked(ver_exec_prog);
+
 
     //Index da aba atual...
     int index = getAbaAtual();
 
     //Pega o widget da aba atual...
     QWidget *aba = getAbaAtualWidget();
+
+    //Inseri o botao
+    this->ui->tabWidgetArquivos->tabBar()->setTabButton(index,QTabBar::RightSide, (QWidget*) (criarBotaoFecharAba(aba)));
 
     //Cria um QPlainTextEdit e inseri na tab
     EditorCodigo *edit = criarEditor(aba);
@@ -48,10 +70,21 @@ IDE::IDE(QWidget *parent) :
 
     //Inseri o menu no Reabrir...
     this->ui->actionReabrir->setMenu(this->genReabrir.getMenu());
+
+    //Inserir Botao nova Aba no canto direto da  TabWidget...
+    this->ui->tabWidgetArquivos->setCornerWidget(criarBotaoMaisAba(this->ui->tabWidgetArquivos),Qt::TopRightCorner);
 }
 
 IDE::~IDE()
 {
+    //Grava as informacoes da Configuracao
+
+    configuracoes.setValue("ver_funcoes", ver_funcoes);
+
+    configuracoes.setValue("ver_debugger", ver_debugger);
+
+    configuracoes.setValue("ver_exec_prog", ver_exec_prog);
+
     //deleta o HashTable
     delete ui;
 }
@@ -71,7 +104,42 @@ QWidget* IDE::criarAba(QString title, int *index)
     //seta a nova aba como atual
     this->ui->tabWidgetArquivos->setCurrentWidget(tab);
 
+    //Inseri o botao
+    this->ui->tabWidgetArquivos->tabBar()->setTabButton(getAbaAtual(),QTabBar::RightSide, (QWidget*) (criarBotaoFecharAba(tab)));
+
     return tab;
+}
+
+QPushButton *IDE::criarBotaoFecharAba(QWidget *pai)
+{
+    //Cria um botao
+    QPushButton *button = new QPushButton(pai);
+
+    //Seta o Icon do botão
+    button->setIcon(*(new QIcon(":/fechar.png")));
+
+    //Seta o tamanho maximo
+    button->setFixedWidth(20);
+    button->setFixedHeight(20);
+
+    //Conecta o sinal para receber quando este for clicado
+    connect(button,SIGNAL(clicked()),this,SLOT(botaoFecharTabClicado()));
+
+    return button;
+}
+
+QPushButton *IDE::criarBotaoMaisAba(QWidget *pai)
+{
+    //Cria um botao
+    QPushButton *button = new QPushButton(pai);
+
+    //Seta o Icon do botão
+    button->setIcon(*(new QIcon(":/mais.png")));
+
+    //Conecta o sinal para receber quando este for clicado
+    connect(button,SIGNAL(clicked()),this,SLOT(botaoMaisTabClicado()));
+
+    return button;
 }
 
 EditorCodigo* IDE::criarEditor(QWidget* aba)
@@ -694,6 +762,9 @@ void IDE::acaoHabilitarFuncoes(bool checked)
         this->ui->groupFuncoes->show();
     else
         this->ui->groupFuncoes->hide();
+
+    //Salva o estado de Funcoes para ser gravado posteriormente
+    ver_funcoes = checked;
 }
 
 void IDE::acaoHabilitarDebug(bool checked)
@@ -702,4 +773,42 @@ void IDE::acaoHabilitarDebug(bool checked)
         this->ui->tabDebug->show();
     else
         this->ui->tabDebug->hide();
+    //Salva o estado de Debugger para ser gravado posteriormente
+    ver_debugger = checked;
+}
+
+void IDE::acaoHabilitarExecProg(bool checked)
+{
+    if(checked)
+        this->ui->groupExecProg->show();
+    else
+        this->ui->groupExecProg->hide();
+
+    //Salva o estado de ExecProg para ser gravado posteriormente
+    ver_exec_prog = checked;
+}
+
+void IDE::botaoFecharTabClicado()
+{
+    acaoFechar();
+}
+
+void IDE::botaoMaisTabClicado()
+{
+    acaoNovo();
+}
+
+void IDE::reiniciarInterfaceClicado(bool checked)
+{
+    //Funções...
+    ver_funcoes = true;
+    this->ui->actionFuncoes->setChecked(ver_funcoes);
+
+    //Debug
+    ver_debugger = true;
+    this->ui->actionDebugger->setChecked(ver_debugger);
+
+    //Debug
+    ver_exec_prog = true;
+    this->ui->actionExecProg->setChecked(ver_exec_prog);
 }

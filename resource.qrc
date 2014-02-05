@@ -1,5 +1,7 @@
 <RCC>
     <qresource prefix="/">
         <file>bolinha.png</file>
+        <file>fechar.png</file>
+        <file>mais.png</file>
     </qresource>
 </RCC>

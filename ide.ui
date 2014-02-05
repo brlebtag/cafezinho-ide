@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>877</width>
-    <height>527</height>
+    <height>560</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -20,7 +20,7 @@
       <item>
        <widget class="QGroupBox" name="groupFuncoes">
         <property name="sizePolicy">
-         <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
+         <sizepolicy hsizetype="Maximum" vsizetype="Minimum">
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
@@ -31,6 +31,12 @@
         <layout class="QGridLayout" name="gridLayout_3">
          <item row="0" column="0">
           <widget class="QTreeWidget" name="treeWidget">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
            <column>
             <property name="text">
              <string>Nome</string>
@@ -160,7 +166,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QGroupBox" name="groupBox">
+       <widget class="QGroupBox" name="groupExecProg">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
           <horstretch>0</horstretch>
@@ -168,7 +174,7 @@
          </sizepolicy>
         </property>
         <property name="title">
-         <string>Saída do Programa</string>
+         <string>Execução do Programa</string>
         </property>
         <layout class="QGridLayout" name="gridLayout">
          <item row="0" column="0">
@@ -240,7 +246,7 @@
     <addaction name="separator"/>
     <addaction name="actionFuncoes"/>
     <addaction name="actionDebugger"/>
-    <addaction name="actionSaida_do_Programa"/>
+    <addaction name="actionExecProg"/>
     <addaction name="separator"/>
     <addaction name="actionReiniciar"/>
    </widget>
@@ -453,7 +459,7 @@
     <string>Debugger</string>
    </property>
   </action>
-  <action name="actionSaida_do_Programa">
+  <action name="actionExecProg">
    <property name="checkable">
     <bool>true</bool>
    </property>
@@ -461,7 +467,7 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Saída do Programa</string>
+    <string>Execução do Programa</string>
    </property>
   </action>
   <action name="actionLocalizar">
@@ -548,20 +554,32 @@
    <property name="text">
     <string>Próximo Arquivo</string>
    </property>
+   <property name="shortcut">
+    <string>Shift+F3</string>
+   </property>
   </action>
   <action name="actionArquivo_Anterior">
    <property name="text">
     <string>Arquivo Anterior</string>
+   </property>
+   <property name="shortcut">
+    <string>Shift+F2</string>
    </property>
   </action>
   <action name="actionSalvar_Todos">
    <property name="text">
     <string>Salvar Todos</string>
    </property>
+   <property name="shortcut">
+    <string>Shift+S</string>
+   </property>
   </action>
   <action name="actionFechar_Todos">
    <property name="text">
     <string>Fechar Todos</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+S, Ctrl+S</string>
    </property>
   </action>
   <action name="actionAjuda">
