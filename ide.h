@@ -84,6 +84,8 @@ private:
     void salvarDocumento(Documento* document, QString &fileName,int index, bool salvar_como);
     void abrirDocumento(QString &fileName);
     bool salvarEFecharAbas();
+    void gravarConfiguracoes();
+    void restaurarConfiguracoes();
 
 protected:
     void closeEvent(QCloseEvent *event);

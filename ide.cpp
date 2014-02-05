@@ -26,20 +26,7 @@ IDE::IDE(QWidget *parent) :
 
 
     //Carregando Configurações sobre as abas...
-
-    //Funções...
-    ver_funcoes = configuracoes.value("ver_funcoes", true).toBool();
-    this->ui->actionFuncoes->setChecked(ver_funcoes);
-
-
-    //Debug
-    ver_debugger = configuracoes.value("ver_debugger", true).toBool();
-    this->ui->actionDebugger->setChecked(ver_debugger);
-
-    //Debug
-    ver_exec_prog = configuracoes.value("ver_exec_prog", true).toBool();
-    this->ui->actionExecProg->setChecked(ver_exec_prog);
-
+    restaurarConfiguracoes();
 
     //Index da aba atual...
     int index = getAbaAtual();
@@ -78,6 +65,22 @@ IDE::IDE(QWidget *parent) :
     this->ui->tabWidgetArquivos->setCornerWidget(criarBotaoMaisAba(this->ui->tabWidgetArquivos),Qt::TopRightCorner);
 }
 
+void IDE::restaurarConfiguracoes()
+{
+    //Funções...
+    ver_funcoes = configuracoes.value("ver_funcoes", true).toBool();
+    this->ui->actionFuncoes->setChecked(ver_funcoes);
+
+
+    //Debug
+    ver_debugger = configuracoes.value("ver_debugger", true).toBool();
+    this->ui->actionDebugger->setChecked(ver_debugger);
+
+    //Debug
+    ver_exec_prog = configuracoes.value("ver_exec_prog", true).toBool();
+    this->ui->actionExecProg->setChecked(ver_exec_prog);
+}
+
 void IDE::closeEvent(QCloseEvent *event)
 {
 
@@ -85,8 +88,19 @@ void IDE::closeEvent(QCloseEvent *event)
     {
         //Teve algum problema em fechar as abas então ignora
         event->ignore();
+
+        //retorna sem fechar
+        return;
     }
 
+    gravarConfiguracoes();
+
+    //Aceita o evento...
+    event->accept();
+}
+
+void IDE::gravarConfiguracoes()
+{
     //Grava as informacoes da Configuracao
 
     configuracoes.setValue("ver_funcoes", ver_funcoes);
@@ -94,9 +108,6 @@ void IDE::closeEvent(QCloseEvent *event)
     configuracoes.setValue("ver_debugger", ver_debugger);
 
     configuracoes.setValue("ver_exec_prog", ver_exec_prog);
-
-    //Aceita o evento...
-    event->accept();
 }
 
 IDE::~IDE()
