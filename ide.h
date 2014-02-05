@@ -111,9 +111,9 @@ private slots:
     void anteriroDocumento(bool checked);
     void salvarTodosDocumentos(bool checked);
     void fecharTodosDocumentos(bool checked);
-    void copiarDocumento();
-    void colarDocumento();
-    void recortarDocumento();
+    void copiarDocumento(bool checked);
+    void colarDocumento(bool checked);
+    void recortarDocumento(bool checked);
     void menuEditarClicado();
 };
 

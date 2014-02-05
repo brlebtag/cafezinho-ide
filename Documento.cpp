@@ -114,7 +114,7 @@ bool Documento::isTextoSelecionado()
 
 bool Documento::isColarDisponivel()
 {
-
+    return this->edit->canPaste(); //temporariamente...
 }
 
 

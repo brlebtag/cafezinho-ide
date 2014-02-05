@@ -6,6 +6,8 @@
 #include <QCryptographicHash>
 #include "EditorCodigo.h"
 #include <QWidget>
+#include <QApplication>
+#include <QClipboard>
 
 class Documento
 {

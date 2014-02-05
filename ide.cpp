@@ -27,6 +27,9 @@ IDE::IDE(QWidget *parent) :
     connect(this->ui->actionSalvarTodos,SIGNAL(triggered(bool)),this,SLOT(salvarTodosDocumentos(bool)));
     connect(this->ui->actionFecharTodos,SIGNAL(triggered(bool)),this,SLOT(fecharTodosDocumentos(bool)));
     connect(this->ui->menuEditar,SIGNAL(aboutToShow()),this,SLOT(menuEditarClicado()));
+    connect(this->ui->actionCopiar,SIGNAL(triggered(bool)),this,SLOT(copiarDocumento(bool)));
+    connect(this->ui->actionColar,SIGNAL(triggered(bool)),this,SLOT(colarDocumento(bool)));
+    connect(this->ui->actionRecortar,SIGNAL(triggered(bool)),this,SLOT(recortarDocumento(bool)));
 
     //Carregando Configurações sobre as abas...
     restaurarConfiguracoes();
@@ -881,24 +884,27 @@ void IDE::fecharTodosDocumentos(bool checked)
     salvarEFecharAbas();
 }
 
-void IDE::copiarDocumento()
+void IDE::copiarDocumento(bool checked)
 {
-
+    Documento* doc = genDoc.procurar(getAbaAtual());
+    doc->copiar();
 }
 
-void IDE::colarDocumento()
+void IDE::colarDocumento(bool checked)
 {
-
+    Documento* doc = genDoc.procurar(getAbaAtual());
+    doc->colar();
 }
 
-void IDE::recortarDocumento()
+void IDE::recortarDocumento(bool checked)
 {
-
-
+    Documento* doc = genDoc.procurar(getAbaAtual());
+    doc->recortar();
 }
 
 void IDE::menuEditarClicado()
 {
+
     Documento* doc = genDoc.procurar(getAbaAtual());
     if(doc->isTextoSelecionado())
         this->ui->menuEditar->actions().at(0)->setEnabled(true);
