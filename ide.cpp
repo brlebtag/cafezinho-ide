@@ -44,6 +44,7 @@ IDE::IDE(QWidget *parent) :
     connect(this->ui->actionMaior,SIGNAL(triggered()),this,SLOT(aumentarFonte()));
     connect(this->ui->actionMenor,SIGNAL(triggered()),this,SLOT(diminuirFonte()));
     connect(this->ui->actionResetar,SIGNAL(triggered()),this,SLOT(reiniciarFonte()));
+    connect(this->ui->actionFonte,SIGNAL(triggered()),this,SLOT(fonteClicado()));
 
     //Tab Widget Arquivos
     connect(this->ui->tabWidgetArquivos,SIGNAL(currentChanged(int)),this, SLOT(mudouAbaAtual(int)));
@@ -1013,7 +1014,7 @@ void IDE::configurarFonteEditor()
 {
      Documento* doc = genDoc.procurar(getAbaAtual());
 
-    doc->setEstiloCascata("font:"+QString::number(tamanho_fonte)+"pt "+familia_fonte+";");
+    doc->setFonte(familia_fonte,tamanho_fonte);
 }
 
 void IDE::aumentarFonte()
@@ -1052,8 +1053,21 @@ void IDE::reiniciarFonte()
     configurarFonteEditor();
 }
 
+void IDE::fonteClicado()
+{
+    QString temp = familia_fonte;
+    FonteDialog fonte(&temp, this);
+
+    if(fonte.exec()==QDialog::Accepted&&temp!=familia_fonte)
+    {
+        familia_fonte = temp;
+        configurarFonteEditor();
+    }
+}
+
+/*
 void IDE::mudouFonte(QString fonte)
 {
     familia_fonte = fonte;
     configurarFonteEditor();
-}
+}*/

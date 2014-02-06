@@ -634,7 +634,7 @@
   </action>
   <action name="actionFonte">
    <property name="text">
-    <string>Fonte</string>
+    <string>Fonte...</string>
    </property>
   </action>
   <action name="actionConfigRealce">

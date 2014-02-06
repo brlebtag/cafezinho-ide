@@ -23,6 +23,7 @@
 #include "QIcon"
 #include <QPoint>
 #include "GerenciadorMenuFonte.h"
+#include "fontedialog.h"
 
 class GerenciadorDocumento;
 
@@ -176,9 +177,10 @@ private slots:
     void aumentarFonte();
     void diminuirFonte();
     void reiniciarFonte();
+    void fonteClicado();
 
     //Gerenciar Fonte
-    void mudouFonte(QString fonte);
+    //void mudouFonte(QString fonte);
 };
 
 #endif // IDE_H

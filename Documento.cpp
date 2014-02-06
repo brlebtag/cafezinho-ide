@@ -127,14 +127,9 @@ bool Documento::isColarDisponivel()
     return this->edit->canPaste(); //temporariamente...
 }
 
-QString Documento::getFamiliaFont()
+void Documento::setFonte(QString familia, int tamanho)
 {
-    return this->edit->font().family();
-}
-
-void Documento::setEstiloCascata(QString estilo)
-{
-    this->edit->setStyleSheet(estilo);
+    this->edit->setFont(QFont(familia,tamanho));
 }
 
 

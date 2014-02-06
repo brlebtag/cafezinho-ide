@@ -8,6 +8,7 @@
 #include <QWidget>
 #include <QApplication>
 #include <QClipboard>
+#include <QFont>
 
 class Documento
 {
@@ -37,8 +38,7 @@ public:
     void refazer();
     bool isTextoSelecionado();
     bool isColarDisponivel();
-    QString getFamiliaFont();
-    void setEstiloCascata(QString estilo); //Configurar a Fonte usando CSS
+    void setFonte(QString familia, int tamanho); //Configurar a Fonte usando CSS
     EditorCodigo *edit;
 private:
     bool sujo;
