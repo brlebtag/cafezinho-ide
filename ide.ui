@@ -239,7 +239,7 @@
     </property>
     <addaction name="actionBarra_de_Ferementas"/>
     <addaction name="separator"/>
-    <addaction name="actionResaltar_a_Sintaxe"/>
+    <addaction name="actionRealceSintaxe"/>
     <addaction name="actionNumero_da_Linha"/>
     <addaction name="separator"/>
     <addaction name="actionFuncoes"/>
@@ -250,7 +250,7 @@
    </widget>
    <widget class="QMenu" name="menuOpcoes">
     <property name="title">
-     <string>Opções</string>
+     <string>Execução</string>
     </property>
     <widget class="QMenu" name="menuDebugger">
      <property name="title">
@@ -269,14 +269,17 @@
     <addaction name="separator"/>
     <addaction name="menuDebugger"/>
     <addaction name="separator"/>
-    <addaction name="actionConfiguracoes"/>
    </widget>
    <widget class="QMenu" name="menuDocumentos">
     <property name="title">
      <string>Documentos</string>
     </property>
+    <addaction name="actionFonte"/>
+    <addaction name="actionConfigRealce"/>
+    <addaction name="separator"/>
     <addaction name="actionProximoDocumento"/>
     <addaction name="actionAnteriorDocumento"/>
+    <addaction name="separator"/>
     <addaction name="actionSalvarTodos"/>
     <addaction name="actionFecharTodos"/>
     <addaction name="separator"/>
@@ -413,7 +416,7 @@
     <string>Barra de Ferramentas</string>
    </property>
   </action>
-  <action name="actionResaltar_a_Sintaxe">
+  <action name="actionRealceSintaxe">
    <property name="checkable">
     <bool>true</bool>
    </property>
@@ -421,7 +424,7 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Resaltar a Sintaxe</string>
+    <string>Relçe a Sintaxe</string>
    </property>
   </action>
   <action name="actionNumero_da_Linha">
@@ -610,6 +613,16 @@
   <action name="actionReiniciar">
    <property name="text">
     <string>Reiniciar</string>
+   </property>
+  </action>
+  <action name="actionFonte">
+   <property name="text">
+    <string>Fonte</string>
+   </property>
+  </action>
+  <action name="actionConfigRealce">
+   <property name="text">
+    <string>Configurar Realçe</string>
    </property>
   </action>
  </widget>
