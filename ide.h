@@ -45,7 +45,7 @@ private:
     QSet<QString> docAbertos;
     GerenciadorDocumento genDoc;
     GerenciadorMenuReabrir genReabrir;
-    GerenciadorMenuFonte genFonte;
+    //GerenciadorMenuFonte genFonte;
     QString ultimoCaminho;
     QSettings configuracoes;
     bool ver_funcoes;

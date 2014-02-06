@@ -4,7 +4,7 @@
 
 IDE::IDE(QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::IDE), genReabrir(this), configuracoes(QSettings::IniFormat, QSettings::UserScope, "UFG", "CafezinhoIDE"),genFonte(this)
+    ui(new Ui::IDE), genReabrir(this), configuracoes(QSettings::IniFormat, QSettings::UserScope, "UFG", "CafezinhoIDE") //,genFonte(this)
 {
     ui->setupUi(this);
 
@@ -44,9 +44,6 @@ IDE::IDE(QWidget *parent) :
     connect(this->ui->actionMaior,SIGNAL(triggered()),this,SLOT(aumentarFonte()));
     connect(this->ui->actionMenor,SIGNAL(triggered()),this,SLOT(diminuirFonte()));
     connect(this->ui->actionResetar,SIGNAL(triggered()),this,SLOT(reiniciarFonte()));
-
-    //Gerenciador de Fontes
-    connect(&genFonte,SIGNAL(mudouFonte(QString)),this,SLOT(mudouFonte(QString)));
 
     //Tab Widget Arquivos
     connect(this->ui->tabWidgetArquivos,SIGNAL(currentChanged(int)),this, SLOT(mudouAbaAtual(int)));
@@ -94,11 +91,16 @@ IDE::IDE(QWidget *parent) :
     //Restaurar Todas as configurações
     restaurarConfiguracoes();
 
+    /*
+
+    //Gerenciador de Fontes
+    connect(&genFonte,SIGNAL(mudouFonte(QString)),this,SLOT(mudouFonte(QString)));
+
     //inserindo o menu fontes...
     this->ui->actionFonte->setMenu(genFonte.getMenu());
 
     //Inicializar Menu Fontes...
-    genFonte.inicializar(familia_fonte);
+    genFonte.inicializar(familia_fonte);*/
 
 }
 
@@ -191,8 +193,6 @@ QWidget* IDE::criarAba(QString title, int *index)
     if(index != 0)
         (*index) = id;
 
-    qDebug()<<"index: "<<id;
-
     //seta a nova aba como atual
     this->ui->tabWidgetArquivos->setCurrentWidget(tab);
 
@@ -268,12 +268,8 @@ Documento* IDE::criarDocumento(QString title, int *index)
     //Criar o EditorCodigo
     EditorCodigo* edit = criarEditor(aba);
 
-    Documento* doc = new Documento(aba,edit);
-
-    qDebug()<<"addr: "<<doc;
-
     //Retorna um documento...
-    return doc;
+    return new Documento(aba,edit);
 }
 
 Documento* IDE::criarDocumento(QWidget* aba, EditorCodigo* edit)
@@ -678,8 +674,6 @@ void IDE::acaoFechar()
 
 bool IDE::salvarEFecharAbas(bool fechar)
 {
-    int index = 0;
-
     for(int index=genDoc.tamanho()-1; index>=0; index--)
     {
         Documento *doc = genDoc[index];
@@ -853,7 +847,7 @@ void IDE::breakpoint(int line, bool checked)
 void IDE::mudouAbaAtual(int index)
 {
     //Pega o edit da hashtable
-    Documento* doc = genDoc.procurar(getAbaAtual());
+    Documento* doc = genDoc.procurar(index);
 
     if(doc!=NULL)
     {
@@ -1052,8 +1046,6 @@ void IDE::diminuirFonte()
 
 void IDE::reiniciarFonte()
 {
-    Documento* doc = genDoc.procurar(getAbaAtual());
-
     tamanho_fonte = 9;
     familia_fonte = "Arial";
 
