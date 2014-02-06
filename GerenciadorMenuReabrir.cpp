@@ -76,7 +76,7 @@ void GerenciadorMenuReabrir::atualizar(QString &caminho)
             //Cria o submenu
             QAction *action = new QAction(&reabrirMenu);
             //conectando para receber o sinal que o submenu foi clicado
-            connect(action, SIGNAL(triggered(bool)), this, SLOT(clicouAcoes()));
+            connect(action, SIGNAL(triggered()), this, SLOT(clicouAcoes()));
             //Inseri o submenu na lista de submenus
             acoesSubMenu.append(action);
             //Inseri os submenus no menu Reabrir
@@ -133,7 +133,7 @@ void GerenciadorMenuReabrir::resetarMenu()
     }
 }
 
-void GerenciadorMenuReabrir::clicouAcoes(bool checked)
+void GerenciadorMenuReabrir::clicouAcoes()
 {
     QString caminho = getCaminhoSubMenu(QObject::sender());
     emit menuReabrirClicou(caminho);

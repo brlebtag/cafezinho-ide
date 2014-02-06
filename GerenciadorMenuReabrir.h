@@ -31,7 +31,7 @@ signals:
 public slots:
 
 private slots:
-    void clicouAcoes(bool checked = false);
+    void clicouAcoes();
 
 };
 

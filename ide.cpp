@@ -4,7 +4,7 @@
 
 IDE::IDE(QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::IDE), genReabrir(this), configuracoes(QSettings::IniFormat, QSettings::UserScope, "UFG", "CafezinhoIDE")
+    ui(new Ui::IDE), genReabrir(this), configuracoes(QSettings::IniFormat, QSettings::UserScope, "UFG", "CafezinhoIDE"),genFonte(this)
 {
     ui->setupUi(this);
 
@@ -44,6 +44,9 @@ IDE::IDE(QWidget *parent) :
     connect(this->ui->actionMaior,SIGNAL(triggered()),this,SLOT(aumentarFonte()));
     connect(this->ui->actionMenor,SIGNAL(triggered()),this,SLOT(diminuirFonte()));
     connect(this->ui->actionResetar,SIGNAL(triggered()),this,SLOT(reiniciarFonte()));
+
+    //Gerenciador de Fontes
+    connect(&genFonte,SIGNAL(mudouFonte(QString)),this,SLOT(mudouFonte(QString)));
 
     //Tab Widget Arquivos
     connect(this->ui->tabWidgetArquivos,SIGNAL(currentChanged(int)),this, SLOT(mudouAbaAtual(int)));
@@ -90,13 +93,20 @@ IDE::IDE(QWidget *parent) :
 
     //Restaurar Todas as configurações
     restaurarConfiguracoes();
+
+    //inserindo o menu fontes...
+    this->ui->actionFonte->setMenu(genFonte.getMenu());
+
+    //Inicializar Menu Fontes...
+    genFonte.inicializar(familia_fonte);
+
 }
 
 void IDE::restaurarConfiguracoesFonte()
 {
     //Funções...
     tamanho_fonte = configuracoes.value("tamanho_fonte", 9).toInt();
-    familia_fonte = configuracoes.value("familia_fonte","Ariel").toString();
+    familia_fonte = configuracoes.value("familia_fonte","Arial, Arial, Helvetica, sans-serif").toString();
 
     configurarFonteEditor();
 }
@@ -1047,5 +1057,11 @@ void IDE::reiniciarFonte()
     tamanho_fonte = 9;
     familia_fonte = "Arial";
 
+    configurarFonteEditor();
+}
+
+void IDE::mudouFonte(QString fonte)
+{
+    familia_fonte = fonte;
     configurarFonteEditor();
 }

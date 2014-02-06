@@ -22,6 +22,7 @@
 #include "QPushButton"
 #include "QIcon"
 #include <QPoint>
+#include "GerenciadorMenuFonte.h"
 
 class GerenciadorDocumento;
 
@@ -44,6 +45,7 @@ private:
     QSet<QString> docAbertos;
     GerenciadorDocumento genDoc;
     GerenciadorMenuReabrir genReabrir;
+    GerenciadorMenuFonte genFonte;
     QString ultimoCaminho;
     QSettings configuracoes;
     bool ver_funcoes;
@@ -174,6 +176,9 @@ private slots:
     void aumentarFonte();
     void diminuirFonte();
     void reiniciarFonte();
+
+    //Gerenciar Fonte
+    void mudouFonte(QString fonte);
 };
 
 #endif // IDE_H
