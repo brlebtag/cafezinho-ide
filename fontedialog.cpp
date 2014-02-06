@@ -15,7 +15,7 @@ FonteDialog::FonteDialog(QString *fonte, QWidget *parent) :
     {
         this->ui->listaFontes->addItem(fontes[i]);
         if(fontes[i] == *fonte)
-            this->ui->listaFontes->setCurrentRow(this->ui->listaFontes->count()-1);
+            this->ui->listaFontes->setCurrentRow(i);
     }
     connect(this->ui->listaFontes,SIGNAL(currentTextChanged(QString)),this,SLOT(itemMudou(QString)));
 }
