@@ -136,6 +136,8 @@ QWidget* IDE::criarAba(QString title, int *index)
     if(index != 0)
         (*index) = id;
 
+    qDebug()<<"index: "<<id;
+
     //seta a nova aba como atual
     this->ui->tabWidgetArquivos->setCurrentWidget(tab);
 
@@ -211,8 +213,12 @@ Documento* IDE::criarDocumento(QString title, int *index)
     //Criar o EditorCodigo
     EditorCodigo* edit = criarEditor(aba);
 
+    Documento* doc = new Documento(aba,edit);
+
+    qDebug()<<"addr: "<<doc;
+
     //Retorna um documento...
-    return new Documento(aba,edit);
+    return doc;
 }
 
 Documento* IDE::criarDocumento(QWidget* aba, EditorCodigo* edit)
@@ -619,9 +625,9 @@ bool IDE::salvarEFecharAbas(bool fechar)
 {
     int index = 0;
 
-    for(QList<Documento*>::iterator it = genDoc.begin(); it!= genDoc.end(); it++, index++)
+    for(int index=genDoc.tamanho()-1; index>=0; index--)
     {
-        Documento *doc = (*it);
+        Documento *doc = genDoc[index];
 
         if(doc->isSujo())
         {

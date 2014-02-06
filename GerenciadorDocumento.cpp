@@ -95,6 +95,11 @@ QList<Documento*>::iterator GerenciadorDocumento::end()
     return documentos.end();
 }
 
+Documento *GerenciadorDocumento::operator[](int i)
+{
+    return documentos[i];
+}
+
 int GerenciadorDocumento::tamanho()
 {
     return documentos.size();

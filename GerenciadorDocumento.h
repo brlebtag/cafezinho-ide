@@ -21,6 +21,7 @@ public:
     void remover(Documento* document);
     QList<Documento*>::iterator begin();
     QList<Documento*>::iterator end();
+    Documento* operator[](int i);
     int tamanho();
 private:
     static const int NAO_ACHADO;
