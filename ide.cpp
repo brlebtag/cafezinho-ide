@@ -30,6 +30,8 @@ IDE::IDE(QWidget *parent) :
     connect(this->ui->actionCopiar,SIGNAL(triggered(bool)),this,SLOT(copiarDocumento(bool)));
     connect(this->ui->actionColar,SIGNAL(triggered(bool)),this,SLOT(colarDocumento(bool)));
     connect(this->ui->actionRecortar,SIGNAL(triggered(bool)),this,SLOT(recortarDocumento(bool)));
+    connect(this->ui->actionDesfazer,SIGNAL(triggered(bool)),this,SLOT(desfazerDocumento(bool)));
+    connect(this->ui->actionRefazer,SIGNAL(triggered(bool)),this,SLOT(refazerDocumento(bool)));
 
     //Carregando Configurações sobre as abas...
     restaurarConfiguracoes();
@@ -915,4 +917,16 @@ void IDE::menuEditarClicado()
     else
         this->ui->menuEditar->actions().at(1)->setEnabled(false);
 
+}
+
+void IDE::desfazerDocumento(bool checked)
+{
+    Documento* doc = genDoc.procurar(getAbaAtual());
+    doc->desfazer();
+}
+
+void IDE::refazerDocumento(bool checked)
+{
+    Documento* doc = genDoc.procurar(getAbaAtual());
+    doc->refazer();
 }

@@ -33,12 +33,14 @@ public:
     void copiar();
     void colar();
     void recortar();
+    void desfazer();
+    void refazer();
     bool isTextoSelecionado();
     bool isColarDisponivel();
+    EditorCodigo *edit;
 private:
     bool sujo;
     QWidget *widget;
-    EditorCodigo *edit;
     QString documentoId;
     QString caminhoCompleto;
     bool aberto;

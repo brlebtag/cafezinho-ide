@@ -21,6 +21,7 @@
 #include "GerenciadorMenuReabrir.h"
 #include "QPushButton"
 #include "QIcon"
+#include <QPoint>
 
 class GerenciadorDocumento;
 
@@ -115,6 +116,8 @@ private slots:
     void colarDocumento(bool checked);
     void recortarDocumento(bool checked);
     void menuEditarClicado();
+    void desfazerDocumento(bool checked);
+    void refazerDocumento(bool checked);
 };
 
 #endif // IDE_H

@@ -221,8 +221,6 @@
     <addaction name="separator"/>
     <addaction name="actionDesfazer"/>
     <addaction name="actionRefazer"/>
-    <addaction name="separator"/>
-    <addaction name="actionDuplicar"/>
    </widget>
    <widget class="QMenu" name="menuPesquisar">
     <property name="title">

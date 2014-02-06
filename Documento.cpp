@@ -107,6 +107,16 @@ void Documento::recortar()
     this->edit->cut();
 }
 
+void Documento::desfazer()
+{
+    this->edit->undo();
+}
+
+void Documento::refazer()
+{
+    this->edit->redo();
+}
+
 bool Documento::isTextoSelecionado()
 {
     return this->edit->isTextoSelecionado();
