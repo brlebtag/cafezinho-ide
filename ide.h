@@ -50,74 +50,130 @@ private:
     bool ver_debugger;
     bool ver_exec_prog;
 
+    int tamanho_fonte;
+    QString familia_fonte;
+
     //Metodos
+
+    //Gerenciar Criacao de Documento
     QWidget* criarAba(QString title, int *index = 0);
     QPushButton* criarBotaoFecharAba(QWidget *pai);
     QPushButton* criarBotaoMaisAba(QWidget *pai);
     EditorCodigo* criarEditor(QWidget* aba);
     Documento* criarDocumento(QString title, int *index = 0);
     Documento* criarDocumento(QWidget* aba, EditorCodigo* edit);
-    QString nomeDocParaDocId(QString &fileName);
+
+    //Mensagens
+
+    //Mensagens para Abrir
     QString mostrarAbrirArquivo();
     QString mostrarAbrirArquivo(QString &path);
+
+    //Mensagens para Salvar
     QString mostrarSalvarArquivo();
     QString mostrarSalvarArquivo(QString path);
+    int mostrarSalvarAlteracao();
+
+    //Mensagens de Erro
     void msgErroSalvar(QFile* file = 0);
     void msgErroAbrir(QFile* file = 0);
-    int mostrarSalvarAlteracao();
-    void setTextoDocumento(Documento* document, QFile *file);
-    QFile *abrirArquivoLeitura(QString &fileName);
-    QFile *abrirArquivoGravacao(QString &fileName);
-    void reabrirAba(QString &fileName);
-    void fecharFile(QFile* file);
-    QString getNomeDocumento(QString &fileName);
-    QString getCaminhoDocumento(QString &fileName);
+
+
+    //Gerenciar Manipulação de Documentos
     void setTituloAba(int index, QString title);
     void setAbaAtual(QWidget* widget);
     void setAbaAtual(int index);
     int getAbaAtual();
     QWidget* getAbaAtualWidget();
+    void setTextoDocumento(Documento* document, QFile *file);
     void setDicaAba(int index, QString &tip);
-    void removeAba(int index, Documento* document);
+    void reabrirAba(QString &fileName);
+
+
+    //Gerenciar nome do documento
+    QString getNomeDocumento(QString &fileName);
+    QString getCaminhoDocumento(QString &fileName);
+    QString nomeDocParaDocId(QString &fileName);
+
+
+    //Gerenciar Leitura e gravação de   Documentos
+    QFile *abrirArquivoLeitura(QString &fileName);
+    QFile *abrirArquivoGravacao(QString &fileName);
     bool gravarDocumento(Documento *document, QString &fileName);
     bool lerDocument(Documento *document, QString &fileName);
     void configurarDocumento(Documento* document, QString &fileName, int index);
+    void fecharFile(QFile* file);
     void salvarDocumento(Documento* document, QString &fileName,int index, bool salvar_como);
     void abrirDocumento(QString &fileName);
+
+    //Gerenciar Remoção de abas e documentos
+    void removeAba(int index, Documento* document);
     bool salvarEFecharAbas(bool fechar = true);
+
+    //Gerenciar Configuracoes
+
+    //Gravar Configurações
     void gravarConfiguracoes();
+    void gravarConfiguracoesMenuVer();
+    void gravarConfiguracoesFonte();
+
+    //Reestabeler Configurações
     void restaurarConfiguracoes();
+    void restaurarConfiguracoesMenuVer();
+    void restaurarConfiguracoesFonte();
+
+    //Gerenciar o Editor
+    void configurarFonteEditor();
 
 protected:
     void closeEvent(QCloseEvent *event);
+
 private slots:
-    void acaoAbrir(bool checked = false); //OK
-    void acaoNovo(bool checked = false); //OK
-    void acaoFechar(bool checked = false); //OK
-    void acaoSair(bool checked = false); //OK
-    void acaoSalvar(bool checked = false); //OK
-    void acaoSalvarComo(bool checked = false); //OK
-    void alterarEditorCodigo(); //OK
-    void acaoHabilitarNumeroLinha(bool checked); //OK
-    void breakpoint(int line, bool checked); //OK
-    void mudouAbaAtual(int index); //OK
+
+    // Menu Arquivo
+    void acaoAbrir(); //OK
+    void acaoNovo(); //OK
+    void acaoFechar(); //OK
+    void acaoSair(); //OK
+    void acaoSalvar(); //OK
+    void acaoSalvarComo(); //OK
     void menuReabrirClicou(QString caminho);
+    void menuArquivoClicado();
+
+    //EditorCodigo
+    void alterarEditorCodigo(); //OK
+    void breakpoint(int line, bool checked); //OK
+
+    // Tab Widget Arquivos
+    void mudouAbaAtual(int index); //OK
+    void botaoFecharTabClicado();
+    void botaoMaisTabClicado();
+
+    //Menu Ver
     void acaoHabilitarFuncoes(bool checked);
     void acaoHabilitarDebug(bool checked);
     void acaoHabilitarExecProg(bool checked);
-    void botaoFecharTabClicado();
-    void botaoMaisTabClicado();
-    void reiniciarInterfaceClicado(bool checked);
-    void proximoDocumento(bool checked);
-    void anteriroDocumento(bool checked);
-    void salvarTodosDocumentos(bool checked);
-    void fecharTodosDocumentos(bool checked);
-    void copiarDocumento(bool checked);
-    void colarDocumento(bool checked);
-    void recortarDocumento(bool checked);
+    void acaoHabilitarNumeroLinha(bool checked); //OK
+    void reiniciarInterfaceClicado();
+
+    //Menu Documento
+    void proximoDocumento();
+    void anteriroDocumento();
+    void salvarTodosDocumentos();
+    void fecharTodosDocumentos();
+
+    //Menu Editar
+    void copiarDocumento();
+    void colarDocumento();
+    void recortarDocumento();
     void menuEditarClicado();
-    void desfazerDocumento(bool checked);
-    void refazerDocumento(bool checked);
+    void desfazerDocumento();
+    void refazerDocumento();
+
+    //Menu Editor
+    void aumentarFonte();
+    void diminuirFonte();
+    void reiniciarFonte();
 };
 
 #endif // IDE_H

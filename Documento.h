@@ -37,6 +37,8 @@ public:
     void refazer();
     bool isTextoSelecionado();
     bool isColarDisponivel();
+    QString getFamiliaFont();
+    void setEstiloCascata(QString estilo); //Configurar a Fonte usando CSS
     EditorCodigo *edit;
 private:
     bool sujo;

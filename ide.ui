@@ -274,8 +274,6 @@
     <property name="title">
      <string>Documentos</string>
     </property>
-    <addaction name="actionFonte"/>
-    <addaction name="actionConfigRealce"/>
     <addaction name="separator"/>
     <addaction name="actionProximoDocumento"/>
     <addaction name="actionAnteriorDocumento"/>
@@ -292,11 +290,30 @@
     <addaction name="actionTutorial_Linguagem_Cafezinho"/>
     <addaction name="actionSobre_CafezinhoIDE"/>
    </widget>
+   <widget class="QMenu" name="menuEditor">
+    <property name="title">
+     <string>Editor</string>
+    </property>
+    <widget class="QMenu" name="menuTamanho_Fonte">
+     <property name="title">
+      <string>Tamanho</string>
+     </property>
+     <addaction name="actionMaior"/>
+     <addaction name="actionMenor"/>
+     <addaction name="separator"/>
+     <addaction name="actionResetar"/>
+    </widget>
+    <addaction name="actionFonte"/>
+    <addaction name="menuTamanho_Fonte"/>
+    <addaction name="separator"/>
+    <addaction name="actionConfigRealce"/>
+   </widget>
    <addaction name="menuArquivo"/>
    <addaction name="menuEditar"/>
    <addaction name="menuPesquisar"/>
    <addaction name="menuVer"/>
    <addaction name="menuOpcoes"/>
+   <addaction name="menuEditor"/>
    <addaction name="menuDocumentos"/>
    <addaction name="menuAjuda"/>
   </widget>
@@ -622,7 +639,28 @@
   </action>
   <action name="actionConfigRealce">
    <property name="text">
-    <string>Configurar Realçe</string>
+    <string>Realçe...</string>
+   </property>
+  </action>
+  <action name="actionMaior">
+   <property name="text">
+    <string>Maior</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+=</string>
+   </property>
+  </action>
+  <action name="actionMenor">
+   <property name="text">
+    <string>Menor</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+-</string>
+   </property>
+  </action>
+  <action name="actionResetar">
+   <property name="text">
+    <string>Reiniciar</string>
    </property>
   </action>
  </widget>

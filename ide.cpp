@@ -9,32 +9,44 @@ IDE::IDE(QWidget *parent) :
     ui->setupUi(this);
 
     //Configurando os sinais...
+
+    //Menu Arquivo
     connect(this->ui->actionAbrir,SIGNAL(triggered()),this,SLOT(acaoAbrir()));
-    connect(this->ui->actionNovo,SIGNAL(triggered(bool)),this,SLOT(acaoNovo(bool)));
-    connect(this->ui->actionFechar,SIGNAL(triggered(bool)),this,SLOT(acaoFechar(bool)));
-    connect(this->ui->actionSair,SIGNAL(triggered(bool)),this,SLOT(acaoSair(bool)));
-    connect(this->ui->actionSalvar,SIGNAL(triggered(bool)),this,SLOT(acaoSalvar(bool)));
-    connect(this->ui->actionSalvar_Como,SIGNAL(triggered(bool)),this,SLOT(acaoSalvarComo(bool)));
+    connect(this->ui->actionNovo,SIGNAL(triggered()),this,SLOT(acaoNovo()));
+    connect(this->ui->actionFechar,SIGNAL(triggered()),this,SLOT(acaoFechar()));
+    connect(this->ui->actionSair,SIGNAL(triggered()),this,SLOT(acaoSair()));
+    connect(this->ui->actionSalvar,SIGNAL(triggered()),this,SLOT(acaoSalvar()));
+    connect(this->ui->actionSalvar_Como,SIGNAL(triggered()),this,SLOT(acaoSalvarComo()));
+    connect(this->ui->menuArquivo,SIGNAL(aboutToShow()),this,SLOT(menuArquivoClicado()));
+
+    //Menu Ver
     connect(this->ui->actionNumero_da_Linha,SIGNAL(toggled(bool)),this,SLOT(acaoHabilitarNumeroLinha(bool)));
-    connect(this->ui->tabWidgetArquivos,SIGNAL(currentChanged(int)),this, SLOT(mudouAbaAtual(int)));
     connect(this->ui->actionFuncoes,SIGNAL(toggled(bool)),this,SLOT(acaoHabilitarFuncoes(bool)));
     connect(this->ui->actionDebugger,SIGNAL(toggled(bool)),this,SLOT(acaoHabilitarDebug(bool)));
-    connect(this->ui->actionDebugger,SIGNAL(toggled(bool)),this,SLOT(acaoHabilitarDebug(bool)));
     connect(this->ui->actionExecProg,SIGNAL(toggled(bool)),this,SLOT(acaoHabilitarExecProg(bool)));
-    connect(this->ui->actionReiniciar,SIGNAL(triggered(bool)), this,SLOT(reiniciarInterfaceClicado(bool)));
-    connect(this->ui->actionProximoDocumento,SIGNAL(triggered(bool)),this,SLOT(proximoDocumento(bool)));
-    connect(this->ui->actionAnteriorDocumento,SIGNAL(triggered(bool)),this,SLOT(anteriroDocumento(bool)));
-    connect(this->ui->actionSalvarTodos,SIGNAL(triggered(bool)),this,SLOT(salvarTodosDocumentos(bool)));
-    connect(this->ui->actionFecharTodos,SIGNAL(triggered(bool)),this,SLOT(fecharTodosDocumentos(bool)));
-    connect(this->ui->menuEditar,SIGNAL(aboutToShow()),this,SLOT(menuEditarClicado()));
-    connect(this->ui->actionCopiar,SIGNAL(triggered(bool)),this,SLOT(copiarDocumento(bool)));
-    connect(this->ui->actionColar,SIGNAL(triggered(bool)),this,SLOT(colarDocumento(bool)));
-    connect(this->ui->actionRecortar,SIGNAL(triggered(bool)),this,SLOT(recortarDocumento(bool)));
-    connect(this->ui->actionDesfazer,SIGNAL(triggered(bool)),this,SLOT(desfazerDocumento(bool)));
-    connect(this->ui->actionRefazer,SIGNAL(triggered(bool)),this,SLOT(refazerDocumento(bool)));
+    connect(this->ui->actionReiniciar,SIGNAL(triggered()), this,SLOT(reiniciarInterfaceClicado()));
 
-    //Carregando Configurações sobre as abas...
-    restaurarConfiguracoes();
+    //Menu Documento
+    connect(this->ui->actionProximoDocumento,SIGNAL(triggered()),this,SLOT(proximoDocumento()));
+    connect(this->ui->actionAnteriorDocumento,SIGNAL(triggered()),this,SLOT(anteriroDocumento()));
+    connect(this->ui->actionSalvarTodos,SIGNAL(triggered()),this,SLOT(salvarTodosDocumentos()));
+    connect(this->ui->actionFecharTodos,SIGNAL(triggered()),this,SLOT(fecharTodosDocumentos()));
+
+    //Menu Editar
+    connect(this->ui->menuEditar,SIGNAL(aboutToShow()),this,SLOT(menuEditarClicado()));
+    connect(this->ui->actionCopiar,SIGNAL(triggered()),this,SLOT(copiarDocumento()));
+    connect(this->ui->actionColar,SIGNAL(triggered()),this,SLOT(colarDocumento()));
+    connect(this->ui->actionRecortar,SIGNAL(triggered()),this,SLOT(recortarDocumento()));
+    connect(this->ui->actionDesfazer,SIGNAL(triggered()),this,SLOT(desfazerDocumento()));
+    connect(this->ui->actionRefazer,SIGNAL(triggered()),this,SLOT(refazerDocumento()));
+
+    //Menu Editor
+    connect(this->ui->actionMaior,SIGNAL(triggered()),this,SLOT(aumentarFonte()));
+    connect(this->ui->actionMenor,SIGNAL(triggered()),this,SLOT(diminuirFonte()));
+    connect(this->ui->actionResetar,SIGNAL(triggered()),this,SLOT(reiniciarFonte()));
+
+    //Tab Widget Arquivos
+    connect(this->ui->tabWidgetArquivos,SIGNAL(currentChanged(int)),this, SLOT(mudouAbaAtual(int)));
 
     //Index da aba atual...
     int index = getAbaAtual();
@@ -71,9 +83,25 @@ IDE::IDE(QWidget *parent) :
 
     //Inserir Botao nova Aba no canto direto da  TabWidget...
     this->ui->tabWidgetArquivos->setCornerWidget(criarBotaoMaisAba(this->ui->tabWidgetArquivos),Qt::TopRightCorner);
+
+    //Seta status Bar como pronto
+    this->ui->statusBar->showMessage("Pronto", 0);
+    this->ui->statusBar->setStatusTip("Pronto");
+
+    //Restaurar Todas as configurações
+    restaurarConfiguracoes();
 }
 
-void IDE::restaurarConfiguracoes()
+void IDE::restaurarConfiguracoesFonte()
+{
+    //Funções...
+    tamanho_fonte = configuracoes.value("tamanho_fonte", 9).toInt();
+    familia_fonte = configuracoes.value("familia_fonte","Ariel").toString();
+
+    configurarFonteEditor();
+}
+
+void IDE::restaurarConfiguracoesMenuVer()
 {
     //Funções...
     ver_funcoes = configuracoes.value("ver_funcoes", true).toBool();
@@ -101,13 +129,14 @@ void IDE::closeEvent(QCloseEvent *event)
         return;
     }
 
+    //Grava todas as configurações
     gravarConfiguracoes();
 
     //Aceita o evento...
     event->accept();
 }
 
-void IDE::gravarConfiguracoes()
+void IDE::gravarConfiguracoesMenuVer()
 {
     //Grava as informacoes da Configuracao
 
@@ -116,6 +145,22 @@ void IDE::gravarConfiguracoes()
     configuracoes.setValue("ver_debugger", ver_debugger);
 
     configuracoes.setValue("ver_exec_prog", ver_exec_prog);
+}
+
+void IDE::gravarConfiguracoesFonte()
+{
+    configuracoes.setValue("tamanho_fonte", tamanho_fonte);
+
+    configuracoes.setValue("familia_fonte", familia_fonte);
+}
+
+void IDE::restaurarConfiguracoes()
+{
+    //Carregando Configurações sobre o menu Ver...
+    restaurarConfiguracoesMenuVer();
+
+    //Carregand Configurações sobre a fonte do edito
+    restaurarConfiguracoesFonte();
 }
 
 IDE::~IDE()
@@ -547,7 +592,7 @@ void IDE::abrirDocumento(QString &fileName)
         genReabrir.atualizar(caminho);
 }
 
-void IDE::acaoAbrir(bool checked)
+void IDE::acaoAbrir()
 {
     //Abrir a janela pedindo ao usuario que entre com o arquivo...
     QString fileName = mostrarAbrirArquivo();
@@ -558,7 +603,7 @@ void IDE::acaoAbrir(bool checked)
     abrirDocumento(fileName);
 }
 
-void IDE::acaoNovo(bool checked)
+void IDE::acaoNovo()
 {
     //Cria uma nova aba...
     Documento *doc = criarDocumento(tr("Novo Arquivo"));
@@ -570,7 +615,7 @@ void IDE::acaoNovo(bool checked)
     doc->setFocus();
 }
 
-void IDE::acaoFechar(bool checked)
+void IDE::acaoFechar()
 {
     //pega o index do tab atual
     int index = getAbaAtual();
@@ -678,12 +723,21 @@ bool IDE::salvarEFecharAbas(bool fechar)
     return true;
 }
 
-void IDE::acaoSair(bool checked)
+void IDE::gravarConfiguracoes()
+{
+    //Gravar Configuracoes Menu Ver
+    gravarConfiguracoesMenuVer();
+
+    //Gravar Configurações Fonte
+    gravarConfiguracoesFonte();
+}
+
+void IDE::acaoSair()
 {
     this->close();
 }
 
-void IDE::acaoSalvar(bool checked)
+void IDE::acaoSalvar()
 {
     //pega o index do tab atual
     int index = getAbaAtual();
@@ -710,7 +764,7 @@ void IDE::acaoSalvar(bool checked)
     salvarDocumento(doc, fileName, index, salvar_como);
 }
 
-void IDE::acaoSalvarComo(bool checked)
+void IDE::acaoSalvarComo()
 {
     //pega o index do tab atual
     int index = this->ui->tabWidgetArquivos->currentIndex();
@@ -763,6 +817,7 @@ void IDE::alterarEditorCodigo()
         text+="*";
         this->ui->tabWidgetArquivos->setTabText(index, text);
         doc->sujou();
+        configurarFonteEditor();
     }
 }
 
@@ -847,7 +902,7 @@ void IDE::botaoMaisTabClicado()
     acaoNovo();
 }
 
-void IDE::reiniciarInterfaceClicado(bool checked)
+void IDE::reiniciarInterfaceClicado()
 {
     //Funções...
     ver_funcoes = true;
@@ -862,7 +917,7 @@ void IDE::reiniciarInterfaceClicado(bool checked)
     this->ui->actionExecProg->setChecked(ver_exec_prog);
 }
 
-void IDE::proximoDocumento(bool checked)
+void IDE::proximoDocumento()
 {
     int index = getAbaAtual();
     if(++index == genDoc.tamanho())
@@ -872,7 +927,7 @@ void IDE::proximoDocumento(bool checked)
     setAbaAtual(index);
 }
 
-void IDE::anteriroDocumento(bool checked)
+void IDE::anteriroDocumento()
 {
     int index = getAbaAtual();
     if(--index < 0)
@@ -882,29 +937,29 @@ void IDE::anteriroDocumento(bool checked)
     setAbaAtual(index);
 }
 
-void IDE::salvarTodosDocumentos(bool checked)
+void IDE::salvarTodosDocumentos()
 {
     salvarEFecharAbas(false);
 }
 
-void IDE::fecharTodosDocumentos(bool checked)
+void IDE::fecharTodosDocumentos()
 {
     salvarEFecharAbas();
 }
 
-void IDE::copiarDocumento(bool checked)
+void IDE::copiarDocumento()
 {
     Documento* doc = genDoc.procurar(getAbaAtual());
     doc->copiar();
 }
 
-void IDE::colarDocumento(bool checked)
+void IDE::colarDocumento()
 {
     Documento* doc = genDoc.procurar(getAbaAtual());
     doc->colar();
 }
 
-void IDE::recortarDocumento(bool checked)
+void IDE::recortarDocumento()
 {
     Documento* doc = genDoc.procurar(getAbaAtual());
     doc->recortar();
@@ -914,10 +969,14 @@ void IDE::menuEditarClicado()
 {
 
     Documento* doc = genDoc.procurar(getAbaAtual());
+
+    //Habilitar Ctrl+c se tiver texto selecionado
     if(doc->isTextoSelecionado())
         this->ui->menuEditar->actions().at(0)->setEnabled(true);
     else
         this->ui->menuEditar->actions().at(0)->setEnabled(false);
+
+    //Habilitar Ctrl+v se tiver texto copiado...
     if(doc->isColarDisponivel())
         this->ui->menuEditar->actions().at(1)->setEnabled(true);
     else
@@ -925,14 +984,68 @@ void IDE::menuEditarClicado()
 
 }
 
-void IDE::desfazerDocumento(bool checked)
+void IDE::desfazerDocumento()
 {
     Documento* doc = genDoc.procurar(getAbaAtual());
     doc->desfazer();
 }
 
-void IDE::refazerDocumento(bool checked)
+void IDE::refazerDocumento()
 {
     Documento* doc = genDoc.procurar(getAbaAtual());
     doc->refazer();
+}
+
+void IDE::menuArquivoClicado()
+{
+    //Se não tiver reabrir... desabilita o menu
+    if(genDoc.tamanho()>0)
+        this->ui->menuArquivo->actions().at(3)->setEnabled(true);
+    else
+        this->ui->menuArquivo->actions().at(3)->setEnabled(false);
+}
+
+void IDE::configurarFonteEditor()
+{
+     Documento* doc = genDoc.procurar(getAbaAtual());
+
+    doc->setEstiloCascata("font:"+QString::number(tamanho_fonte)+"pt "+familia_fonte+";");
+}
+
+void IDE::aumentarFonte()
+{
+    //Não Fica Maior que 72
+    if(tamanho_fonte<72)
+    {
+        if(tamanho_fonte<12)
+            tamanho_fonte++;
+        else
+            tamanho_fonte+=2;
+
+        configurarFonteEditor();
+    }
+}
+
+void IDE::diminuirFonte()
+{
+    //Não Fica menor que 6
+    if(tamanho_fonte>7)
+    {
+        if(tamanho_fonte>=12)
+            tamanho_fonte--;
+        else
+            tamanho_fonte-=2;
+
+        configurarFonteEditor();
+    }
+}
+
+void IDE::reiniciarFonte()
+{
+    Documento* doc = genDoc.procurar(getAbaAtual());
+
+    tamanho_fonte = 9;
+    familia_fonte = "Arial";
+
+    configurarFonteEditor();
 }
