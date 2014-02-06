@@ -19,7 +19,6 @@ SOURCES += main.cpp\
     Documento.cpp \
     AreaNumeroLinha.cpp \
     GerenciadorMenuReabrir.cpp \
-    GerenciadorMenuFonte.cpp \
     fontedialog.cpp
 
 HEADERS  += ide.h \
@@ -28,7 +27,6 @@ HEADERS  += ide.h \
     EditorCodigo.h \
     AreaNumeroLinha.h \
     GerenciadorMenuReabrir.h \
-    GerenciadorMenuFonte.h \
     fontedialog.h
 
 FORMS    += ide.ui \

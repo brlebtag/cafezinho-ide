@@ -4,7 +4,7 @@
 
 IDE::IDE(QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::IDE), genReabrir(this), configuracoes(QSettings::IniFormat, QSettings::UserScope, "UFG", "CafezinhoIDE") //,genFonte(this)
+    ui(new Ui::IDE), genReabrir(this), configuracoes(QSettings::IniFormat, QSettings::UserScope, "UFG", "CafezinhoIDE")
 {
     ui->setupUi(this);
 
@@ -91,25 +91,13 @@ IDE::IDE(QWidget *parent) :
 
     //Restaurar Todas as configurações
     restaurarConfiguracoes();
-
-    /*
-
-    //Gerenciador de Fontes
-    connect(&genFonte,SIGNAL(mudouFonte(QString)),this,SLOT(mudouFonte(QString)));
-
-    //inserindo o menu fontes...
-    this->ui->actionFonte->setMenu(genFonte.getMenu());
-
-    //Inicializar Menu Fontes...
-    genFonte.inicializar(familia_fonte);*/
-
 }
 
 void IDE::restaurarConfiguracoesFonte()
 {
     //Funções...
     tamanho_fonte = configuracoes.value("tamanho_fonte", 9).toInt();
-    familia_fonte = configuracoes.value("familia_fonte","Arial, Arial, Helvetica, sans-serif").toString();
+    familia_fonte = configuracoes.value("familia_fonte","sans-serif").toString();
 
     configurarFonteEditor();
 }
@@ -1048,7 +1036,7 @@ void IDE::diminuirFonte()
 void IDE::reiniciarFonte()
 {
     tamanho_fonte = 9;
-    familia_fonte = "Arial";
+    familia_fonte = "sans-serif";
 
     configurarFonteEditor();
 }
@@ -1058,16 +1046,11 @@ void IDE::fonteClicado()
     QString temp = familia_fonte;
     FonteDialog fonte(&temp, this);
 
+    fonte.setFixedSize(fonte.size());
+
     if(fonte.exec()==QDialog::Accepted&&temp!=familia_fonte)
     {
         familia_fonte = temp;
         configurarFonteEditor();
     }
 }
-
-/*
-void IDE::mudouFonte(QString fonte)
-{
-    familia_fonte = fonte;
-    configurarFonteEditor();
-}*/
