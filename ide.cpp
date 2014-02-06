@@ -24,6 +24,8 @@ IDE::IDE(QWidget *parent) :
     connect(this->ui->actionFuncoes,SIGNAL(toggled(bool)),this,SLOT(acaoHabilitarFuncoes(bool)));
     connect(this->ui->actionDebugger,SIGNAL(toggled(bool)),this,SLOT(acaoHabilitarDebug(bool)));
     connect(this->ui->actionExecProg,SIGNAL(toggled(bool)),this,SLOT(acaoHabilitarExecProg(bool)));
+    connect(this->ui->actionBarraFerramentas,SIGNAL(toggled(bool)),this,SLOT(acaoHabilitarBarraFerramentas(bool)));
+    connect(this->ui->actionBarraStatus,SIGNAL(toggled(bool)),this,SLOT(acaoHabilitarBarraStatus(bool)));
     connect(this->ui->actionReiniciar,SIGNAL(triggered()), this,SLOT(reiniciarInterfaceClicado()));
 
     //Menu Documento
@@ -108,7 +110,6 @@ void IDE::restaurarConfiguracoesMenuVer()
     ver_funcoes = configuracoes.value("ver_funcoes", true).toBool();
     this->ui->actionFuncoes->setChecked(ver_funcoes);
 
-
     //Debug
     ver_debugger = configuracoes.value("ver_debugger", true).toBool();
     this->ui->actionDebugger->setChecked(ver_debugger);
@@ -116,6 +117,14 @@ void IDE::restaurarConfiguracoesMenuVer()
     //Debug
     ver_exec_prog = configuracoes.value("ver_exec_prog", true).toBool();
     this->ui->actionExecProg->setChecked(ver_exec_prog);
+
+    //Barra de Ferrramentas
+    ver_barra_ferramentas = configuracoes.value("ver_barra_ferramentas", true).toBool();
+    this->ui->actionBarraFerramentas->setChecked(ver_barra_ferramentas);
+
+    //Barra de Status
+    ver_barra_status = configuracoes.value("ver_barra_status", true).toBool();
+    this->ui->actionBarraStatus->setChecked(ver_barra_status);
 }
 
 void IDE::closeEvent(QCloseEvent *event)
@@ -146,6 +155,10 @@ void IDE::gravarConfiguracoesMenuVer()
     configuracoes.setValue("ver_debugger", ver_debugger);
 
     configuracoes.setValue("ver_exec_prog", ver_exec_prog);
+
+    configuracoes.setValue("ver_barra_ferramentas", ver_barra_ferramentas);
+
+    configuracoes.setValue("ver_barra_status", ver_barra_status);
 }
 
 void IDE::gravarConfiguracoesFonte()
@@ -826,6 +839,26 @@ void IDE::acaoHabilitarNumeroLinha(bool checked)
 
     //Repintar o edit
     doc->repintarEditor();
+}
+
+void IDE::acaoHabilitarBarraFerramentas(bool checked)
+{
+    if(checked)
+        this->ui->toolBar->show();
+    else
+        this->ui->toolBar->hide();
+
+    ver_barra_ferramentas = checked;
+}
+
+void IDE::acaoHabilitarBarraStatus(bool checked)
+{
+    if(checked)
+        this->ui->statusBar->show();
+    else
+        this->ui->statusBar->hide();
+
+    ver_barra_status = checked;
 }
 
 void IDE::breakpoint(int line, bool checked)

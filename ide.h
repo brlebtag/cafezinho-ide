@@ -50,6 +50,8 @@ private:
     bool ver_funcoes;
     bool ver_debugger;
     bool ver_exec_prog;
+    bool ver_barra_ferramentas;
+    bool ver_barra_status;
 
     int tamanho_fonte;
     QString familia_fonte;
@@ -155,6 +157,8 @@ private slots:
     void acaoHabilitarDebug(bool checked);
     void acaoHabilitarExecProg(bool checked);
     void acaoHabilitarNumeroLinha(bool checked); //OK
+    void acaoHabilitarBarraFerramentas(bool checked);
+    void acaoHabilitarBarraStatus(bool checked);
     void reiniciarInterfaceClicado();
 
     //Menu Documento
@@ -176,6 +180,9 @@ private slots:
     void diminuirFonte();
     void reiniciarFonte();
     void fonteClicado();
+
+    //ToolBar
+
 };
 
 #endif // IDE_H
