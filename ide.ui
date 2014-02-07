@@ -632,7 +632,7 @@
   </action>
   <action name="actionReiniciar">
    <property name="text">
-    <string>Reiniciar</string>
+    <string>Resetar</string>
    </property>
   </action>
   <action name="actionFonte">
@@ -663,7 +663,7 @@
   </action>
   <action name="actionResetar">
    <property name="text">
-    <string>Reiniciar</string>
+    <string>Resetar</string>
    </property>
   </action>
   <action name="actionBarraStatus">
