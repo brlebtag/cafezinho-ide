@@ -221,6 +221,8 @@
     <addaction name="separator"/>
     <addaction name="actionDesfazer"/>
     <addaction name="actionRefazer"/>
+    <addaction name="separator"/>
+    <addaction name="actionDuplica"/>
    </widget>
    <widget class="QMenu" name="menuPesquisar">
     <property name="title">
@@ -673,6 +675,11 @@
    </property>
    <property name="text">
     <string>Barra de Status</string>
+   </property>
+  </action>
+  <action name="actionDuplica">
+   <property name="text">
+    <string>Duplicar</string>
    </property>
   </action>
  </widget>
