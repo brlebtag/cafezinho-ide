@@ -38,6 +38,8 @@ public:
     void refazer();
     bool isTextoSelecionado();
     bool isColarDisponivel();
+    bool isDesfazerDisponivel();
+    bool isRefazerDisponivel();
     void setFonte(QString familia, int tamanho); //Configurar a Fonte usando CSS
     EditorCodigo *edit;
 private:

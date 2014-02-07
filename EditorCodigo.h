@@ -31,6 +31,8 @@ public:
     static void setLineNumber(bool checked);
     void forceUpdate();
     bool isTextoSelecionado();
+    bool isRefazerDisponivel();
+    bool isDesfazerDisponivel();
 
 protected:
     void resizeEvent(QResizeEvent *event);
@@ -40,6 +42,8 @@ private slots:
     void atualizarAreaNumero(const QRect &, int);
     void clicouAreaNumero(int line);
     void textoSelecionadoHabilitado(bool yes);
+    void desfazerDisp(bool b);
+    void refazerDisp(bool b);
 
 private:
     static bool numeroLinha;
@@ -47,6 +51,8 @@ private:
     QSet<int> breakpoints;
     QImage breakpointImg;
     bool textoSelecionado;
+    bool refazerDisponivel;
+    bool desfazerDisponivel;
 
 signals:
     void breakpoint(int line, bool checked);

@@ -127,6 +127,16 @@ bool Documento::isColarDisponivel()
     return this->edit->canPaste(); //temporariamente...
 }
 
+bool Documento::isDesfazerDisponivel()
+{
+    return this->edit->isDesfazerDisponivel();
+}
+
+bool Documento::isRefazerDisponivel()
+{
+    return this->edit->isRefazerDisponivel();
+}
+
 void Documento::setFonte(QString familia, int tamanho)
 {
     this->edit->setFont(QFont(familia,tamanho));

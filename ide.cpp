@@ -1008,6 +1008,18 @@ void IDE::menuEditarClicado()
     else
         this->ui->menuEditar->actions().at(1)->setEnabled(false);
 
+    //Habilitar Desfazer
+    if(doc->isDesfazerDisponivel())
+        this->ui->menuEditar->actions().at(4)->setEnabled(true);
+    else
+        this->ui->menuEditar->actions().at(4)->setEnabled(false);
+
+    //Habilitar Refazer
+    if(doc->isRefazerDisponivel())
+        this->ui->menuEditar->actions().at(5)->setEnabled(true);
+    else
+        this->ui->menuEditar->actions().at(5)->setEnabled(false);
+
 }
 
 void IDE::desfazerDocumento()
