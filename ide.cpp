@@ -48,6 +48,9 @@ IDE::IDE(QWidget *parent) :
     connect(this->ui->actionResetar,SIGNAL(triggered()),this,SLOT(reiniciarFonte()));
     connect(this->ui->actionFonte,SIGNAL(triggered()),this,SLOT(fonteClicado()));
 
+    //Menu Pesquisar
+    connect(this->ui->actionIr_para_Linha,SIGNAL(triggered()),this,SLOT(irParaClicado()));
+
     //Tab Widget Arquivos
     connect(this->ui->tabWidgetArquivos,SIGNAL(currentChanged(int)),this, SLOT(mudouAbaAtual(int)));
 
@@ -1098,4 +1101,9 @@ void IDE::fonteClicado()
         familia_fonte = temp;
         configurarFonteEditor();
     }
+}
+
+void IDE::irParaClicado()
+{
+
 }

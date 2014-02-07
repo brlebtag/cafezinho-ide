@@ -181,7 +181,8 @@ private slots:
     void reiniciarFonte();
     void fonteClicado();
 
-    //ToolBar
+    //Menu Pesquisar
+    void irParaClicado();
 
 };
 
