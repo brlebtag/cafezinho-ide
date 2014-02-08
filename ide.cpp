@@ -41,6 +41,7 @@ IDE::IDE(QWidget *parent) :
     connect(this->ui->actionRecortar,SIGNAL(triggered()),this,SLOT(recortarDocumento()));
     connect(this->ui->actionDesfazer,SIGNAL(triggered()),this,SLOT(desfazerDocumento()));
     connect(this->ui->actionRefazer,SIGNAL(triggered()),this,SLOT(refazerDocumento()));
+    connect(this->ui->actionDuplica,SIGNAL(triggered()),this,SLOT(duplicarLinhar()));
 
     //Menu Editor
     connect(this->ui->actionMaior,SIGNAL(triggered()),this,SLOT(aumentarFonte()));
@@ -1061,6 +1062,12 @@ void IDE::refazerDocumento()
     doc->refazer();
 }
 
+void IDE::duplicarLinhar()
+{
+    Documento* doc = genDoc.procurar(getAbaAtual());
+    doc->duplicarLinha();
+}
+
 void IDE::menuArquivoClicado()
 {
     //Se não tiver reabrir... desabilita o menu
@@ -1130,19 +1137,14 @@ void IDE::fonteClicado()
 void IDE::irParaClicado()
 {
     Documento* doc = genDoc.procurar(getAbaAtual());
-    /*IrPara irPara(this);
+
+    IrPara irPara(doc->getQuantidadeLinhas(), this);
 
     irPara.setFixedSize(irPara.size());
 
     if(irPara.exec()==QDialog::Accepted)
     {
         int linha = irPara.getNumeroLinha();
-
-    }*/
-
-    QTextDocument *txtDoc = doc->edit->document();
-    QTextBlock block = txtDoc->firstBlock();
-    QTextCursor cursor(doc->edit->textCursor());
-
-    qDebug()<<cursor.block().blockNumber();
+        doc->setPosicaoCursor(linha);
+    }
 }

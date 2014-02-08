@@ -10,6 +10,9 @@
 #include <QClipboard>
 #include <QFont>
 #include <QTextOption>
+#include <QTextBlock> //remover depois isso...
+#include <QTextDocument> //remover depois isso...
+#include <QTextCursor> //Remover depois isso...
 
 class Documento
 {
@@ -42,8 +45,13 @@ public:
     bool isDesfazerDisponivel();
     bool isRefazerDisponivel();
     void setFonte(QString familia, int tamanho);
-    EditorCodigo *edit; //COLOCAR ISSO PRIVADO DEPOIS
+    int getQuantidadeLinhas();
+    void setPosicaoCursor(int posicao); //posicao é referente a linha
+    int getPosicaoCursor(); //posicao é referente a linha que o cursor se situa neste momento
+    void duplicarLinha();
+
 private:
+    EditorCodigo *edit;
     bool sujo;
     QWidget *widget;
     QString documentoId;

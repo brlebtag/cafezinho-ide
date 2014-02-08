@@ -145,4 +145,64 @@ void Documento::setFonte(QString familia, int tamanho)
     this->edit->setFont(QFont(familia,tamanho));
 }
 
+int Documento::getQuantidadeLinhas()
+{
+    return this->edit->document()->blockCount();
+}
+
+void Documento::setPosicaoCursor(int posicao)
+{
+    QTextCursor cursor(this->edit->textCursor());
+
+    int posCursorAtual = getPosicaoCursor();
+
+    //Marca como uma unica operação...
+    cursor.beginEditBlock();
+
+    //Movimenta o cursor para o inicio da linha
+    cursor.movePosition(QTextCursor::StartOfLine);
+
+    if(posicao > posCursorAtual)
+    {
+        //mover para baixo
+        cursor.movePosition(QTextCursor::Down, QTextCursor::MoveAnchor, posicao - posCursorAtual);
+    }
+    else
+    {
+        //mover para cima
+        cursor.movePosition(QTextCursor::Up, QTextCursor::MoveAnchor, posCursorAtual - posicao);
+    }
+
+    //Termina a marcação como unica operação
+    cursor.endEditBlock();
+
+    //Seta a posicao do novo Cursor
+    this->edit->setTextCursor(cursor);
+}
+
+int Documento::getPosicaoCursor()
+{
+    return (edit->textCursor().block().blockNumber() + 1);
+}
+
+void Documento::duplicarLinha()
+{
+    QTextCursor cursor(this->edit->textCursor());
+
+    //Marca como uma unica operação...
+    cursor.beginEditBlock();
+
+    //Pega o texto daquele bloco que o cursor está
+    QString textoDup = cursor.block().text();
+
+    //Movimenta o cursor para o fim da linha
+    cursor.movePosition(QTextCursor::EndOfLine);
+
+    //Inseri o
+    cursor.insertText("\n"+textoDup);
+
+    //Termina a marcação como unica operação
+    cursor.endEditBlock();
+}
+
 

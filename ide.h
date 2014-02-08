@@ -24,9 +24,7 @@
 #include <QPoint>
 #include "fontedialog.h"
 #include "irpara.h"
-#include <QTextBlock> //remover depois isso...
-#include <QTextDocument> //remover depois isso...
-#include <QTextCursor> //Remover depois isso...
+
 
 //reimplementar o metodo salvar todos... e fechar todos...
 
@@ -181,6 +179,7 @@ private slots:
     void menuEditarClicado();
     void desfazerDocumento();
     void refazerDocumento();
+    void duplicarLinhar();
 
     //Menu Editor
     void aumentarFonte();

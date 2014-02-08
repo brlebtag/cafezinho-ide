@@ -13,7 +13,7 @@ class IrPara : public QDialog
     Q_OBJECT
 
 public:
-    explicit IrPara(QWidget *parent = 0);
+    explicit IrPara(int maxSize, QWidget *parent = 0);
     ~IrPara();
     int getNumeroLinha();
 private:

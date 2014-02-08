@@ -1,13 +1,15 @@
 #include "irpara.h"
 #include "ui_irpara.h"
 
-IrPara::IrPara(QWidget *parent) :
+IrPara::IrPara(int maxSize, QWidget *parent) :
     QDialog(parent),
     ui(new Ui::IrPara)
 {
     ui->setupUi(this);
-    QIntValidator *validator = new QIntValidator(1, 2147483647, this);
+    QIntValidator *validator = new QIntValidator(1, maxSize, this);
     this->ui->editLinha->setValidator(validator);
+    this->setFocus();
+    this->ui->editLinha->setFocus();
 }
 
 IrPara::~IrPara()
