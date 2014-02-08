@@ -23,6 +23,10 @@
 #include "QIcon"
 #include <QPoint>
 #include "fontedialog.h"
+#include "irpara.h"
+#include <QTextBlock> //remover depois isso...
+#include <QTextDocument> //remover depois isso...
+#include <QTextCursor> //Remover depois isso...
 
 class GerenciadorDocumento;
 

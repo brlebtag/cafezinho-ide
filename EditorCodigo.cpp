@@ -9,14 +9,10 @@ EditorCodigo::EditorCodigo(QWidget *parent) : QPlainTextEdit(parent)
     connect(this, SIGNAL(blockCountChanged(int)), this, SLOT(atualizarLarguraAreaNumero(int)));
     connect(this, SIGNAL(updateRequest(QRect,int)), this, SLOT(atualizarAreaNumero(QRect,int)));
     connect(this,SIGNAL(copyAvailable(bool)),this,SLOT(textoSelecionadoHabilitado(bool)));
-    connect(this,SIGNAL(redoAvailable(bool)),this,SLOT(refazerDisp(bool)));
-    connect(this,SIGNAL(undoAvailable(bool)),this,SLOT(desfazerDisp(bool)));
     atualizarLarguraAreaNumero(0);
     breakpointImg.load(":/bolinha.png");
     breakpoints.clear();
     textoSelecionado = false;
-    refazerDisponivel = false;
-    desfazerDisponivel = false;
 }
 
 int EditorCodigo::lineNumberAreaWidth()
@@ -53,16 +49,6 @@ void EditorCodigo::forceUpdate()
 bool EditorCodigo::isTextoSelecionado()
 {
     return this->textoSelecionado;
-}
-
-bool EditorCodigo::isRefazerDisponivel()
-{
-    return this->refazerDisponivel;
-}
-
-bool EditorCodigo::isDesfazerDisponivel()
-{
-    return this->desfazerDisponivel;
 }
 
 void EditorCodigo::atualizarLarguraAreaNumero(int /* newBlockCount */)
@@ -108,16 +94,6 @@ void EditorCodigo::clicouAreaNumero(int line)
 void EditorCodigo::textoSelecionadoHabilitado(bool yes)
 {
     this->textoSelecionado = yes;
-}
-
-void EditorCodigo::desfazerDisp(bool b)
-{
-    this->desfazerDisponivel = b;
-}
-
-void EditorCodigo::refazerDisp(bool b)
-{
-    this->refazerDisponivel = b;
 }
 
 void EditorCodigo::resizeEvent(QResizeEvent *e)

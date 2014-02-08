@@ -624,6 +624,9 @@ void IDE::acaoNovo()
 
     //Seta o foco no edit...
     doc->setFocus();
+
+    //Seta as configuraçẽos da fonte
+    doc->setFonte(familia_fonte, tamanho_fonte);
 }
 
 void IDE::acaoFechar()
@@ -878,6 +881,7 @@ void IDE::mudouAbaAtual(int index)
     {
         //Repintar o edit
         doc->repintarEditor();
+        doc->setFonte(familia_fonte, tamanho_fonte);
     }
 }
 
@@ -1048,7 +1052,7 @@ void IDE::menuArquivoClicado()
 
 void IDE::configurarFonteEditor()
 {
-     Documento* doc = genDoc.procurar(getAbaAtual());
+    Documento* doc = genDoc.procurar(getAbaAtual());
 
     doc->setFonte(familia_fonte,tamanho_fonte);
 }
@@ -1105,5 +1109,19 @@ void IDE::fonteClicado()
 
 void IDE::irParaClicado()
 {
+    Documento* doc = genDoc.procurar(getAbaAtual());
+    /*IrPara irPara(this);
 
+    irPara.setFixedSize(irPara.size());
+
+    if(irPara.exec()==QDialog::Accepted)
+    {
+        int linha = irPara.getNumeroLinha();
+
+    }*/
+
+    QTextDocument *txtDoc = doc->edit->document();
+    QTextBlock block = txtDoc->firstBlock();
+
+    qDebug()<<block.text();
 }

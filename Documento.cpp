@@ -4,6 +4,9 @@ Documento::Documento(QWidget *widget, EditorCodigo *edit, bool dirty)
     :widget(widget), edit(edit), sujo(dirty)
 {
     aberto = false;
+    edit->setWordWrapMode(QTextOption::NoWrap);
+    edit->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+    edit->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
 }
 
 bool Documento::isVazio()
@@ -129,12 +132,12 @@ bool Documento::isColarDisponivel()
 
 bool Documento::isDesfazerDisponivel()
 {
-    return this->edit->isDesfazerDisponivel();
+    return this->edit->document()->isUndoAvailable();
 }
 
 bool Documento::isRefazerDisponivel()
 {
-    return this->edit->isRefazerDisponivel();
+    return this->edit->document()->isRedoAvailable();
 }
 
 void Documento::setFonte(QString familia, int tamanho)

@@ -9,6 +9,7 @@
 #include <QApplication>
 #include <QClipboard>
 #include <QFont>
+#include <QTextOption>
 
 class Documento
 {
@@ -40,8 +41,8 @@ public:
     bool isColarDisponivel();
     bool isDesfazerDisponivel();
     bool isRefazerDisponivel();
-    void setFonte(QString familia, int tamanho); //Configurar a Fonte usando CSS
-    EditorCodigo *edit;
+    void setFonte(QString familia, int tamanho);
+    EditorCodigo *edit; //COLOCAR ISSO PRIVADO DEPOIS
 private:
     bool sujo;
     QWidget *widget;
