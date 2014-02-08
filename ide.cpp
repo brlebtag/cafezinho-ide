@@ -1122,6 +1122,7 @@ void IDE::irParaClicado()
 
     QTextDocument *txtDoc = doc->edit->document();
     QTextBlock block = txtDoc->firstBlock();
+    QTextCursor cursor(doc->edit->textCursor());
 
-    qDebug()<<block.text();
+    qDebug()<<cursor.block().blockNumber();
 }
