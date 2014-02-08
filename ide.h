@@ -117,7 +117,8 @@ private:
 
     //Gerenciar Remoção de abas e documentos
     void removeAba(int index, Documento* document);
-    bool salvarEFecharAbas(bool fechar = true);
+    bool salvarEFecharAbas(bool salvar_alteracoes = true, bool fechar = true);
+    bool salvarAba(Documento* doc); //Funcão auxiliar de SalvarEFecharAbas
 
     //Gerenciar Configuracoes
 

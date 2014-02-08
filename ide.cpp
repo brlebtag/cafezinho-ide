@@ -680,13 +680,40 @@ void IDE::acaoFechar()
     //se existir apenas essa aba não a fecha e tbm não aparece janela de salva (apenas não fecha)...
 }
 
-bool IDE::salvarEFecharAbas(bool fechar)
+bool IDE::salvarAba(Documento* doc)
+{
+    QString fileName;
+    if(doc->isAberto())
+        fileName = doc->getCaminhoCompleto();
+    else
+        fileName = mostrarSalvarArquivo();
+
+    //Se estiver vazia não fecha a aba...
+    if(fileName.isEmpty())
+        return false;
+
+    if(!gravarDocumento(doc, fileName))
+    {
+        //se der erro (nesse ponto a mensagem de erro já ocorreu) eu apenas fecho... que o usuario
+        //vai tentar novamente ...
+        return false;
+    }
+
+    return true;
+}
+
+bool IDE::salvarEFecharAbas(bool salvar_alteracoes, bool fechar)
 {
     for(int index=genDoc.tamanho()-1; index>=0; index--)
     {
         Documento *doc = genDoc[index];
 
-        if(doc->isSujo())
+        bool sujo = true; //se nao for para fechar então deve salvar incondicionamente
+
+        if(fechar) // mas se for fechar todos entao verifica se está sujo
+            sujo = doc->isSujo();
+
+        if(sujo)
         {
 
             //Seta a tab index como a atual...
@@ -695,34 +722,27 @@ bool IDE::salvarEFecharAbas(bool fechar)
             //Seta o foco no edit...
             doc->setFocus();
 
-            switch(mostrarSalvarAlteracao())
+            if(salvar_alteracoes)
             {
-                case QMessageBox::Cancel:
+                switch(mostrarSalvarAlteracao())
                 {
-                    return false;
-                }
-                break;
-                case QMessageBox::Save:
-                {
-                    QString fileName;
-                    if(doc->isAberto())
-                        fileName = doc->getCaminhoCompleto();
-                    else
-                        fileName = mostrarSalvarArquivo();
-
-                    //Se estiver vazia não fecha a aba...
-                    if(fileName.isEmpty())
-                        return false;
-
-                    if(!gravarDocumento(doc, fileName))
+                    case QMessageBox::Cancel:
                     {
-                        //se der erro (nesse ponto a mensagem de erro já ocorreu) eu apenas fecho... que o usuario
-                        //vai tentar novamente ...
                         return false;
                     }
-
+                    break;
+                    case QMessageBox::Save:
+                    {
+                        if(!salvarAba(doc))
+                            return false;
+                    }
+                    break;
                 }
-                break;
+            }
+            else
+            {
+                if(!salvarAba(doc))
+                    return false;
             }
 
         }
@@ -972,7 +992,7 @@ void IDE::anteriroDocumento()
 
 void IDE::salvarTodosDocumentos()
 {
-    salvarEFecharAbas(false);
+    salvarEFecharAbas(false, false);
 }
 
 void IDE::fecharTodosDocumentos()
