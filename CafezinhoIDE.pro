@@ -20,7 +20,8 @@ SOURCES += main.cpp\
     AreaNumeroLinha.cpp \
     GerenciadorMenuReabrir.cpp \
     fontedialog.cpp \
-    irpara.cpp
+    irpara.cpp \
+    GerenciadorProcura.cpp
 
 HEADERS  += ide.h \
     GerenciadorDocumento.h \
@@ -29,7 +30,8 @@ HEADERS  += ide.h \
     AreaNumeroLinha.h \
     GerenciadorMenuReabrir.h \
     fontedialog.h \
-    irpara.h
+    irpara.h \
+    GerenciadorProcura.h
 
 FORMS    += ide.ui \
     fontedialog.ui \

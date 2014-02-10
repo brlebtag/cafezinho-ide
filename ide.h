@@ -24,6 +24,7 @@
 #include <QPoint>
 #include "fontedialog.h"
 #include "irpara.h"
+#include "GerenciadorProcura.h"
 
 
 //Ajustar o clipboard posteriormente...
@@ -49,6 +50,7 @@ private:
     QSet<QString> docAbertos;
     GerenciadorDocumento genDoc;
     GerenciadorMenuReabrir genReabrir;
+    GerenciadorProcura genProc;
     QString ultimoCaminho;
     QSettings configuracoes;
     bool ver_funcoes;
@@ -189,6 +191,9 @@ private slots:
 
     //Menu Pesquisar
     void irParaClicado();
+
+signals:
+    void mudouEditor(QPlainTextEdit *edit);
 
 };
 

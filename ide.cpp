@@ -4,7 +4,8 @@
 
 IDE::IDE(QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::IDE), genReabrir(this), configuracoes(QSettings::IniFormat, QSettings::UserScope, "UFG", "CafezinhoIDE")
+    ui(new Ui::IDE), genReabrir(this), configuracoes(QSettings::IniFormat, QSettings::UserScope, "UFG", "CafezinhoIDE"),
+    genProc(this)
 {
     ui->setupUi(this);
 
@@ -54,6 +55,9 @@ IDE::IDE(QWidget *parent) :
 
     //Tab Widget Arquivos
     connect(this->ui->tabWidgetArquivos,SIGNAL(currentChanged(int)),this, SLOT(mudouAbaAtual(int)));
+
+    //Gerenciador Procurar
+    connect(this,SIGNAL(mudouEditor(QPlainTextEdit*)),&genProc,SLOT(mudouEditor(QPlainTextEdit*)));
 
     //Index da aba atual...
     int index = getAbaAtual();
@@ -903,6 +907,7 @@ void IDE::mudouAbaAtual(int index)
         //Repintar o edit
         doc->repintarEditor();
         doc->setFonte(familia_fonte, tamanho_fonte);
+        emit mudouEditor(doc->getEditor());
     }
 }
 
@@ -938,9 +943,9 @@ void IDE::acaoHabilitarDebug(bool checked)
 void IDE::acaoHabilitarExecProg(bool checked)
 {
     if(checked)
-        this->ui->tabGadget->show();
+        this->ui->tabgadget->show();
     else
-        this->ui->tabGadget->hide();
+        this->ui->tabgadget->hide();
 
     //Salva o estado de ExecProg para ser gravado posteriormente
     ver_exec_prog = checked;

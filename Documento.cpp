@@ -9,6 +9,11 @@ Documento::Documento(QWidget *widget, EditorCodigo *edit, bool dirty)
     edit->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
 }
 
+Documento::~Documento()
+{
+    delete widget;
+}
+
 bool Documento::isVazio()
 {
     return this->edit->toPlainText().isEmpty();
@@ -203,6 +208,11 @@ void Documento::duplicarLinha()
 
     //Termina a marcação como unica operação
     cursor.endEditBlock();
+}
+
+QPlainTextEdit *Documento::getEditor()
+{
+    return this->edit;
 }
 
 
