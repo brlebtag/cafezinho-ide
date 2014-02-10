@@ -26,7 +26,7 @@
 #include "irpara.h"
 
 
-//reimplementar o metodo salvar todos... e fechar todos...
+//Ajustar o clipboard posteriormente...
 
 class GerenciadorDocumento;
 

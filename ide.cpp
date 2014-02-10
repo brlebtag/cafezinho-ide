@@ -974,7 +974,7 @@ void IDE::reiniciarInterfaceClicado()
 void IDE::proximoDocumento()
 {
     int index = getAbaAtual();
-    if(++index == genDoc.tamanho())
+    if(++index >= genDoc.tamanho())
     {
         index = 0;
     }
@@ -984,7 +984,7 @@ void IDE::proximoDocumento()
 void IDE::anteriroDocumento()
 {
     int index = getAbaAtual();
-    if(--index < 0)
+    if(--index <= 0)
     {
         index = genDoc.tamanho()-1;
     }

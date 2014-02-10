@@ -10,9 +10,10 @@
 #include <QClipboard>
 #include <QFont>
 #include <QTextOption>
-#include <QTextBlock> //remover depois isso...
-#include <QTextDocument> //remover depois isso...
-#include <QTextCursor> //Remover depois isso...
+#include <QTextBlock>
+#include <QTextDocument>
+#include <QTextCursor>
+
 
 class Documento
 {
