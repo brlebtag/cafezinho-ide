@@ -62,7 +62,7 @@ IDE::IDE(QWidget *parent) :
     QWidget *aba = getAbaAtualWidget();
 
     //Inseri o botao
-    this->ui->tabWidgetArquivos->tabBar()->setTabButton(index,QTabBar::RightSide, (QWidget*) (criarBotaoFecharAba(aba)));
+    this->ui->tabWidgetArquivos->tabBar()->setTabButton(index, QTabBar::RightSide, (QWidget*) (criarBotaoFecharAba(aba)));
 
     //Cria um QPlainTextEdit e inseri na tab
     EditorCodigo *edit = criarEditor(aba);
@@ -938,9 +938,9 @@ void IDE::acaoHabilitarDebug(bool checked)
 void IDE::acaoHabilitarExecProg(bool checked)
 {
     if(checked)
-        this->ui->groupExecProg->show();
+        this->ui->tabGadget->show();
     else
-        this->ui->groupExecProg->hide();
+        this->ui->tabGadget->hide();
 
     //Salva o estado de ExecProg para ser gravado posteriormente
     ver_exec_prog = checked;
