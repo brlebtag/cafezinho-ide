@@ -21,7 +21,8 @@ SOURCES += main.cpp\
     GerenciadorMenuReabrir.cpp \
     fontedialog.cpp \
     irpara.cpp \
-    GerenciadorProcura.cpp
+    GerenciadorProcura.cpp \
+    procurar.cpp
 
 HEADERS  += ide.h \
     GerenciadorDocumento.h \
@@ -31,11 +32,13 @@ HEADERS  += ide.h \
     GerenciadorMenuReabrir.h \
     fontedialog.h \
     irpara.h \
-    GerenciadorProcura.h
+    GerenciadorProcura.h \
+    procurar.h
 
 FORMS    += ide.ui \
     fontedialog.ui \
-    irpara.ui
+    irpara.ui \
+    procurar.ui
 
 RESOURCES += \
     resource.qrc

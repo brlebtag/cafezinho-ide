@@ -46,6 +46,7 @@ void GerenciadorProcura::mostrar()
     {
 
         this->widget = criarAba();
+        this->widget->setSubstituir(substituir);
         visivel = true;
     }
 }
@@ -73,6 +74,8 @@ void GerenciadorProcura::localizarAnterior()
 void GerenciadorProcura::setSubstituir(bool substituir)
 {
     this->substituir = substituir;
+    if(visivel)
+        this->widget->setSubstituir(substituir);
     atualizarInterface();
 }
 
@@ -99,10 +102,10 @@ QPushButton *GerenciadorProcura::criarBotaoFecharAba(QWidget* pai)
     return button;
 }
 
-QWidget *GerenciadorProcura::criarAba()
+Procurar *GerenciadorProcura::criarAba()
 {
     //Criar a aba..
-    QWidget* tab = new QWidget();
+    Procurar* tab = new Procurar();
 
     //Inseri a aba...
     int id = tabWidget->addTab(tab, getTituloAba());

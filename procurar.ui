@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Procurar</class>
+ <widget class="QWidget" name="Procurar">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>686</width>
+    <height>167</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="0" column="0">
+    <layout class="QVBoxLayout" name="verticalLayout">
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout">
+       <item>
+        <widget class="QPushButton" name="botaoIgnorarMaiscula">
+         <property name="maximumSize">
+          <size>
+           <width>32</width>
+           <height>23</height>
+          </size>
+         </property>
+         <property name="toolTip">
+          <string>Ignorar Maiusculo e Minusculo</string>
+         </property>
+         <property name="text">
+          <string>aA</string>
+         </property>
+         <property name="checkable">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="botaoPalavraInteira_1">
+         <property name="maximumSize">
+          <size>
+           <width>32</width>
+           <height>23</height>
+          </size>
+         </property>
+         <property name="toolTip">
+          <string>Procurar por palavra inteira</string>
+         </property>
+         <property name="text">
+          <string>&quot; &quot;</string>
+         </property>
+         <property name="checkable">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="lblLocalizar">
+         <property name="text">
+          <string>Localizar:</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLineEdit" name="editLocalizar"/>
+       </item>
+       <item>
+        <widget class="QPushButton" name="botaoLocalizar">
+         <property name="toolTip">
+          <string>Localizar próxima ocorrência do texto depois do cursor</string>
+         </property>
+         <property name="text">
+          <string>Localizar</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="botaoLocalizarAnterior">
+         <property name="toolTip">
+          <string>Localizar ocorrência do texto anterior ao cursor</string>
+         </property>
+         <property name="text">
+          <string>Anterior</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout_2">
+       <item>
+        <widget class="QPushButton" name="botaoPalavraInteira_2">
+         <property name="maximumSize">
+          <size>
+           <width>32</width>
+           <height>23</height>
+          </size>
+         </property>
+         <property name="toolTip">
+          <string>Procurar por palavra inteira</string>
+         </property>
+         <property name="text">
+          <string>&quot; &quot;</string>
+         </property>
+         <property name="checkable">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="lblSubstituir">
+         <property name="text">
+          <string>Substituir por:</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLineEdit" name="editSubstituir"/>
+       </item>
+       <item>
+        <widget class="QPushButton" name="botaoSubstituir">
+         <property name="toolTip">
+          <string>Substituir o texto atualmente selecionar por outro texto</string>
+         </property>
+         <property name="text">
+          <string>Substituir</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="botaoSubstituirTudo">
+         <property name="toolTip">
+          <string>Substituir todas as ocorrencias de texto por outro texto</string>
+         </property>
+         <property name="text">
+          <string>Tudo</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <spacer name="verticalSpacer">
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>20</width>
+         <height>40</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

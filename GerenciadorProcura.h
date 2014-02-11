@@ -7,10 +7,7 @@
 #include <QPlainTextEdit>
 #include <QTabWidget>
 #include <QTabBar>
-#include <QLabel>
-#include <QHBoxLayout>
-#include <QVBoxLayout>
-#include <QLayout>
+#include "procurar.h"
 
 class GerenciadorProcura : public QObject
 {
@@ -33,14 +30,14 @@ public:
 
 private:
     QTabWidget *tabWidget;
-    QWidget *widget;
+    Procurar *widget;
     QPushButton *botaoFechar;
     QPlainTextEdit *edit;
     bool visivel;
     bool substituir;
     QString palavraProcurada;
     QPushButton* criarBotaoFecharAba(QWidget *pai);
-    QWidget *criarAba();
+    Procurar *criarAba();
     QString getTituloAba();
     void setTituloAba(QString titulo);
     int indiceAba();
