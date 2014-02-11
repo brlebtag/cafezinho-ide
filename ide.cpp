@@ -4,8 +4,7 @@
 
 IDE::IDE(QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::IDE), genReabrir(this), configuracoes(QSettings::IniFormat, QSettings::UserScope, "UFG", "CafezinhoIDE"),
-    genProc(this)
+    ui(new Ui::IDE), genReabrir(this), configuracoes(QSettings::IniFormat, QSettings::UserScope, "UFG", "CafezinhoIDE")
 {
     ui->setupUi(this);
 
@@ -52,6 +51,10 @@ IDE::IDE(QWidget *parent) :
 
     //Menu Pesquisar
     connect(this->ui->actionIr_para_Linha,SIGNAL(triggered()),this,SLOT(irParaClicado()));
+    connect(this->ui->actionLocalizar,SIGNAL(triggered()),this,SLOT(localizarClicado()));
+    connect(this->ui->actionSubstituir,SIGNAL(triggered()),this,SLOT(substituirClicado()));
+    connect(this->ui->actionLocalizar_Anterior,SIGNAL(triggered()),this,SLOT(localizarAnteriroClicado()));
+    connect(this->ui->actionLocalizar_Proximo,SIGNAL(triggered()),this,SLOT(localizarProximoClicado()));
 
     //Tab Widget Arquivos
     connect(this->ui->tabWidgetArquivos,SIGNAL(currentChanged(int)),this, SLOT(mudouAbaAtual(int)));
@@ -59,41 +62,28 @@ IDE::IDE(QWidget *parent) :
     //Gerenciador Procurar
     connect(this,SIGNAL(mudouEditor(QPlainTextEdit*)),&genProc,SLOT(mudouEditor(QPlainTextEdit*)));
 
-    //Index da aba atual...
-    int index = getAbaAtual();
+    //Conecto o menu reabrir para receber quando um item do menu for clicado para reabrir ele...
+    connect(&genReabrir,SIGNAL(menuReabrirClicou(QString)),this,SLOT(menuReabrirClicou(QString)));
 
-    //Pega o widget da aba atual...
-    QWidget *aba = getAbaAtualWidget();
+    Documento* doc = criarDocumento("Novo Arquivo");
 
-    //Inseri o botao
-    this->ui->tabWidgetArquivos->tabBar()->setTabButton(index, QTabBar::RightSide, (QWidget*) (criarBotaoFecharAba(aba)));
-
-    //Cria um QPlainTextEdit e inseri na tab
-    EditorCodigo *edit = criarEditor(aba);
-
-    //Criar Documento
-    Documento* doc = criarDocumento(aba,edit);
-
-    //inseri a tab na gerenciador de documentos
-    genDoc.inserir(doc);
-
-    //Ajusta o ultimo caminho
-    ultimoCaminho = QDir::currentPath();
-
-    //Coloca o Titulo
-    setTituloAba(index, tr("Novo Arquivo"));
+    //Inserir Botao nova Aba no canto direto da  TabWidget...
+    this->ui->tabWidgetArquivos->setCornerWidget(criarBotaoMaisAba(this->ui->tabWidgetArquivos),Qt::TopRightCorner);
 
     //Seta o foco no edit...
     doc->setFocus();
 
-    //Conecto o menu reabrir para receber quando um item do menu for clicado para reabrir ele...
-    connect(&genReabrir,SIGNAL(menuReabrirClicou(QString)),this,SLOT(menuReabrirClicou(QString)));
+    //inseri a tab na gerenciador de documentos
+    genDoc.inserir(doc);
+
+    //remove a primeira Aba para controlar melhor o gerenciamento de aba...
+    this->ui->tabWidgetArquivos->removeTab(0);
+
+    //Ajusta o ultimo caminho
+    ultimoCaminho = QDir::currentPath();
 
     //Inseri o menu no Reabrir...
     this->ui->actionReabrir->setMenu(this->genReabrir.getMenu());
-
-    //Inserir Botao nova Aba no canto direto da  TabWidget...
-    this->ui->tabWidgetArquivos->setCornerWidget(criarBotaoMaisAba(this->ui->tabWidgetArquivos),Qt::TopRightCorner);
 
     //Seta status Bar como pronto
     this->ui->statusBar->showMessage("Pronto", 0);
@@ -101,6 +91,12 @@ IDE::IDE(QWidget *parent) :
 
     //Restaurar Todas as configurações
     restaurarConfiguracoes();
+
+    //Adicionar o tabEdit no genProc
+    genProc.setTabWidget(this->ui->tabgadget);
+
+    //Adicionar o edit
+    genProc.setEditor(doc->getEditor());
 }
 
 void IDE::restaurarConfiguracoesFonte()
@@ -207,7 +203,7 @@ QWidget* IDE::criarAba(QString title, int *index)
     this->ui->tabWidgetArquivos->setCurrentWidget(tab);
 
     //Inseri o botao
-    this->ui->tabWidgetArquivos->tabBar()->setTabButton(getAbaAtual(),QTabBar::RightSide, (QWidget*) (criarBotaoFecharAba(tab)));
+    this->ui->tabWidgetArquivos->tabBar()->setTabButton(id, QTabBar::RightSide, (QWidget*) (criarBotaoFecharAba(tab)));
 
     return tab;
 }
@@ -1152,4 +1148,26 @@ void IDE::irParaClicado()
         int linha = irPara.getNumeroLinha();
         doc->setPosicaoCursor(linha);
     }
+}
+
+void IDE::localizarClicado()
+{
+    genProc.setSubstituir(false);
+    genProc.mostrar();
+}
+
+void IDE::substituirClicado()
+{
+    genProc.setSubstituir(true);
+    genProc.mostrar();
+}
+
+void IDE::localizarProximoClicado()
+{
+    genProc.localizarProximo();
+}
+
+void IDE::localizarAnteriroClicado()
+{
+    genProc.localizarAnterior();
 }

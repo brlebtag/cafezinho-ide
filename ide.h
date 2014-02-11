@@ -191,6 +191,10 @@ private slots:
 
     //Menu Pesquisar
     void irParaClicado();
+    void localizarClicado();
+    void substituirClicado();
+    void localizarProximoClicado();
+    void localizarAnteriroClicado();
 
 signals:
     void mudouEditor(QPlainTextEdit *edit);
