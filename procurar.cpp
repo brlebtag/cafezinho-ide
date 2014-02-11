@@ -7,6 +7,13 @@ Procurar::Procurar(QWidget *parent) :
 {
     ui->setupUi(this);
     setSubstituir(false);
+    connect(this->ui->botaoLocalizar,SIGNAL(clicked()),this,SLOT(localizar()));
+    connect(this->ui->botaoSubstituir, SIGNAL(clicked()), this, SLOT(substituir()));
+    connect(this->ui->botaoLocalizarAnterior, SIGNAL(clicked()), this, SLOT(localizarAnterior()));
+    connect(this->ui->botaoSubstituirTudo, SIGNAL(clicked()), this, SLOT(substituirTudo()));
+    connect(this->ui->botaoPalavraInteira_1, SIGNAL(clicked()), this, SLOT(palavraInteira()));
+    connect(this->ui->botaoPalavraInteira_2, SIGNAL(clicked()), this, SLOT(palavraInteira()));
+    connect(this->ui->botaoIgnorarMaiscula, SIGNAL(clicked()), this, SLOT(ignorarMaiscula()));
 }
 
 Procurar::~Procurar()
@@ -18,6 +25,16 @@ void Procurar::setSubstituir(bool substituir)
 {
     this->substituir = substituir;
     atualizarInterface();
+}
+
+QString Procurar::getTextoLocalizar()
+{
+    return this->ui->editLocalizar->text();
+}
+
+QString Procurar::getTextoSubstituir()
+{
+    return this->ui->editSubstituir->text();
 }
 
 void Procurar::atualizarInterface()
@@ -77,4 +94,34 @@ void Procurar::atualizarInterface()
         //Esconde botao Substituir Tudo
         this->ui->botaoSubstituirTudo->hide();
     }
+}
+
+void Procurar::localizar()
+{
+    emit localizarClicado();
+}
+
+void Procurar::substituir()
+{
+    emit substituirClicado();
+}
+
+void Procurar::localizarAnterior()
+{
+    emit localizarAnterior();
+}
+
+void Procurar::substituirTudo()
+{
+    emit substituirTudoClicado();
+}
+
+void Procurar::ignorarMaiscula(bool checked)
+{
+    emit ignorarMaisculaMarcado(checked);
+}
+
+void Procurar::palavraInteira(bool checked)
+{
+    emit palavraInteiraMarcado(checked);
 }
