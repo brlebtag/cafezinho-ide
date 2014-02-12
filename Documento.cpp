@@ -216,4 +216,14 @@ QPlainTextEdit *Documento::getEditor()
     return this->edit;
 }
 
+void Documento::setFormatacao(bool formatacao)
+{
+    this->formatacao = formatacao;
+}
+
+bool Documento::isFormatacao()
+{
+    return formatacao;
+}
+
 

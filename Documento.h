@@ -14,12 +14,14 @@
 #include <QTextDocument>
 #include <QTextCursor>
 #include "Realcador.h"
+#include <QObject>
 
 class Documento
 {
+
 public:
     Documento(QWidget *widget, EditorCodigo *edit, bool sujo = false );
-    ~Documento();
+    virtual ~Documento();
     bool isVazio();
     bool isSujo();
     bool isAberto();
@@ -52,8 +54,11 @@ public:
     int getPosicaoCursor(); //posicao é referente a linha que o cursor se situa neste momento
     void duplicarLinha();
     QPlainTextEdit* getEditor();
+    void setFormatacao(bool formatacao);
+    bool isFormatacao();
 
 private:
+    bool formatacao;
     EditorCodigo *edit;
     bool sujo;
     QWidget *widget;

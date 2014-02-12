@@ -35,8 +35,10 @@ Realcador::Realcador(QTextDocument *documento)
     formatoComentario.setForeground(Qt::darkGreen);
 }
 
+
 void Realcador::highlightBlock(const QString &text)
 {
+
     //Aplica as regras que estao em regrasRealce...
     foreach (const RegrasRealce &regra, regrasRealce)
     {
@@ -96,4 +98,6 @@ void Realcador::highlightBlock(const QString &text)
         //Aplico a busca novamente por começo comentario... talvez pode ter mais comentarios de multilinhas na mesma linha
         comecoIndice = comecoComentario.indexIn(text, comecoIndice + tamanhoComentario);
     }
+
+    emit textoFormatado();
 }
