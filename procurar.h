@@ -33,16 +33,19 @@ signals:
     void substituirTudoClicado();
     void ignorarMaisculaMarcado(bool checked);
     void palavraInteiraMarcado(bool checked);
+    void mudouPalavraProcurada(QString palavra);
+    void mudouPalavraSubstituir(QString palavra);
 
 
-private slots:
+public slots:
     void localizar();
-    void substituir();
+    void substitui();
     void localizarAnterior();
     void substituirTudo();
-    void ignorarMaiscula(bool checked);
-    void palavraInteira(bool checked);
-
+    void ignorarMaiscula();
+    void palavraInteira();
+    void palavraProcurada();
+    void palavraSubstituir();
 };
 
 #endif // PROCURAR_H

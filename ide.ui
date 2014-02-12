@@ -43,7 +43,7 @@
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
-        <widget class="QWidget" name="groupExecProgPage1" native="true">
+        <widget class="QWidget" name="groupExecProgPage1">
          <attribute name="title">
           <string>Execução do Programa</string>
          </attribute>
@@ -529,7 +529,7 @@
     <string>Substituir</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+R</string>
+    <string>Ctrl+H</string>
    </property>
   </action>
   <action name="actionIr_para_Linha">

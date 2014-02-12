@@ -1164,10 +1164,11 @@ void IDE::substituirClicado()
 
 void IDE::localizarProximoClicado()
 {
-    genProc.localizarProximo();
+    genProc.localizar();
 }
 
 void IDE::localizarAnteriroClicado()
 {
     genProc.localizarAnterior();
 }
+

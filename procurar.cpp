@@ -8,12 +8,14 @@ Procurar::Procurar(QWidget *parent) :
     ui->setupUi(this);
     setSubstituir(false);
     connect(this->ui->botaoLocalizar,SIGNAL(clicked()),this,SLOT(localizar()));
-    connect(this->ui->botaoSubstituir, SIGNAL(clicked()), this, SLOT(substituir()));
+    connect(this->ui->botaoSubstituir, SIGNAL(clicked()), this, SLOT(substitui()));
     connect(this->ui->botaoLocalizarAnterior, SIGNAL(clicked()), this, SLOT(localizarAnterior()));
     connect(this->ui->botaoSubstituirTudo, SIGNAL(clicked()), this, SLOT(substituirTudo()));
     connect(this->ui->botaoPalavraInteira_1, SIGNAL(clicked()), this, SLOT(palavraInteira()));
     connect(this->ui->botaoPalavraInteira_2, SIGNAL(clicked()), this, SLOT(palavraInteira()));
     connect(this->ui->botaoIgnorarMaiscula, SIGNAL(clicked()), this, SLOT(ignorarMaiscula()));
+    connect(this->ui->editLocalizar,SIGNAL(editingFinished()), this, SLOT(palavraProcurada()));
+    connect(this->ui->editSubstituir, SIGNAL(editingFinished()), this, SLOT(palavraSubstituir()));
 }
 
 Procurar::~Procurar()
@@ -101,14 +103,14 @@ void Procurar::localizar()
     emit localizarClicado();
 }
 
-void Procurar::substituir()
+void Procurar::substitui()
 {
     emit substituirClicado();
 }
 
 void Procurar::localizarAnterior()
 {
-    emit localizarAnterior();
+    emit localizarAnteriorClicado();
 }
 
 void Procurar::substituirTudo()
@@ -116,12 +118,26 @@ void Procurar::substituirTudo()
     emit substituirTudoClicado();
 }
 
-void Procurar::ignorarMaiscula(bool checked)
+void Procurar::ignorarMaiscula()
 {
-    emit ignorarMaisculaMarcado(checked);
+    emit ignorarMaisculaMarcado(this->ui->botaoIgnorarMaiscula->isChecked());
 }
 
-void Procurar::palavraInteira(bool checked)
+void Procurar::palavraInteira()
 {
-    emit palavraInteiraMarcado(checked);
+    if(QObject::sender()==this->ui->botaoPalavraInteira_1)
+        emit palavraInteiraMarcado(this->ui->botaoPalavraInteira_1->isChecked());
+    else
+        emit palavraInteiraMarcado(this->ui->botaoPalavraInteira_2->isChecked());
 }
+
+void Procurar::palavraProcurada()
+{
+    emit mudouPalavraProcurada(this->ui->editLocalizar->text());
+}
+
+void Procurar::palavraSubstituir()
+{
+    emit mudouPalavraSubstituir(this->ui->editSubstituir->text());
+}
+
