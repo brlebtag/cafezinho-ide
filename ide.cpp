@@ -628,6 +628,9 @@ void IDE::acaoNovo()
 
     //Seta as configuraçẽos da fonte
     doc->setFonte(familia_fonte, tamanho_fonte);
+
+    //forçar a seta a nova aba no genProc
+    genProc.setEditor(doc->getEditor());
 }
 
 void IDE::acaoFechar()
