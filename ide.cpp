@@ -79,9 +79,6 @@ IDE::IDE(QWidget *parent) :
     //remove a primeira Aba para controlar melhor o gerenciamento de aba...
     this->ui->tabWidgetArquivos->removeTab(0);
 
-    //Ajusta o ultimo caminho
-    ultimoCaminho = QDir::currentPath();
-
     //Inseri o menu no Reabrir...
     this->ui->actionReabrir->setMenu(this->genReabrir.getMenu());
 
@@ -97,6 +94,9 @@ IDE::IDE(QWidget *parent) :
 
     //Adicionar o edit
     genProc.setEditor(doc->getEditor());
+
+    //Ajusta o ultimo caminho
+    ultimoCaminho = genReabrir.getUltimoCaminho();
 }
 
 void IDE::restaurarConfiguracoesFonte()

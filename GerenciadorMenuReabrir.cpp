@@ -123,6 +123,14 @@ int GerenciadorMenuReabrir::tamanho()
     return this->acoesSubMenu.size();
 }
 
+QString GerenciadorMenuReabrir::getUltimoCaminho()
+{
+    if(caminhos.isEmpty())
+        return QDir::currentPath();
+    else
+        return caminhos[0];
+}
+
 void GerenciadorMenuReabrir::resetarMenu()
 {
     int i = 0;

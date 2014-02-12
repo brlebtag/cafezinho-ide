@@ -6,6 +6,7 @@
 #include <QAction>
 #include <QMenu>
 #include <QSettings>
+#include <QDir>
 
 class GerenciadorMenuReabrir : public QObject
 {
@@ -17,6 +18,8 @@ public:
     QMenu* getMenu();
     const static int NUM_MENU_REABRIR;
     int tamanho();
+    QString getUltimoCaminho();
+
 private:
     QString getCaminhoSubMenu(QObject *emissor);
     void resetarMenu();
