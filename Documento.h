@@ -13,7 +13,7 @@
 #include <QTextBlock>
 #include <QTextDocument>
 #include <QTextCursor>
-
+#include "Realcador.h"
 
 class Documento
 {

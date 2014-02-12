@@ -7,6 +7,7 @@ Documento::Documento(QWidget *widget, EditorCodigo *edit, bool dirty)
     edit->setWordWrapMode(QTextOption::NoWrap);
     edit->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
     edit->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+    Realcador *realcador = new Realcador(edit->document());
 }
 
 Documento::~Documento()

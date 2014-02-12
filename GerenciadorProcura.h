@@ -32,6 +32,7 @@ public:
     void setEditor(QPlainTextEdit *edit);
     void setSubstituir(bool substituir);
     void atualizarInterface();
+    bool isPalavraProcuradaVazia();
 
 private:
     QTabWidget *tabWidget;

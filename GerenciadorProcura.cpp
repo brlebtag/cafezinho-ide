@@ -41,7 +41,6 @@ void GerenciadorProcura::mostrar()
 {
     if(!visivel)
     {
-
         this->widget = criarAba();
         this->widget->setSubstituir(substituir);
         visivel = true;
@@ -129,6 +128,11 @@ void GerenciadorProcura::setSubstituir(bool substituir)
 void GerenciadorProcura::atualizarInterface()
 {
     setTituloAba(getTituloAba());
+}
+
+bool GerenciadorProcura::isPalavraProcuradaVazia()
+{
+    return this->palavraProcurada.isEmpty();
 }
 
 QPushButton *GerenciadorProcura::criarBotaoFecharAba(QWidget* pai)

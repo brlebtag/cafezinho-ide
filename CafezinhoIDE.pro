@@ -22,7 +22,8 @@ SOURCES += main.cpp\
     fontedialog.cpp \
     irpara.cpp \
     GerenciadorProcura.cpp \
-    procurar.cpp
+    procurar.cpp \
+    Realcador.cpp
 
 HEADERS  += ide.h \
     GerenciadorDocumento.h \
@@ -33,7 +34,8 @@ HEADERS  += ide.h \
     fontedialog.h \
     irpara.h \
     GerenciadorProcura.h \
-    procurar.h
+    procurar.h \
+    Realcador.h
 
 FORMS    += ide.ui \
     fontedialog.ui \

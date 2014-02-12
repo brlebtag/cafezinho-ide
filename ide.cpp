@@ -1156,22 +1156,50 @@ void IDE::irParaClicado()
 void IDE::localizarClicado()
 {
     genProc.setSubstituir(false);
+    if(!genProc.isVisivel())
+    {
+        this->ui->actionExecProg->setChecked(true);
+    }
     genProc.mostrar();
 }
 
 void IDE::substituirClicado()
 {
     genProc.setSubstituir(true);
+    if(!genProc.isVisivel())
+    {
+        this->ui->actionExecProg->setChecked(true);
+    }
     genProc.mostrar();
 }
 
 void IDE::localizarProximoClicado()
 {
-    genProc.localizar();
+    if(genProc.isPalavraProcuradaVazia())
+    {
+        genProc.setSubstituir(true);
+        if(!genProc.isVisivel())
+        {
+            this->ui->actionExecProg->setChecked(true);
+        }
+        genProc.mostrar();
+    }
+    else
+        genProc.localizar();
 }
 
 void IDE::localizarAnteriroClicado()
 {
-    genProc.localizarAnterior();
+    if(genProc.isPalavraProcuradaVazia())
+    {
+        genProc.setSubstituir(true);
+        if(!genProc.isVisivel())
+        {
+            this->ui->actionExecProg->setChecked(true);
+        }
+        genProc.mostrar();
+    }
+    else
+        genProc.localizarAnterior();
 }
 
