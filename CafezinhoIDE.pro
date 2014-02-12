@@ -16,18 +16,17 @@ SOURCES += main.cpp\
         ide.cpp \
     GerenciadorDocumento.cpp \
     EditorCodigo.cpp \
-    Documento.cpp \
     AreaNumeroLinha.cpp \
     GerenciadorMenuReabrir.cpp \
     fontedialog.cpp \
     irpara.cpp \
     GerenciadorProcura.cpp \
     procurar.cpp \
-    Realcador.cpp
+    Realcador.cpp \
+    Documento.cpp
 
 HEADERS  += ide.h \
     GerenciadorDocumento.h \
-    Documento.h \
     EditorCodigo.h \
     AreaNumeroLinha.h \
     GerenciadorMenuReabrir.h \
@@ -35,7 +34,8 @@ HEADERS  += ide.h \
     irpara.h \
     GerenciadorProcura.h \
     procurar.h \
-    Realcador.h
+    Realcador.h \
+    Documento.h
 
 FORMS    += ide.ui \
     fontedialog.ui \

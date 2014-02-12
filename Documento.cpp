@@ -1,18 +1,18 @@
 #include "Documento.h"
 
-Documento::Documento(QWidget *widget, EditorCodigo *edit, bool dirty)
-    :widget(widget), edit(edit), sujo(dirty)
+Documento::Documento(QWidget *widget, EditorCodigo *edit, bool sujo) :
+    QObject(widget), widget(widget), edit(edit), sujo(sujo)
 {
     aberto = false;
     edit->setWordWrapMode(QTextOption::NoWrap);
     edit->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
     edit->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
     Realcador *realcador = new Realcador(edit->document());
-}
-
-Documento::~Documento()
-{
-    delete widget;
+    //O Realcador dispara textChanged() na primeira chamada...
+    //assim o editor vai adicionar * pensando que mudou alguma coisa
+    //Para corrigir isso eu adicionei essa flag primeiraChamada ela é de controle intero
+    //IDE não vê isso ...
+    primeiraChamada = true;
 }
 
 bool Documento::isVazio()
@@ -22,6 +22,11 @@ bool Documento::isVazio()
 
 bool Documento::isSujo()
 {
+    if(primeiraChamada)
+    {
+        primeiraChamada = false;
+        return true;
+    }
     return this->sujo;
 }
 
@@ -215,15 +220,3 @@ QPlainTextEdit *Documento::getEditor()
 {
     return this->edit;
 }
-
-void Documento::setFormatacao(bool formatacao)
-{
-    this->formatacao = formatacao;
-}
-
-bool Documento::isFormatacao()
-{
-    return formatacao;
-}
-
-

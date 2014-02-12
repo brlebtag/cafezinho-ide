@@ -845,7 +845,6 @@ void IDE::alterarEditorCodigo()
     //Pega o edit da hashtable
     Documento* doc = genDoc.procurar(index);
 
-    //&&(!doc->isFormatacao())
     if(!doc->isSujo())
     {
 
@@ -856,9 +855,6 @@ void IDE::alterarEditorCodigo()
         doc->sujou();
         configurarFonteEditor();
     }
-
-    //if(doc->isFormatacao())
-        //doc->setFormatacao(false);
 }
 
 void IDE::acaoHabilitarNumeroLinha(bool checked)

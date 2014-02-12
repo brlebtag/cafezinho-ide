@@ -30,8 +30,6 @@ private:
     QTextCharFormat formatoComentario;
     QTextCharFormat formatoFuncao;
     QTextCharFormat formatoPalavrasChaves;
-signals:
-    void textoFormatado();
 };
 
 #endif // REALCADOR_H

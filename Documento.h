@@ -1,6 +1,7 @@
-#ifndef DOCUMENT_H
-#define DOCUMENT_H
+#ifndef DOCUMENTO_H
+#define DOCUMENTO_H
 
+#include <QObject>
 #include <QString>
 #include <QPlainTextEdit>
 #include <QCryptographicHash>
@@ -14,14 +15,12 @@
 #include <QTextDocument>
 #include <QTextCursor>
 #include "Realcador.h"
-#include <QObject>
 
-class Documento
+class Documento : public QObject
 {
-
+    Q_OBJECT
 public:
-    Documento(QWidget *widget, EditorCodigo *edit, bool sujo = false );
-    virtual ~Documento();
+    explicit Documento(QWidget *widget, EditorCodigo *edit, bool sujo = false);
     bool isVazio();
     bool isSujo();
     bool isAberto();
@@ -29,6 +28,7 @@ public:
     void limpou();
     void abriu();
     void fechou();
+    void instalarRealcador();
     QString getTextoDocumento();
     void setNomeDocumento(QString fileName);
     void setTextoDocumento(QString &text);
@@ -54,17 +54,20 @@ public:
     int getPosicaoCursor(); //posicao é referente a linha que o cursor se situa neste momento
     void duplicarLinha();
     QPlainTextEdit* getEditor();
-    void setFormatacao(bool formatacao);
-    bool isFormatacao();
 
 private:
-    bool formatacao;
+    bool primeiraChamada;
     EditorCodigo *edit;
     bool sujo;
     QWidget *widget;
     QString documentoId;
     QString caminhoCompleto;
     bool aberto;
+
+signals:
+
+public slots:
+
 };
 
-#endif // DOCUMENT_H
+#endif // DOCUMENTO_H

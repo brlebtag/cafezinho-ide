@@ -98,6 +98,4 @@ void Realcador::highlightBlock(const QString &text)
         //Aplico a busca novamente por começo comentario... talvez pode ter mais comentarios de multilinhas na mesma linha
         comecoIndice = comecoComentario.indexIn(text, comecoIndice + tamanhoComentario);
     }
-
-    emit textoFormatado();
 }
