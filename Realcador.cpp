@@ -7,6 +7,7 @@ Realcador::Realcador(QTextDocument *documento)
 
     formatoFuncao.setFontItalic(true);
     formatoFuncao.setForeground(Qt::blue);
+
     regra.padrao = QRegExp("\\b[A-Za-z0-9_]+(?=\\()");
     regra.formato = formatoFuncao;
     regrasRealce.append(regra);
@@ -28,7 +29,15 @@ Realcador::Realcador(QTextDocument *documento)
         regrasRealce.append(regra);
     }
 
+    formatoCaracterLiteral.setForeground(Qt::darkRed);
+    regra.padrao = QRegExp("\\'.\\'");
+    regra.formato = formatoCaracterLiteral;
+    regrasRealce.append(regra);
 
+    formatoPalavraLiteral.setForeground(Qt::darkRed);
+    regra.padrao = QRegExp("\\\"[^\\\"]*\\\"");
+    regra.formato = formatoPalavraLiteral;
+    regrasRealce.append(regra);
 
     comecoComentario = QRegExp("/\\*");
     terminoComentario = QRegExp("\\*/");
@@ -38,7 +47,6 @@ Realcador::Realcador(QTextDocument *documento)
 
 void Realcador::highlightBlock(const QString &text)
 {
-
     //Aplica as regras que estao em regrasRealce...
     foreach (const RegrasRealce &regra, regrasRealce)
     {
@@ -62,40 +70,28 @@ void Realcador::highlightBlock(const QString &text)
         }
     }
 
-    //Significado dos estados:
-    // 0 : não está num bloco com comentarios
-    // 1 : está num bloco com comentarios..
-    //Eu salvo está informação para controlar os comentarios que ocupam varias linhas
     setCurrentBlockState(0);
 
-    int comecoIndice = 0;
-    //Verifico se o bloco anterior está dentro de um bloco com comentario senão tiver eu procuro
-    //Se neste bloco possui o inicio do comentario
-    if (previousBlockState() != 1)
-             comecoIndice = comecoComentario.indexIn(text);
+    int indiceComeco = 0;
 
-    while (comecoIndice >= 0)
+    if(previousBlockState()!=1)
+        indiceComeco = comecoComentario.indexIn(text);
+
+    while(indiceComeco>=0)
     {
-        //Procuro pelo fim do comentario depois de comecoIndice...
-        int terminoIndice = terminoComentario.indexIn(text, comecoIndice);
+        int indiceFinal = terminoComentario.indexIn(text, indiceComeco);
+        int tamanhoComentario;
 
-        //Contar o tamanho do comentario...
-        int tamanhoComentario = 0;
-
-        if(terminoIndice == -1)
+        if(indiceFinal == -1)
         {
-            setCurrentBlockState(1); //marco que este bloco é um comentario;
-            tamanhoComentario = text.length() - comecoIndice;//faço o calculo do tamanho do comentario
+            setCurrentBlockState(1);
+            tamanhoComentario = text.length() - indiceComeco;
         }
         else
         {
-            //faço o calculo do tamanho do comentario: fim - inicio + sizeof(*/)
-            tamanhoComentario = terminoIndice - comecoIndice + terminoComentario.matchedLength();
+            tamanhoComentario = indiceFinal - indiceComeco + terminoComentario.matchedLength();
         }
-        //coloco o formatoComentario começando apartir de comecoIndice até comecoIndice+tamanhoComentario
-        setFormat(comecoIndice, tamanhoComentario, formatoComentario);
-
-        //Aplico a busca novamente por começo comentario... talvez pode ter mais comentarios de multilinhas na mesma linha
-        comecoIndice = comecoComentario.indexIn(text, comecoIndice + tamanhoComentario);
+        setFormat(indiceComeco, tamanhoComentario, formatoComentario);
+        indiceComeco = comecoComentario.indexIn(text, indiceComeco + tamanhoComentario);
     }
 }

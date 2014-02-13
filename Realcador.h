@@ -27,9 +27,13 @@ private:
 
     QRegExp comecoComentario;
     QRegExp terminoComentario;
+
     QTextCharFormat formatoComentario;
     QTextCharFormat formatoFuncao;
     QTextCharFormat formatoPalavrasChaves;
+    QTextCharFormat formatoCaracterLiteral;
+    QTextCharFormat formatoPalavraLiteral;
+
 };
 
 #endif // REALCADOR_H
