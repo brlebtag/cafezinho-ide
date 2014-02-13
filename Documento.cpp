@@ -1,5 +1,7 @@
 #include "Documento.h"
 
+const int Documento::TAB_SPACE = 4;
+
 Documento::Documento(QWidget *widget, EditorCodigo *edit, bool sujo) :
     QObject(widget), widget(widget), edit(edit), sujo(sujo)
 {
@@ -13,6 +15,8 @@ Documento::Documento(QWidget *widget, EditorCodigo *edit, bool sujo) :
     //Para corrigir isso eu adicionei essa flag primeiraChamada ela é de controle intero
     //IDE não vê isso ...
     primeiraChamada = true;
+    QFontMetrics metrics(edit->font());
+    edit->setTabStopWidth(4*metrics.width(' '));
 }
 
 bool Documento::isVazio()
@@ -153,7 +157,14 @@ bool Documento::isRefazerDisponivel()
 
 void Documento::setFonte(QString familia, int tamanho)
 {
-    this->edit->setFont(QFont(familia,tamanho));
+    QFont fonte;
+    fonte.setFamily(familia);
+    fonte.setStyleHint(QFont::Monospace);
+    fonte.setFixedPitch(true);
+    fonte.setPointSize(tamanho);
+    QFontMetrics metrics(fonte);
+    edit->setTabStopWidth(Documento::TAB_SPACE*metrics.width(' '));
+    this->edit->setFont(fonte);
 }
 
 int Documento::getQuantidadeLinhas()

@@ -15,6 +15,7 @@
 #include <QTextDocument>
 #include <QTextCursor>
 #include "Realcador.h"
+#include <QFontMetrics>
 
 class Documento : public QObject
 {
@@ -56,6 +57,7 @@ public:
     QPlainTextEdit* getEditor();
 
 private:
+    const static int TAB_SPACE;
     bool primeiraChamada;
     EditorCodigo *edit;
     bool sujo;

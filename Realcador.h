@@ -9,6 +9,7 @@
 #include <QTextCharFormat>
 #include <QList>
 #include <QStringList>
+#include "DadoBlocoTexto.h"
 
 class Realcador : public QSyntaxHighlighter
 {
@@ -18,16 +19,18 @@ public:
 protected:
     void highlightBlock(const QString &text);
 private:
+
     struct RegrasRealce
     {
         QRegExp padrao;
         QTextCharFormat formato;
     };
-    QList<RegrasRealce> regrasRealce;
+    const static int QTD_SIMBOLOS;
+    const static char simbolos [];
 
+    QList<RegrasRealce> regrasRealce;
     QRegExp comecoComentario;
     QRegExp terminoComentario;
-
     QTextCharFormat formatoComentario;
     QTextCharFormat formatoFuncao;
     QTextCharFormat formatoPalavrasChaves;

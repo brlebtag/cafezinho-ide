@@ -1,5 +1,9 @@
 #include "Realcador.h"
 
+const int Realcador::QTD_SIMBOLOS = 6;
+
+const char Realcador::simbolos [] = {'{', '}', '(',')', '[',']'};
+
 Realcador::Realcador(QTextDocument *documento)
     : QSyntaxHighlighter(documento)
 {
@@ -35,9 +39,9 @@ Realcador::Realcador(QTextDocument *documento)
     regrasRealce.append(regra);
 
     formatoPalavraLiteral.setForeground(Qt::darkRed);
-    regra.padrao = QRegExp("\\\"[^\\\"]*\\\"");
-    regra.formato = formatoPalavraLiteral;
-    regrasRealce.append(regra);
+    //regra.padrao = QRegExp("\\\"[^\\\"]*\\\"");
+    //regra.formato = formatoPalavraLiteral;
+    //regrasRealce.append(regra);
 
     comecoComentario = QRegExp("/\\*");
     terminoComentario = QRegExp("\\*/");
@@ -69,6 +73,61 @@ void Realcador::highlightBlock(const QString &text)
             indice = expressao.indexIn(text, indice + tamanho);
         }
     }
+
+    //Salvar parenteses, colchetes e chaves...
+    bool comentario = false;
+    bool palavra = false;
+
+    DadoBlocoTexto* dado = new DadoBlocoTexto();
+
+    int comecoPalavar = 0;
+
+    if(previousBlockState()==1)
+        comentario = true;
+
+    int i =0;
+
+    for(i=0; i<text.size(); ++i)
+    {
+        if(text[i]=='\"')
+        {
+            if(palavra)
+            {
+                setFormat(comecoPalavar, i - comecoPalavar+1, formatoPalavraLiteral);
+                palavra = false;
+                continue;
+            }
+
+            if(!palavra)
+            {
+                comecoPalavar = i;
+                palavra = true;
+            }
+
+        }
+
+        if(text[i]=='/'&&(i+1)<text.size()&&text[i+1]=='*')
+            comentario = true;
+
+        if(text[i]=='*'&&(i+1)<text.size()&&text[i+1]=='\\')
+            comentario = false;
+
+        if((!comentario)&&(!palavra))
+        {
+            for(int j=0; j<Realcador::QTD_SIMBOLOS; ++j)
+            {
+                if(text[i]==Realcador::simbolos[j])
+                {
+                    dado->inserir(Realcador::simbolos[j], i);
+                }
+            }
+        }
+    }
+
+    if(palavra)
+        setFormat(comecoPalavar, i - comecoPalavar, formatoPalavraLiteral);
+
+    setCurrentBlockUserData(dado);
 
     setCurrentBlockState(0);
 

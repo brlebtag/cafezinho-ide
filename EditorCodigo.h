@@ -11,10 +11,10 @@
 #include <QImage>
 #include <QPointF>
 #include <QTextDocument>
+#include "DadoBlocoTexto.h"
 
 class QPaintEvent;
 class QWidget;
-
 
 
 class AreaNumeroLinha;
@@ -41,6 +41,8 @@ private slots:
     void atualizarAreaNumero(const QRect &, int);
     void clicouAreaNumero(int line);
     void textoSelecionadoHabilitado(bool yes);
+    void mudouPosicaoCursor();
+
 
 private:
     static bool numeroLinha;
@@ -48,6 +50,13 @@ private:
     QSet<int> breakpoints;
     QImage breakpointImg;
     bool textoSelecionado;
+
+    const static char simbolos [];
+    const static int QTD_SIMBOLOS;
+
+    bool combinaEsquerda(QTextBlock bloco, int simbolo, int i, int numSimbolos);
+    bool combinaDireita(QTextBlock bloco, int simbolo, int i, int numSimbolos);
+    void criarMarcacao(int posicao);
 
 signals:
     void breakpoint(int line, bool checked);

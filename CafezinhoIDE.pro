@@ -23,7 +23,8 @@ SOURCES += main.cpp\
     GerenciadorProcura.cpp \
     procurar.cpp \
     Realcador.cpp \
-    Documento.cpp
+    Documento.cpp \
+    DadoBlocoTexto.cpp
 
 HEADERS  += ide.h \
     GerenciadorDocumento.h \
@@ -35,7 +36,8 @@ HEADERS  += ide.h \
     GerenciadorProcura.h \
     procurar.h \
     Realcador.h \
-    Documento.h
+    Documento.h \
+    DadoBlocoTexto.h
 
 FORMS    += ide.ui \
     fontedialog.ui \
