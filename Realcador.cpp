@@ -77,6 +77,7 @@ void Realcador::highlightBlock(const QString &text)
     //Salvar parenteses, colchetes e chaves...
     bool comentario = false;
     bool palavra = false;
+    bool charLit = false;
 
     DadoBlocoTexto* dado = new DadoBlocoTexto();
 
@@ -106,13 +107,18 @@ void Realcador::highlightBlock(const QString &text)
 
         }
 
+        if(text[i]=='\'')
+        {
+            charLit = !charLit;
+        }
+
         if(text[i]=='/'&&(i+1)<text.size()&&text[i+1]=='*')
             comentario = true;
 
         if(text[i]=='*'&&(i+1)<text.size()&&text[i+1]=='\\')
             comentario = false;
 
-        if((!comentario)&&(!palavra))
+        if((!comentario)&&(!palavra)&&(!charLit))
         {
             for(int j=0; j<Realcador::QTD_SIMBOLOS; ++j)
             {
