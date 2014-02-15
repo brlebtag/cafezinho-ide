@@ -11,7 +11,6 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = CafezinhoIDE
 TEMPLATE = app
 
-
 SOURCES += main.cpp\
         ide.cpp \
     GerenciadorDocumento.cpp \

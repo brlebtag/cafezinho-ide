@@ -426,7 +426,7 @@ void IDE::fecharFile(QFile *file)
 
 QString IDE::getNomeDocumento(QString &fileName)
 {
-    return fileName.section(QDir::separator(),-1);
+    return fileName.section("/",-1);
 }
 
 QString IDE::getCaminhoDocumento(QString &fileName)
