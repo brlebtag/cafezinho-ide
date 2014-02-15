@@ -640,48 +640,44 @@ void IDE::acaoFechar()
 
     //Pega o edit da hashtable
     Documento* doc = genDoc.procurar(index);
-
-    //Verifica se existe mais de uma aba...
-    if(genDoc.tamanho()>1)
+    if(doc->isSujo())
     {
-        if(doc->isSujo())
+        //Perqunta se pode fechar assim mesmo
+        switch(mostrarSalvarAlteracao())
         {
-            //Perqunta se pode fechar assim mesmo
-            switch(mostrarSalvarAlteracao())
+            case QMessageBox::Save:
             {
-                case QMessageBox::Save:
+                QString fileName;
+
+                if(doc->isAberto())
+                    fileName = doc->getCaminhoCompleto();
+                else
+                    fileName = mostrarSalvarArquivo();
+
+                //Se estiver vazia não fecha a aba...
+                if(fileName.isEmpty())
+                    return;
+
+                if(!gravarDocumento(doc, fileName))
                 {
-                    QString fileName;
-
-                    if(doc->isAberto())
-                        fileName = doc->getCaminhoCompleto();
-                    else
-                        fileName = mostrarSalvarArquivo();
-
-                    //Se estiver vazia não fecha a aba...
-                    if(fileName.isEmpty())
-                        return;
-
-                    if(!gravarDocumento(doc, fileName))
-                    {
-                        //se der erro (nesse ponto a mensagem de erro já ocorreu) eu apenas fecho... que o usuario
-                        //vai tentar novamente ...
-                        return;
-                    }
-                }
-                break;
-                case QMessageBox::Cancel:
-                {
+                    //se der erro (nesse ponto a mensagem de erro já ocorreu) eu apenas fecho... que o usuario
+                    //vai tentar novamente ...
                     return;
                 }
-                break;
             }
+            break;
+            case QMessageBox::Cancel:
+            {
+                return;
+            }
+            break;
         }
-
-        removeAba(index, doc);
     }
 
-    //se existir apenas essa aba não a fecha e tbm não aparece janela de salva (apenas não fecha)...
+    if(genDoc.tamanho()==1)
+        qApp->exit(0);
+
+    removeAba(index, doc);
 }
 
 bool IDE::salvarAba(Documento* doc)
