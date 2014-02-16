@@ -7,7 +7,7 @@ extern "C" int yylex();
 extern "C" FILE *yyin;
 extern int yylineno;
 
-void yyerror(const char *s);
+void yyerror(QString s);
 
 int teste = 10;
 
@@ -35,7 +35,7 @@ F: INTCONST { } | '(' Expr ')' { };
 
 %%
 
-void yyerror(const char *s)
+void yyerror(QString s)
 {
     qDebug()<<s<<endl;
 }

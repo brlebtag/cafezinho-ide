@@ -7,7 +7,7 @@
 
 #include "parser.h"
 
-extern void yyerror(const char *s);
+extern void yyerror(QString s);
 
 %}
 

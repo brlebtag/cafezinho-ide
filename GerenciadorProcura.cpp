@@ -267,7 +267,7 @@ void GerenciadorProcura::localizar()
             }
             //Criar as marçẽos amarelas nas palavras iguais a procurada
             QTextEdit::ExtraSelection selection;
-            QColor lineColor = QColor(Qt::gray).lighter(110);
+            QColor lineColor = QColor(Qt::yellow).lighter(160);
             selection.format.setBackground(lineColor);
             selection.format.setProperty(QTextFormat::FullWidthSelection, false);
             selection.cursor = cursorMover;
@@ -292,7 +292,7 @@ void GerenciadorProcura::localizar()
             }
             //Criar as marçẽos amarelas nas palavras iguais a procurada
             QTextEdit::ExtraSelection selection;
-            QColor lineColor = QColor(Qt::gray).lighter(110);
+            QColor lineColor = QColor(Qt::yellow).lighter(160);
             selection.format.setBackground(lineColor);
             selection.format.setProperty(QTextFormat::FullWidthSelection, false);
             selection.cursor = cursorComeco;
