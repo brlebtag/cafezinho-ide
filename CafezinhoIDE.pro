@@ -23,7 +23,10 @@ SOURCES += main.cpp\
     procurar.cpp \
     Realcador.cpp \
     Documento.cpp \
-    DadoBlocoTexto.cpp
+    DadoBlocoTexto.cpp \
+    MaquinaVirtual.cpp \
+    Instrucao.cpp \
+    CelulaMemoria.cpp
 
 HEADERS  += ide.h \
     GerenciadorDocumento.h \
@@ -36,7 +39,10 @@ HEADERS  += ide.h \
     procurar.h \
     Realcador.h \
     Documento.h \
-    DadoBlocoTexto.h
+    DadoBlocoTexto.h \
+    MaquinaVirtual.h \
+    Instrucao.h \
+    CelulaMemoria.h
 
 FORMS    += ide.ui \
     fontedialog.ui \
