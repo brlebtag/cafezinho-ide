@@ -203,5 +203,93 @@ public:
     CelulaMemoria &m;
 };
 
+class ICarrega : public Instrucao
+{
+public:
+    ICarrega(MaquinaVirtual &vm, CelulaMemoria& registrador, int offset);
+    void execute();
+    CelulaMemoria &registrador;
+    int offset;
+};
+
+class ISalva : public Instrucao
+{
+public:
+    ISalva(MaquinaVirtual &vm, CelulaMemoria& registrador, int offset);
+    void execute();
+    CelulaMemoria &registrador;
+    int offset;
+};
+
+class IE: public Instrucao
+{
+public:
+    IE(MaquinaVirtual &vm, CelulaMemoria &registrador, CelulaMemoria &operando1, CelulaMemoria &operando2);
+    void execute();
+    CelulaMemoria &registrador;
+    CelulaMemoria &operando1;
+    CelulaMemoria &operando2;
+};
+
+class IEBit: public Instrucao
+{
+public:
+    IEBit(MaquinaVirtual &vm, CelulaMemoria &registrador, CelulaMemoria &operando1, CelulaMemoria &operando2);
+    void execute();
+    CelulaMemoria &registrador;
+    CelulaMemoria &operando1;
+    CelulaMemoria &operando2;
+};
+
+class IOu: public Instrucao
+{
+public:
+    IOu(MaquinaVirtual &vm, CelulaMemoria &registrador, CelulaMemoria &operando1, CelulaMemoria &operando2);
+    void execute();
+    CelulaMemoria &registrador;
+    CelulaMemoria &operando1;
+    CelulaMemoria &operando2;
+};
+
+class IOuBit: public Instrucao
+{
+public:
+    IOuBit(MaquinaVirtual &vm, CelulaMemoria &registrador, CelulaMemoria &operando1, CelulaMemoria &operando2);
+    void execute();
+    CelulaMemoria &registrador;
+    CelulaMemoria &operando1;
+    CelulaMemoria &operando2;
+};
+
+class IXorBit: public Instrucao
+{
+public:
+    IXorBit(MaquinaVirtual &vm, CelulaMemoria &registrador, CelulaMemoria &operando1, CelulaMemoria &operando2);
+    void execute();
+    CelulaMemoria &registrador;
+    CelulaMemoria &operando1;
+    CelulaMemoria &operando2;
+};
+
+class IShiftDir: public Instrucao
+{
+public:
+    IShiftDir(MaquinaVirtual &vm, CelulaMemoria &registrador, CelulaMemoria &operando1, CelulaMemoria &operando2);
+    void execute();
+    CelulaMemoria &registrador;
+    CelulaMemoria &operando1;
+    CelulaMemoria &operando2;
+};
+
+class IShiftEsq: public Instrucao
+{
+public:
+    IShiftEsq(MaquinaVirtual &vm, CelulaMemoria &registrador, CelulaMemoria &operando1, CelulaMemoria &operando2);
+    void execute();
+    CelulaMemoria &registrador;
+    CelulaMemoria &operando1;
+    CelulaMemoria &operando2;
+};
+
 
 #endif // INSTRUCAO_H

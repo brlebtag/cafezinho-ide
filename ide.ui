@@ -53,6 +53,12 @@
             <property name="readOnly">
              <bool>false</bool>
             </property>
+            <property name="plainText">
+             <string/>
+            </property>
+            <property name="overwriteMode">
+             <bool>false</bool>
+            </property>
            </widget>
           </item>
          </layout>
@@ -202,7 +208,7 @@
      <x>0</x>
      <y>0</y>
      <width>877</width>
-     <height>20</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuArquivo">

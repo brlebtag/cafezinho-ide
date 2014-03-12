@@ -29,7 +29,7 @@ void AreaNumeroLinha::mousePressEvent(QMouseEvent *event)
     int height = editorCodigo->blockBoundingRect(block).height();
     // pega a posicao do click divido pela altura de cada bloco texto (inteiro) + o primeiro bloco
     // visivel + 1 (por que o blockNumber começa em zero)
-    int line = ((int)event->pos().y()/height) + block.blockNumber() + 1;
+    int line = ((int)(event->pos().y()/height)) + block.blockNumber() + 1;
     //dispara o evento clicouAreaNumero
     emit clicouAreaNumero(line);
 }

@@ -4,7 +4,7 @@
 MaquinaVirtual::MaquinaVirtual(QObject *parent) :
     QObject(parent)
 {
-    pc =0;
+    pc = 0;
     sp = 0;
     eax = 0;
     ebx = 0;
@@ -15,6 +15,7 @@ MaquinaVirtual::MaquinaVirtual(QObject *parent) :
     bf = false;
     sf = false;
     ef = false;
+    erf = false;
 }
 
 MaquinaVirtual::~MaquinaVirtual()
@@ -36,13 +37,17 @@ void MaquinaVirtual::parar()
 
 void MaquinaVirtual::rodar()
 {
-    while(execute&&pc>=0&&pc<codigo.size())
+    while(execute&&(!erf))
+    {
         codigo[pc]->execute();
+        if(erf)
+            break;
+    }
 }
 
 void MaquinaVirtual::passo()
 {
-    if(execute&&pc>=0&&pc<codigo.size())
+    if(execute&&(!erf))
         codigo[pc]->execute();
 }
 
@@ -81,17 +86,26 @@ char MaquinaVirtual::lerCar()
     return '\0';
 }
 
-CelulaMemoria MaquinaVirtual::acessarMemoria(int offset)
+CelulaMemoria &MaquinaVirtual::getCelula(int offset)
 {
     if(offset>=0 && offset<memoria.size())
         return memoria[offset];
     //senao emite erro de segmentacao...
+    erf = true;
+}
+
+void MaquinaVirtual::setCelula(CelulaMemoria &registrador, int offset)
+{
+    if(offset>=0 && offset<memoria.size())
+        memoria[offset] = registrador;
+    //senao emite erro de segmentacao...
+    erf = true;
 }
 
 int MaquinaVirtual::aloca(int quantidade)
 {
     int atual = memoria.size();
-    memoria.reserve(quantidade);
+    memoria.reserve(quantidade+1);
 
     //inicializa memeoria
 

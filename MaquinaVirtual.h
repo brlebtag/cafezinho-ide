@@ -25,7 +25,8 @@ public:
     int lerInt();
     double lerReal();
     char lerCar();
-    CelulaMemoria acessarMemoria(int offset);
+    CelulaMemoria &getCelula(int offset);
+    void setCelula(CelulaMemoria& registrador, int offset);
     int aloca(int quantidade);
     int pc; //Contator de programa
     int sp; //Ponteiro da pilha
@@ -38,7 +39,7 @@ public:
     bool bf; //flag maior que...
     bool sf; //flag menor que...
     bool ef; //flag igual a...
-
+    bool erf; //Flag indicando erro...
 private:
     bool execute;
     QList<CelulaMemoria> memoria;

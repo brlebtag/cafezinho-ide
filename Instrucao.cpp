@@ -19,7 +19,7 @@ IMove::IMove(MaquinaVirtual &vm, int &para, int &de)
 void IMove::execute()
 {
     registrador1 = registrador2;
-    vm.pc++;
+    ++vm.pc;
 }
 
 
@@ -43,7 +43,7 @@ IAdi::IAdi(MaquinaVirtual &vm, CelulaMemoria &registrador, CelulaMemoria &operan
 void IAdi::execute()
 {
     registrador = operando1 + operando2;
-    vm.pc++;
+    ++vm.pc;
 }
 
 ISub::ISub(MaquinaVirtual &vm, CelulaMemoria &registrador, CelulaMemoria &operando1, CelulaMemoria &operando2)
@@ -54,7 +54,7 @@ ISub::ISub(MaquinaVirtual &vm, CelulaMemoria &registrador, CelulaMemoria &operan
 void ISub::execute()
 {
     registrador = operando1 - operando2;
-    vm.pc++;
+    ++vm.pc;
 }
 
 
@@ -66,7 +66,7 @@ IMult::IMult(MaquinaVirtual &vm, CelulaMemoria &registrador, CelulaMemoria &oper
 void IMult::execute()
 {
     registrador = operando1 * operando2;
-    vm.pc++;
+    ++vm.pc;
 }
 
 
@@ -78,7 +78,7 @@ IDiv::IDiv(MaquinaVirtual &vm, CelulaMemoria &registrador, CelulaMemoria &operan
 void IDiv::execute()
 {
     registrador = operando1 / operando2;
-    vm.pc++;
+    ++vm.pc;
 }
 
 
@@ -90,7 +90,7 @@ IPot::IPot(MaquinaVirtual &vm, CelulaMemoria &registrador, CelulaMemoria &operan
 void IPot::execute()
 {
     registrador = operando1.pot(operando2);
-    vm.pc++;
+    ++vm.pc;
 }
 
 
@@ -133,7 +133,7 @@ void ISaltoEq::execute()
     if(vm.ef)
         vm.pc = offset;
     else
-        vm.pc++;
+        ++vm.pc;
 }
 
 ISaltoMaior::ISaltoMaior(MaquinaVirtual &vm, int offset)
@@ -147,7 +147,7 @@ void ISaltoMaior::execute()
     if(vm.bf)
         vm.pc = offset;
     else
-        vm.pc++;
+        ++vm.pc;
 }
 
 
@@ -162,7 +162,7 @@ void ISaltoMaiorEq::execute()
     if(vm.bf||vm.ef)
         vm.pc = offset;
     else
-        vm.pc++;
+        ++vm.pc;
 }
 
 
@@ -177,7 +177,7 @@ void ISaltoMenor::execute()
     if(vm.sf)
         vm.pc = offset;
     else
-        vm.pc++;
+        ++vm.pc;
 }
 
 ISaltoMenorEq::ISaltoMenorEq(MaquinaVirtual &vm, int offset)
@@ -191,7 +191,7 @@ void ISaltoMenorEq::execute()
     if(vm.sf||vm.ef)
         vm.pc = offset;
     else
-        vm.pc++;
+        ++vm.pc;
 }
 
 
@@ -204,7 +204,7 @@ IAloca::IAloca(MaquinaVirtual &vm, int quantidade)
 void IAloca::execute()
 {
     vm.aloca(quantidade);
-    vm.pc++;
+    ++vm.pc;
 }
 
 
@@ -217,8 +217,8 @@ IEmpilha::IEmpilha(MaquinaVirtual &vm, CelulaMemoria m)
 void IEmpilha::execute()
 {
     vm.empilhar(m);
-    vm.sp++;
-    vm.pc++;
+    ++vm.sp;
+    ++vm.pc;
 }
 
 
@@ -231,8 +231,8 @@ IDesempilha::IDesempilha(MaquinaVirtual &vm)
 void IDesempilha::execute()
 {
     vm.desempilhar();
-    vm.sp--;
-    vm.pc++;
+    --vm.sp;
+    ++vm.pc;
 }
 
 
@@ -270,6 +270,7 @@ IEscrita::IEscrita(MaquinaVirtual &vm, CelulaMemoria m)
 void IEscrita::execute()
 {
     vm.escreva(m.toString());
+    ++vm.pc;
 }
 
 ILeituraInt::ILeituraInt(MaquinaVirtual &vm, CelulaMemoria &m)
@@ -280,6 +281,7 @@ ILeituraInt::ILeituraInt(MaquinaVirtual &vm, CelulaMemoria &m)
 void ILeituraInt::execute()
 {
     m = vm.lerInt();
+    ++vm.pc;
 }
 
 
@@ -291,6 +293,7 @@ ILeituraCar::ILeituraCar(MaquinaVirtual &vm, CelulaMemoria &m)
 void ILeituraCar::execute()
 {
     m = vm.lerCar();
+    ++vm.pc;
 }
 
 
@@ -302,4 +305,106 @@ ILeituraReal::ILeituraReal(MaquinaVirtual &vm, CelulaMemoria &m)
 void ILeituraReal::execute()
 {
     m = vm.lerReal();
+    ++vm.pc;
+}
+
+
+ICarrega::ICarrega(MaquinaVirtual &vm, CelulaMemoria &registrador, int offset)
+    : Instrucao(vm), registrador(registrador), offset(offset)
+{
+}
+
+void ICarrega::execute()
+{
+    registrador = vm.getCelula(offset);
+    ++vm.pc;
+}
+
+
+ISalva::ISalva(MaquinaVirtual &vm, CelulaMemoria &registrador, int offset)
+    : Instrucao(vm), registrador(registrador), offset(offset)
+{
+}
+
+void ISalva::execute()
+{
+    vm.setCelula(registrador, offset);
+    ++vm.pc;
+}
+
+
+IE::IE(MaquinaVirtual &vm, CelulaMemoria &registrador, CelulaMemoria &operando1, CelulaMemoria &operando2)
+    : Instrucao(vm), registrador(registrador), operando1(operando1), operando2(operando2)
+{
+}
+
+void IE::execute()
+{
+    registrador = operando1.eLogico(operando2);
+}
+
+
+IEBit::IEBit(MaquinaVirtual &vm, CelulaMemoria &registrador, CelulaMemoria &operando1, CelulaMemoria &operando2)
+    : Instrucao(vm), registrador(registrador), operando1(operando1), operando2(operando2)
+{
+}
+
+void IEBit::execute()
+{
+    registrador = operando1 & operando2;
+}
+
+
+IOu::IOu(MaquinaVirtual &vm, CelulaMemoria &registrador, CelulaMemoria &operando1, CelulaMemoria &operando2)
+    : Instrucao(vm), registrador(registrador), operando1(operando1), operando2(operando2)
+{
+}
+
+void IOu::execute()
+{
+    registrador = operando1.ouLogico(operando2);
+}
+
+
+IOuBit::IOuBit(MaquinaVirtual &vm, CelulaMemoria &registrador, CelulaMemoria &operando1, CelulaMemoria &operando2)
+    : Instrucao(vm), registrador(registrador), operando1(operando1), operando2(operando2)
+{
+}
+
+void IOuBit::execute()
+{
+    registrador = operando1 | operando2;
+}
+
+
+IXorBit::IXorBit(MaquinaVirtual &vm, CelulaMemoria &registrador, CelulaMemoria &operando1, CelulaMemoria &operando2)
+    : Instrucao(vm), registrador(registrador), operando1(operando1), operando2(operando2)
+{
+}
+
+void IXorBit::execute()
+{
+    registrador = operando1 ^ operando2;
+}
+
+
+IShiftDir::IShiftDir(MaquinaVirtual &vm, CelulaMemoria &registrador, CelulaMemoria &operando1, CelulaMemoria &operando2)
+    : Instrucao(vm), registrador(registrador), operando1(operando1), operando2(operando2)
+{
+}
+
+void IShiftDir::execute()
+{
+    registrador = operando1 >> operando2;
+}
+
+
+IShiftEsq::IShiftEsq(MaquinaVirtual &vm, CelulaMemoria &registrador, CelulaMemoria &operando1, CelulaMemoria &operando2)
+    : Instrucao(vm), registrador(registrador), operando1(operando1), operando2(operando2)
+{
+}
+
+void IShiftEsq::execute()
+{
+    registrador = operando1 << operando2;
 }

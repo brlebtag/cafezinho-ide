@@ -2,6 +2,8 @@
 
 CelulaMemoria::CelulaMemoria()
 {
+    this->celula.real = 0;
+    this->tipo = TipoCelula::REAL;
 }
 
 CelulaMemoria::CelulaMemoria(char value)
@@ -53,6 +55,7 @@ CelulaMemoria &CelulaMemoria::operator=(const char &rhs)
 CelulaMemoria &CelulaMemoria::operator=(const double &rhs)
 {
     this->celula.real = rhs;
+    this->tipo = TipoCelula::REAL;
 }
 
 CelulaMemoria &CelulaMemoria::operator+(const CelulaMemoria &rhs)
@@ -111,14 +114,14 @@ CelulaMemoria &CelulaMemoria::operator-(const CelulaMemoria &rhs)
 CelulaMemoria &CelulaMemoria::operator-(const int &rhs)
 {
     CelulaMemoria m;
-    m.celula.real = this->celula.inteiro - rhs;
+    m.celula.inteiro = this->celula.inteiro - rhs;
     return m;
 }
 
 CelulaMemoria &CelulaMemoria::operator-(const char &rhs)
 {
     CelulaMemoria m;
-    m.celula.real = this->celula.caracter - rhs;
+    m.celula.caracter = this->celula.caracter - rhs;
     return m;
 }
 
@@ -148,14 +151,14 @@ CelulaMemoria &CelulaMemoria::operator*(const CelulaMemoria &rhs)
 CelulaMemoria &CelulaMemoria::operator*(const int &rhs)
 {
     CelulaMemoria m;
-    m.celula.real = this->celula.inteiro * rhs;
+    m.celula.inteiro = this->celula.inteiro * rhs;
     return m;
 }
 
 CelulaMemoria &CelulaMemoria::operator*(const char &rhs)
 {
     CelulaMemoria m;
-    m.celula.real = this->celula.caracter * rhs;
+    m.celula.caracter = this->celula.caracter * rhs;
     return m;
 }
 
@@ -185,14 +188,14 @@ CelulaMemoria &CelulaMemoria::operator/(const CelulaMemoria &rhs)
 CelulaMemoria &CelulaMemoria::operator/(const int &rhs)
 {
     CelulaMemoria m;
-    m.celula.real = this->celula.inteiro / rhs;
+    m.celula.inteiro = this->celula.inteiro / rhs;
     return m;
 }
 
 CelulaMemoria &CelulaMemoria::operator/(const char &rhs)
 {
     CelulaMemoria m;
-    m.celula.real = this->celula.caracter / rhs;
+    m.celula.caracter = this->celula.caracter / rhs;
     return m;
 }
 
@@ -221,20 +224,171 @@ CelulaMemoria &CelulaMemoria::pot(const CelulaMemoria &rhs)
 
 CelulaMemoria &CelulaMemoria::pot(const int &rhs)
 {
-    return pot((double)(rhs));
+    CelulaMemoria m;
+    m.celula.inteiro = (int) qPow(this->celula.inteiro , (double)(rhs));
+    return m;
 }
 
 CelulaMemoria &CelulaMemoria::pot(const char &rhs)
 {
-    return pot((double)(rhs));
+    CelulaMemoria m;
+    m.celula.caracter = (char) qPow(this->celula.caracter , (double)(rhs));
+    return m;
 }
 
 CelulaMemoria &CelulaMemoria::pot(const double &rhs)
 {
     CelulaMemoria m;
-    m.celula.real = qPow(this->celula.inteiro , (double)(rhs));
+    m.celula.real = qPow(this->celula.real , rhs);
     return m;
 }
+
+CelulaMemoria &CelulaMemoria::operator&(const CelulaMemoria &rhs)
+{
+    switch(rhs.tipo)
+    {
+        case TipoCelula::CAR :
+            return this->operator&(rhs.celula.caracter);
+        break;
+        case TipoCelula::INT :
+            return this->operator&(rhs.celula.inteiro);
+        break;
+    }
+}
+
+CelulaMemoria &CelulaMemoria::operator&(const int &rhs)
+{
+    CelulaMemoria m;
+    m.celula.inteiro = this->celula.inteiro & rhs;
+    return m;
+}
+
+CelulaMemoria &CelulaMemoria::operator&(const char &rhs)
+{
+    CelulaMemoria m;
+    m.celula.caracter = this->celula.caracter & rhs;
+    return m;
+}
+
+
+CelulaMemoria &CelulaMemoria::operator|(const CelulaMemoria &rhs)
+{
+    switch(rhs.tipo)
+    {
+        case TipoCelula::CAR :
+            return this->operator|(rhs.celula.caracter);
+        break;
+        case TipoCelula::INT :
+            return this->operator|(rhs.celula.inteiro);
+        break;
+    }
+}
+
+CelulaMemoria &CelulaMemoria::operator|(const int &rhs)
+{
+    CelulaMemoria m;
+    m.celula.inteiro = this->celula.inteiro | rhs;
+    return m;
+}
+
+CelulaMemoria &CelulaMemoria::operator|(const char &rhs)
+{
+    CelulaMemoria m;
+    m.celula.caracter = this->celula.caracter | rhs;
+    return m;
+}
+
+CelulaMemoria &CelulaMemoria::operator^(const CelulaMemoria &rhs)
+{
+    switch(rhs.tipo)
+    {
+        case TipoCelula::CAR :
+            return this->operator^(rhs.celula.caracter);
+        break;
+        case TipoCelula::INT :
+            return this->operator^(rhs.celula.inteiro);
+        break;
+    }
+}
+
+CelulaMemoria &CelulaMemoria::operator^(const int &rhs)
+{
+    CelulaMemoria m;
+    m.celula.inteiro = this->celula.inteiro ^ rhs;
+    return m;
+}
+
+CelulaMemoria &CelulaMemoria::operator^(const char &rhs)
+{
+    CelulaMemoria m;
+    m.celula.caracter = this->celula.caracter ^ rhs;
+    return m;
+}
+
+CelulaMemoria &CelulaMemoria::operator>>(int shift)
+{
+    CelulaMemoria m;
+    switch(this->tipo)
+    {
+        case TipoCelula::CAR :
+            m.celula.caracter = this->celula.caracter>>shift;
+        break;
+        case TipoCelula::INT :
+            m.celula.inteiro = this->celula.inteiro>>shift;
+        break;
+    }
+
+    return m;
+}
+
+CelulaMemoria &CelulaMemoria::operator<<(int shift)
+{
+    CelulaMemoria m;
+    switch(this->tipo)
+    {
+        case TipoCelula::CAR :
+            m.celula.caracter = this->celula.caracter<<shift;
+        break;
+        case TipoCelula::INT :
+            m.celula.inteiro = this->celula.inteiro<<shift;
+        break;
+    }
+
+    return m;
+}
+
+CelulaMemoria &CelulaMemoria::operator>>(const CelulaMemoria &rhs)
+{
+    CelulaMemoria m;
+    switch(this->tipo)
+    {
+        case TipoCelula::CAR :
+            m.celula.caracter = this->celula.caracter>>rhs.celula.caracter;
+        break;
+        case TipoCelula::INT :
+            m.celula.inteiro = this->celula.inteiro>>rhs.celula.inteiro;
+        break;
+    }
+
+    return m;
+}
+
+CelulaMemoria &CelulaMemoria::operator<<(const CelulaMemoria &rhs)
+{
+    CelulaMemoria m;
+    switch(this->tipo)
+    {
+        case TipoCelula::CAR :
+            m.celula.caracter = this->celula.caracter<<rhs.celula.inteiro;
+        break;
+        case TipoCelula::INT :
+            m.celula.inteiro = this->celula.inteiro<<rhs.celula.caracter;
+        break;
+    }
+
+    return m;
+}
+
 
 bool CelulaMemoria::operator==(const CelulaMemoria &rhs)
 {
@@ -327,6 +481,74 @@ bool CelulaMemoria::operator<(const char &rhs)
 bool CelulaMemoria::operator<(const double &rhs)
 {
     return this->celula.real < rhs;
+}
+
+CelulaMemoria &CelulaMemoria::eLogico(const CelulaMemoria &rhs)
+{
+    switch(rhs.tipo)
+    {
+        case TipoCelula::CAR :
+            return this->eLogico(rhs.celula.caracter);
+        break;
+        case TipoCelula::INT :
+            return this->eLogico(rhs.celula.inteiro);
+        break;
+        case TipoCelula::REAL :
+            return this->eLogico(rhs.celula.real);
+        break;
+    }
+}
+
+CelulaMemoria &CelulaMemoria::eLogico(const int &rhs)
+{
+    CelulaMemoria m = (this->celula.inteiro&&rhs);
+    return m;
+}
+
+CelulaMemoria &CelulaMemoria::eLogico(const char &rhs)
+{
+    CelulaMemoria m = (this->celula.caracter&&rhs);
+    return m;
+}
+
+CelulaMemoria &CelulaMemoria::eLogico(const double &rhs)
+{
+    CelulaMemoria m = (this->celula.real&&rhs);
+    return m;
+}
+
+CelulaMemoria &CelulaMemoria::ouLogico(const CelulaMemoria &rhs)
+{
+    switch(rhs.tipo)
+    {
+        case TipoCelula::CAR :
+            return this->eLogico(rhs.celula.caracter);
+        break;
+        case TipoCelula::INT :
+            return this->eLogico(rhs.celula.inteiro);
+        break;
+        case TipoCelula::REAL :
+            return this->eLogico(rhs.celula.real);
+        break;
+    }
+}
+
+CelulaMemoria &CelulaMemoria::ouLogico(const int &rhs)
+{
+    CelulaMemoria m = (this->celula.inteiro&&rhs);
+    return m;
+}
+
+CelulaMemoria &CelulaMemoria::ouLogico(const char &rhs)
+{
+    CelulaMemoria m = (this->celula.caracter&&rhs);
+    return m;
+}
+
+CelulaMemoria &CelulaMemoria::ouLogico(const double &rhs)
+{
+    CelulaMemoria m = (this->celula.real&&rhs);
+    return m;
 }
 
 TipoCelula::Tipo CelulaMemoria::getTipo()
