@@ -248,9 +248,8 @@ void EditorCodigo::lineNumberAreaPaintEvent(QPaintEvent *event)
                 }
                 else
                 {
-                    int dim = qMin(areaNumero->width(),fontMetrics().height());
-                    QPointF pos(this->lineNumberAreaWidth()-dim,top);
-                    QImage img = breakpointImg.scaled(dim,dim);
+                    QPointF pos(this->lineNumberAreaWidth()-fontMetrics().height(),top);
+                    QImage img = breakpointImg.scaled(fontMetrics().height(), fontMetrics().height());
                     painter.drawImage(pos,img);
                 }
             }

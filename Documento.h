@@ -21,6 +21,7 @@ class Documento : public QObject
 {
     Q_OBJECT
 public:
+    explicit Documento(QWidget *widget, EditorCodigo *edit, QObject* botao, bool sujo = false);
     explicit Documento(QWidget *widget, EditorCodigo *edit, bool sujo = false);
     bool isVazio();
     bool isSujo();
@@ -55,6 +56,8 @@ public:
     int getPosicaoCursor(); //posicao é referente a linha que o cursor se situa neste momento
     void duplicarLinha();
     QPlainTextEdit* getEditor();
+    QObject *getBotao();
+    void setBotao(QObject *botao);
 
 private:
     const static int TAB_SPACE;
@@ -62,6 +65,7 @@ private:
     EditorCodigo *edit;
     bool sujo;
     QWidget *widget;
+    QObject* botao;
     QString documentoId;
     QString caminhoCompleto;
     bool aberto;

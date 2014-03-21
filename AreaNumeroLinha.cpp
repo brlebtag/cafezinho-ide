@@ -26,7 +26,7 @@ void AreaNumeroLinha::mousePressEvent(QMouseEvent *event)
     //Pega o bloco que está no editorCodigo
     QTextBlock block = editorCodigo->firstVisibleBlock();
     //pega o tamanho de cada bloco de texto
-    int height = editorCodigo->blockBoundingRect(block).height();
+    int height = fontMetrics().height();
     // pega a posicao do click divido pela altura de cada bloco texto (inteiro) + o primeiro bloco
     // visivel + 1 (por que o blockNumber começa em zero)
     int line = ((int)(event->pos().y()/height)) + block.blockNumber() + 1;

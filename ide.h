@@ -42,6 +42,7 @@ class IDE : public QMainWindow
 public:
     explicit IDE(QWidget *parent = 0);
     ~IDE();
+    Documento* getDocumentoAtual();
 
 private:
 
@@ -65,12 +66,11 @@ private:
     //Metodos
 
     //Gerenciar Criacao de Documento
-    QWidget* criarAba(QString title, int *index = 0);
+    QWidget* criarAba(QString title, int *index = 0, QWidget *tab = 0, QWidget *botao = 0);
     QPushButton* criarBotaoFecharAba(QWidget *pai);
     QPushButton* criarBotaoMaisAba(QWidget *pai);
     EditorCodigo* criarEditor(QWidget* aba);
     Documento* criarDocumento(QString title, int *index = 0);
-    Documento* criarDocumento(QWidget* aba, EditorCodigo* edit);
 
     //Mensagens
 
@@ -143,7 +143,7 @@ private slots:
     // Menu Arquivo
     void acaoAbrir(); //OK
     void acaoNovo(); //OK
-    void acaoFechar(); //OK
+    void acaoFechar(int indice = -1); //OK
     void acaoSair(); //OK
     void acaoSalvar(); //OK
     void acaoSalvarComo(); //OK
@@ -195,9 +195,6 @@ private slots:
     void substituirClicado();
     void localizarProximoClicado();
     void localizarAnteriroClicado();
-
-signals:
-    void mudouEditor(QPlainTextEdit *edit);
 
 };
 

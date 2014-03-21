@@ -28,7 +28,7 @@ int GerenciadorDocumento::posicao(Documento *document)
 {
     int i=0;
 
-    for(QList<Documento*>::iterator it = documentos.begin(); it!= documentos.end(); it++,i++)
+    for(QList<Documento*>::iterator it = documentos.begin(); it!= documentos.end(); ++it, ++i)
     {
         Documento* doc = (*it);
 
@@ -43,11 +43,26 @@ int GerenciadorDocumento::posicao(QString fileId)
 {
     int i=0;
 
-    for(QList<Documento*>::iterator it = documentos.begin(); it!= documentos.end(); it++,i++)
+    for(QList<Documento*>::iterator it = documentos.begin(); it!= documentos.end(); ++it, ++i)
     {
         Documento* doc = (*it);
         QString id = doc->getDocumentoId() ;
         if(id == fileId)
+            return i;
+    }
+
+    return GerenciadorDocumento::NAO_ACHADO;
+}
+
+int GerenciadorDocumento::posicao(QObject *botao)
+{
+    int i=0;
+
+    for(QList<Documento*>::iterator it = documentos.begin(); it!= documentos.end(); ++it, ++i)
+    {
+        Documento* doc = (*it);
+
+        if(doc->getBotao() == botao)
             return i;
     }
 

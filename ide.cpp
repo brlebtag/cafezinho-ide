@@ -4,7 +4,10 @@
 
 IDE::IDE(QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::IDE), genReabrir(this), configuracoes(QSettings::IniFormat, QSettings::UserScope, "UFG", "CafezinhoIDE")
+    ui(new Ui::IDE),
+    genReabrir(this),
+    genProc(this),
+    configuracoes(QSettings::IniFormat, QSettings::UserScope, "UFG", "CafezinhoIDE")
 {
     ui->setupUi(this);
 
@@ -59,9 +62,6 @@ IDE::IDE(QWidget *parent) :
     //Tab Widget Arquivos
     connect(this->ui->tabWidgetArquivos,SIGNAL(currentChanged(int)),this, SLOT(mudouAbaAtual(int)));
 
-    //Gerenciador Procurar
-    connect(this,SIGNAL(mudouEditor(QPlainTextEdit*)),&genProc,SLOT(mudouEditor(QPlainTextEdit*)));
-
     //Conecto o menu reabrir para receber quando um item do menu for clicado para reabrir ele...
     connect(&genReabrir,SIGNAL(menuReabrirClicou(QString)),this,SLOT(menuReabrirClicou(QString)));
 
@@ -93,7 +93,7 @@ IDE::IDE(QWidget *parent) :
     genProc.setTabWidget(this->ui->tabgadget);
 
     //Adicionar o edit
-    genProc.setEditor(doc->getEditor());
+    genProc.setEditorProcurar(doc->getEditor());
 
     //Ajusta o ultimo caminho
     ultimoCaminho = genReabrir.getUltimoCaminho();
@@ -187,10 +187,8 @@ IDE::~IDE()
     delete ui;
 }
 
-QWidget* IDE::criarAba(QString title, int *index)
+QWidget* IDE::criarAba(QString title, int *index, QWidget*tab, QWidget* botao)
 {
-    //Criar a aba..
-    QWidget* tab = new QWidget();
 
     //Inseri a aba no tabWidget o titulo é apenas a ultima parte do caminho full do arquivo (só o nome do arquivo)
     int id = this->ui->tabWidgetArquivos->addTab(tab, title);
@@ -203,7 +201,7 @@ QWidget* IDE::criarAba(QString title, int *index)
     this->ui->tabWidgetArquivos->setCurrentWidget(tab);
 
     //Inseri o botao
-    this->ui->tabWidgetArquivos->tabBar()->setTabButton(id, QTabBar::RightSide, (QWidget*) (criarBotaoFecharAba(tab)));
+    this->ui->tabWidgetArquivos->tabBar()->setTabButton(id, QTabBar::RightSide, botao);
 
     return tab;
 }
@@ -268,20 +266,20 @@ EditorCodigo* IDE::criarEditor(QWidget* aba)
 
 Documento* IDE::criarDocumento(QString title, int *index)
 {
+    //Criar a aba..
+    QWidget* tab = new QWidget();
+
+    //Cria botão
+    QWidget *botao = (QWidget*) (criarBotaoFecharAba(tab));
+
     //Criar a aba
-    QWidget* aba = criarAba(title, index);
+    QWidget* aba = criarAba(title, index, tab, botao);
 
     //Criar o EditorCodigo
     EditorCodigo* edit = criarEditor(aba);
 
     //Retorna um documento...
-    return new Documento(aba,edit);
-}
-
-Documento* IDE::criarDocumento(QWidget* aba, EditorCodigo* edit)
-{
-    //Retorna um documento...
-    return new Documento(aba,edit);
+    return new Documento(aba, edit, botao);
 }
 
 QString IDE::nomeDocParaDocId(QString &fileName)
@@ -459,6 +457,11 @@ QWidget *IDE::getAbaAtualWidget()
     return this->ui->tabWidgetArquivos->currentWidget();
 }
 
+Documento *IDE::getDocumentoAtual()
+{
+    return genDoc.procurar(getAbaAtual());
+}
+
 void IDE::setDicaAba(int index, QString &tip)
 {
     this->ui->tabWidgetArquivos->setTabToolTip(index, tip);
@@ -630,13 +633,18 @@ void IDE::acaoNovo()
     doc->setFonte(familia_fonte, tamanho_fonte);
 
     //forçar a seta a nova aba no genProc
-    genProc.setEditor(doc->getEditor());
+    genProc.setEditorProcurar(doc->getEditor());
 }
 
-void IDE::acaoFechar()
+void IDE::acaoFechar(int indice)
 {
     //pega o index do tab atual
-    int index = getAbaAtual();
+    int index;
+
+    if(indice == -1)
+        index = getAbaAtual();
+    else
+        index = indice;
 
     //Pega o edit da hashtable
     Documento* doc = genDoc.procurar(index);
@@ -902,7 +910,6 @@ void IDE::mudouAbaAtual(int index)
         //Repintar o edit
         doc->repintarEditor();
         doc->setFonte(familia_fonte, tamanho_fonte);
-        emit mudouEditor(doc->getEditor());
     }
 }
 
@@ -948,7 +955,7 @@ void IDE::acaoHabilitarExecProg(bool checked)
 
 void IDE::botaoFecharTabClicado()
 {
-    acaoFechar();
+    acaoFechar(genDoc.posicao(QObject::sender()));
 }
 
 void IDE::botaoMaisTabClicado()

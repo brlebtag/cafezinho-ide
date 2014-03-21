@@ -16,12 +16,16 @@
 #include <QTextFormat>
 #include "procurar.h"
 #include <QDebug>
+#include "Documento.h"
+
+
+class IDE;
 
 class GerenciadorProcura : public QObject
 {
     Q_OBJECT
 public:
-    explicit GerenciadorProcura(QObject *parent = 0);
+    explicit GerenciadorProcura(IDE *ide, QObject *parent = 0);
     virtual ~GerenciadorProcura();
     bool isVisivel();
     void setVisivel(bool visivel);
@@ -29,7 +33,7 @@ public:
     QPushButton *getBotaoFechar();
     void mostrar();
     void setTabWidget(QTabWidget* tabWidget);
-    void setEditor(QPlainTextEdit *edit);
+    void setEditorProcurar(QPlainTextEdit *edit);
     void setSubstituir(bool substituir);
     void atualizarInterface();
     bool isPalavraProcuradaVazia();
@@ -38,7 +42,7 @@ private:
     QTabWidget *tabWidget;
     Procurar *widget;
     QPushButton *botaoFechar;
-    QPlainTextEdit *edit;
+    IDE *ide;
     bool visivel;
     bool substituir;
     QString palavraProcurada;
@@ -54,7 +58,6 @@ private:
 signals:
 
 public slots:
-    void mudouEditor(QPlainTextEdit * edit);
     void esconder();
     void localizar();
     void localizarAnterior();

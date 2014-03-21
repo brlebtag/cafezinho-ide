@@ -3,6 +3,7 @@
 
 #include <QList>
 #include "Documento.h"
+#include <QObject>
 
 class IDE;
 
@@ -14,6 +15,7 @@ public:
     Documento *procurar(int posicao);
     int posicao(Documento* document);
     int posicao(QString fileId);
+    int posicao(QObject *botao);
     void inserir(Documento* document);
     void inserir(int posicao, Documento* document);
     void remover(QString fileName);

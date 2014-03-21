@@ -1,7 +1,8 @@
 #include "GerenciadorProcura.h"
+#include "ide.h"
 
-GerenciadorProcura::GerenciadorProcura(QObject *parent) :
-    QObject(parent)
+GerenciadorProcura::GerenciadorProcura(IDE *ide, QObject *parent) :
+    QObject(parent), ide(ide)
 {
     visivel = false;
     substituir = false;
@@ -52,16 +53,15 @@ void GerenciadorProcura::setTabWidget(QTabWidget *tabWidget)
     this->tabWidget = tabWidget;
 }
 
-void GerenciadorProcura::setEditor(QPlainTextEdit *edit)
+void GerenciadorProcura::setEditorProcurar(QPlainTextEdit *edit)
 {
-    this->edit = edit;
     connect(edit, SIGNAL(selectionChanged()), this, SLOT(mudouSelecao()));
 }
 
 void GerenciadorProcura::substituirClicado()
 {
     //Pega o cursor Atual
-    QTextCursor cursor(edit->textCursor());
+    QTextCursor cursor(ide->getDocumentoAtual()->getEditor()->textCursor());
 
     //Se tiver texto selecionado... inseri por cima...
     if(cursor.hasSelection())
@@ -73,8 +73,8 @@ void GerenciadorProcura::substituirClicado()
 
 void GerenciadorProcura::substiturirTudoClicado()
 {
-    QTextCursor cursor(edit->document());
-    QTextDocument *documento = edit->document();
+    QTextCursor cursor(ide->getDocumentoAtual()->getEditor()->document());
+    QTextDocument *documento = ide->getDocumentoAtual()->getEditor()->document();
 
     int flag = 0;
 
@@ -95,7 +95,7 @@ void GerenciadorProcura::substiturirTudoClicado()
     }
 
     QList<QTextEdit::ExtraSelection> extraSelections;
-    edit->setExtraSelections(extraSelections);//limpar as extra selections
+    ide->getDocumentoAtual()->getEditor()->setExtraSelections(extraSelections);//limpar as extra selections
 }
 
 void GerenciadorProcura::ignorarMaisculoClicado(bool checked)
@@ -113,7 +113,7 @@ void GerenciadorProcura::mudouSelecao()
     if(visivel)
     {
         QList<QTextEdit::ExtraSelection> extraSelection;
-        edit->setExtraSelections(extraSelection);
+        ide->getDocumentoAtual()->getEditor()->setExtraSelections(extraSelection);
     }
 }
 
@@ -204,17 +204,12 @@ int GerenciadorProcura::indiceAba()
     return tabWidget->indexOf(widget);
 }
 
-void GerenciadorProcura::mudouEditor(QPlainTextEdit *edit)
-{
-    this->edit = edit;
-}
-
 void GerenciadorProcura::esconder()
 {
     if(visivel)
     {
         QList<QTextEdit::ExtraSelection> extraSelections;
-        edit->setExtraSelections(extraSelections);//limpar as extra selections... ao sair da janela procurar
+        ide->getDocumentoAtual()->getEditor()->setExtraSelections(extraSelections);//limpar as extra selections... ao sair da janela procurar
         visivel = false;
         delete widget;
     }
@@ -223,7 +218,8 @@ void GerenciadorProcura::esconder()
 void GerenciadorProcura::localizar()
 {
     //Faz o documento receber o foco para poder pegar o cursor...
-    edit->setFocus();
+    QPlainTextEdit *edit = ide->getDocumentoAtual()->getEditor();
+
     //Criar um cursor apartir do começo do documento
     QTextCursor cursorComeco(edit->document());
 
@@ -308,7 +304,7 @@ void GerenciadorProcura::localizar()
 void GerenciadorProcura::localizarAnterior()
 {
     //Faz o documento receber o foco para poder pegar o cursor...
-    edit->setFocus();
+    QPlainTextEdit *edit = ide->getDocumentoAtual()->getEditor();
 
     //Criar um cursor apartir do cursor atual
     QTextCursor cursorAtual(edit->textCursor());

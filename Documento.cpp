@@ -2,6 +2,23 @@
 
 const int Documento::TAB_SPACE = 4;
 
+Documento::Documento(QWidget *widget, EditorCodigo *edit, QObject *botao, bool sujo) :
+    QObject(widget), widget(widget), edit(edit), botao(botao), sujo(sujo)
+{
+    aberto = false;
+    edit->setWordWrapMode(QTextOption::NoWrap);
+    edit->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+    edit->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+    Realcador *realcador = new Realcador(edit->document());
+    //O Realcador dispara textChanged() na primeira chamada...
+    //assim o editor vai adicionar * pensando que mudou alguma coisa
+    //Para corrigir isso eu adicionei essa flag primeiraChamada ela é de controle intero
+    //IDE não vê isso ...
+    primeiraChamada = true;
+    QFontMetrics metrics(edit->font());
+    edit->setTabStopWidth(4*metrics.width(' '));
+}
+
 Documento::Documento(QWidget *widget, EditorCodigo *edit, bool sujo) :
     QObject(widget), widget(widget), edit(edit), sujo(sujo)
 {
@@ -230,4 +247,14 @@ void Documento::duplicarLinha()
 QPlainTextEdit *Documento::getEditor()
 {
     return this->edit;
+}
+
+QObject *Documento::getBotao()
+{
+    return botao;
+}
+
+void Documento::setBotao(QObject *botao)
+{
+    this->botao = botao;
 }
