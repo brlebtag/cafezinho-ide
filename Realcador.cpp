@@ -21,11 +21,12 @@ Realcador::Realcador(QTextDocument *documento)
 
     QStringList listaPalavrasChaves;
 
-    listaPalavrasChaves<<"\\bcar\\b"<<"\\bint\\b"<<"\\bprograma\\b"
+    listaPalavrasChaves<<"\\bcar\\b"<<"\\breal\\b"<<"\\bnulo\\b"<<"\\bint\\b"
                        <<"\\bretorne\\b"<<"\\bleia\\b"<<"\\bescreva\\b"
                        <<"\\bnovalinha\\b"<<"\\bse\\b"<<"\\bentao\\b"
                        <<"\\bsenao\\b"<<"\\benquanto\\b"<<"\\bexecute\\b"
-                       <<"\\be\\b"<<"\\bou\\b";
+                       <<"\\be\\b"<<"\\bou\\b"<<"\\bterminar\\b"<<"\\blimpar\\b";
+
     foreach (const QString &padrao, listaPalavrasChaves)
     {
         regra.padrao = QRegExp(padrao);

@@ -26,7 +26,8 @@ SOURCES += main.cpp\
     DadoBlocoTexto.cpp \
     MaquinaVirtual.cpp \
     Instrucao.cpp \
-    CelulaMemoria.cpp
+    CelulaMemoria.cpp \
+    arvore_abstrata.cpp
 
 HEADERS  += ide.h \
     GerenciadorDocumento.h \
@@ -42,7 +43,8 @@ HEADERS  += ide.h \
     DadoBlocoTexto.h \
     MaquinaVirtual.h \
     Instrucao.h \
-    CelulaMemoria.h
+    CelulaMemoria.h \
+    arvore_abstrata.h
 
 FORMS    += ide.ui \
     fontedialog.ui \
