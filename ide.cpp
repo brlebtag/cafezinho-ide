@@ -59,6 +59,9 @@ IDE::IDE(QWidget *parent) :
     connect(this->ui->actionLocalizar_Anterior,SIGNAL(triggered()),this,SLOT(localizarAnteriroClicado()));
     connect(this->ui->actionLocalizar_Proximo,SIGNAL(triggered()),this,SLOT(localizarProximoClicado()));
 
+    //Compilar
+    connect(this->ui->actionExecutar, SIGNAL(triggered()), this,SLOT(compilar()));
+
     //Tab Widget Arquivos
     connect(this->ui->tabWidgetArquivos,SIGNAL(currentChanged(int)),this, SLOT(mudouAbaAtual(int)));
 
@@ -311,24 +314,22 @@ QString IDE::mostrarSalvarArquivo(QString path)
 
 void IDE::msgErroSalvar(QFile *file)
 {
-    QMessageBox msgBox;
-    msgBox.setWindowTitle("CafezinhoIDE");
-    msgBox.setText("Erro ao tentar salvar o arquivo: "+file->fileName());
-    if(file!=0)
-        msgBox.setInformativeText(file->errorString());
-    msgBox.setStandardButtons(QMessageBox::Ok);
-    msgBox.setDefaultButton(QMessageBox::Ok);
-    msgBox.exec();
+    msgErro("Erro ao tentar salvar o arquivo: "+file->fileName(), file->errorString());
 }
 
 void IDE::msgErroAbrir(QFile *file)
 {
     //Exibir mensagem de erro...
+    msgErro("Erro ao tentar abrir o arquivo"+file->fileName(), file->errorString());
+}
+
+void IDE::msgErro(QString msg, QString informativo)
+{
     QMessageBox msgBox;
     msgBox.setWindowTitle("CafezinhoIDE");
-    msgBox.setText("Erro ao tentar abrir o arquivo"+file->fileName());
-    if(file!=0)
-        msgBox.setInformativeText(file->errorString());
+    msgBox.setText(msg);
+    if(!informativo.isEmpty())
+        msgBox.setInformativeText(informativo);
     msgBox.setStandardButtons(QMessageBox::Ok);
     msgBox.setDefaultButton(QMessageBox::Ok);
     msgBox.exec();
@@ -418,7 +419,7 @@ void IDE::reabrirAba(QString &fileName)
 
 void IDE::fecharFile(QFile *file)
 {
-    file->close();;
+    file->close();
     delete file;
 }
 
@@ -1204,5 +1205,34 @@ void IDE::localizarAnteriroClicado()
     }
     else
         genProc.localizarAnterior();
+}
+
+void IDE::compilar()
+{
+    Documento * doc = getDocumentoAtual();
+    if(!doc->isAberto()||doc->isSujo())
+    {
+        msgErro("[CAFEZINHO] Nao foi possivel executar esta operação", "Nenhum arquivo foi selecionado como alvo da operação\nPor favor salve o documento atual ou abra algum documento.");
+        return;
+    }
+    this->ui->actionExecutar->setEnabled(false);
+    this->ui->actionExecutar_passo_a_passo->setEnabled(false);
+    CompInfo::inst()->arquivo = doc->getCaminhoCompleto();
+    CompThread compilar;
+    connect(&compilar, SIGNAL(mensagem(QString)), this, SLOT(mensagem(QString)));
+    connect(&compilar, SIGNAL(finished()), this, SLOT(compilou()));
+    compilar.start();
+    compilar.wait();
+}
+
+void IDE::mensagem(QString msg)
+{
+    this->ui->execProg->appendHtml(msg);
+}
+
+void IDE::compilou()
+{
+    this->ui->actionExecutar->setEnabled(true);
+    this->ui->actionExecutar_passo_a_passo->setEnabled(true);
 }
 

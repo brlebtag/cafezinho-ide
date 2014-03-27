@@ -6,6 +6,8 @@
 #include <QString>
 #include <QList>
 #include <QDebug>
+#include "CompInfo.h"
+#include "CompThread.h"
 }
 
 %{
@@ -14,6 +16,8 @@
 #include <QString>
 #include <QList>
 #include <QDebug>
+#include "CompInfo.h"
+#include "CompThread.h"
 
 extern "C" int yylex();
 extern "C" FILE *yyin;
@@ -23,9 +27,8 @@ bool erro_compilador = false;
 bool erro_lexico = false;
 using namespace std;
 
-void yyerror(NBloco * bloco, const char *s);
+void yyerror(CompThread *thread, NBloco * bloco, const char *s);
 bool checa_vetor(ListaExpressao *dimensao, ListaExpressao *lista, int indice, int dim, int tam);
-
 %}
 
 %union
@@ -50,6 +53,7 @@ bool checa_vetor(ListaExpressao *dimensao, ListaExpressao *lista, int indice, in
     NListaExpressoes *nlistExpr;
 }
 
+%parse-param { CompThread *thread }
 %parse-param { NBloco *bloco }
 %error-verbose
 
@@ -529,17 +533,28 @@ bool checa_vetor(ListaExpressao *dimensao, ListaExpressao *lista, int indice, in
         return true;
 }
 
-void yyerror(NBloco * bloco, const char *s)
+void yyerror(CompThread *thread, NBloco * bloco, const char *s)
 {
+    QString erro;
+
     if(!erro_lexico)
     {
-        qDebug()<<"ERRO SINTATICO JUNTO AO TOKEN "<<ultimo_token<<" PERTO DE "<<yylineno<<endl;
-        erro_compilador = true;
+        erro ="ERRO SINTATICO JUNTO AO TOKEN ";
+        erro+=ultimo_token;
+        erro+=" PERTO DE ";
+        erro+=QString::number(yylineno);
+        erro+="\n";
     }
     else
     {
-        qDebug()<<"ERRO SEMANTICO "<<s<<" PERTO DE "<<yylineno<<endl;
-        erro_compilador = true;
+        erro ="ERRO SEMANTICO ";
+        erro+=s;
+        erro+=" PERTO DE ";
+        erro+=QString::number(yylineno);
+        erro+="\n";
         erro_lexico = false;
     }
+
+    erro_compilador = true;
+    thread->appendMsg(erro);
 }

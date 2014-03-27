@@ -27,7 +27,9 @@ SOURCES += main.cpp\
     MaquinaVirtual.cpp \
     Instrucao.cpp \
     CelulaMemoria.cpp \
-    arvore_abstrata.cpp
+    arvore_abstrata.cpp \
+    CompInfo.cpp \
+    CompThread.cpp
 
 HEADERS  += ide.h \
     GerenciadorDocumento.h \
@@ -44,7 +46,9 @@ HEADERS  += ide.h \
     MaquinaVirtual.h \
     Instrucao.h \
     CelulaMemoria.h \
-    arvore_abstrata.h
+    arvore_abstrata.h \
+    CompInfo.h \
+    CompThread.h
 
 FORMS    += ide.ui \
     fontedialog.ui \

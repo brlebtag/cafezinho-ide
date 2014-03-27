@@ -2,11 +2,13 @@
 #include <stdio.h>
 #include "arvore_abstrata.h"
 #include "parser.h"
+#include "CompThread.h"
 
 #define YY_DECL extern "C" int yylex()
 
-extern void yyerror(NBloco * bloco, const char *s);
+extern void yyerror(CompThread *thread, NBloco * bloco, const char *s);
 extern bool erro_lexico;
+extern bool erro_compilador;
 
 using namespace std;
 
@@ -96,7 +98,7 @@ OC 			[0-7]
                     if ( c == EOF )
                     {
                         erro_lexico = true;
-                        yyerror(0, "COMENTARIO NAO TERMINA" );
+                        yyerror(0, 0, "COMENTARIO NAO TERMINA" );
                         break;
                     }
                 }
@@ -118,7 +120,7 @@ OC 			[0-7]
                         if(c==EOF)
                         {
                             erro_lexico = true;
-                            yyerror(0, "CADEIA DE CARACTERES OCUPA MAIS DE UMA LINHA" );
+                            yyerror(0, 0, "CADEIA DE CARACTERES OCUPA MAIS DE UMA LINHA" );
                             break;
                         }
                         else
@@ -134,13 +136,13 @@ OC 			[0-7]
                     if( c == '\n')
                     {
                         erro_lexico = true;
-                        yyerror(0, "CADEIA DE CARACTERES OCUPA MAIS DE UMA LINHA" );
+                        yyerror(0, 0, "CADEIA DE CARACTERES OCUPA MAIS DE UMA LINHA" );
                         break;
                     }
                     if ( c == EOF )
                     {
                         erro_lexico = true;
-                        yyerror(0, "CADEIA DE CARACTERES OCUPA MAIS DE UMA LINHA" );
+                        yyerror(0, 0, "CADEIA DE CARACTERES OCUPA MAIS DE UMA LINHA" );
                         break;
                     }
                 }
@@ -401,11 +403,11 @@ OC 			[0-7]
 
                     if(a=='\'')
                     {
-                        yyerror(0, "CONSTANTE CARACTERE VAZIA" );
+                        yyerror(0, 0, "CONSTANTE CARACTERE VAZIA" );
                     }
                     else
                     {
-                        yyerror(0, "ESTOURO DE CONSTANTE CARACTERE" );
+                        yyerror(0, 0, "ESTOURO DE CONSTANTE CARACTERE" );
                     }
                 }
 
@@ -520,7 +522,7 @@ OC 			[0-7]
                 QString erro = "JUNTO AO TOKEN";
                 erro += yytext;
                 ultimo_token = yytext;
-                yyerror(0, erro.toLocal8Bit().constData());
+                yyerror(0, 0, erro.toLocal8Bit().constData());
             }
 
 %%

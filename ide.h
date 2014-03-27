@@ -25,6 +25,8 @@
 #include "fontedialog.h"
 #include "irpara.h"
 #include "GerenciadorProcura.h"
+#include "CompInfo.h"
+#include "CompThread.h"
 
 
 //Ajustar o clipboard posteriormente...
@@ -86,6 +88,7 @@ private:
     //Mensagens de Erro
     void msgErroSalvar(QFile* file = 0);
     void msgErroAbrir(QFile* file = 0);
+    void msgErro(QString msg, QString informativo="");
 
 
     //Gerenciar Manipulação de Documentos
@@ -195,6 +198,11 @@ private slots:
     void substituirClicado();
     void localizarProximoClicado();
     void localizarAnteriroClicado();
+
+    //Compilar
+    void compilar();
+    void mensagem(QString msg);
+    void compilou();
 
 };
 
