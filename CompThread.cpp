@@ -21,6 +21,10 @@ void CompThread::run()
 
     yyrestart(file);
 
+    yylineno = 1;
+    erro_compilador = 0;
+    erro_lexico = 0;
+
     NBloco *bloco;
     do
     {

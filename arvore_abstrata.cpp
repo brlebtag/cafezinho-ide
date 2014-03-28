@@ -180,7 +180,7 @@ NDeclVarVetorial::~NDeclVarVetorial()
 
 /*************** Bloco *****************/
 NBloco::NBloco(int linha)
-    :NInstrucao(linha) {}
+    :NInstrucao(linha), instrucoes(0) {}
 
 TipoNo::TipoNo NBloco::tipoNo()
 {

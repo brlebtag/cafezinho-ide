@@ -8,6 +8,10 @@
 #include <QDebug>
 #include <QPlainTextEdit>
 
+extern int yylineno;
+extern bool erro_compilador;
+extern bool erro_lexico;
+
 class CompThread;
 
 extern int yyparse(CompThread* thread, NBloco * bloco);
