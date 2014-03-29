@@ -3,19 +3,12 @@
 
 #include <QThread>
 #include "CompInfo.h"
-#include "arvore_abstrata.h"
 #include <cstdlib>
 #include <QDebug>
 #include <QPlainTextEdit>
-
-extern int yylineno;
-extern bool erro_compilador;
-extern bool erro_lexico;
+#include "semantico.h"
 
 class CompThread;
-
-extern int yyparse(CompThread* thread, NBloco * bloco);
-extern void yyrestart( FILE *file );
 
 class CompThread : public QThread
 {
@@ -23,9 +16,13 @@ class CompThread : public QThread
 public:
     explicit CompThread(QObject *parent = 0);
     void appendMsg(QString msg);
-
+    friend CompThread &operator<<(CompThread& out, const QString text);
+    friend CompThread &operator<<(CompThread& out, const QString* text);
+    friend CompThread &operator<<(CompThread& out, const int text);
+    friend CompThread &operator<<(CompThread& out, const char* text);
 private:
     void run();
+    QString texto;
 
 signals:
     emit void mensagem(QString msg);

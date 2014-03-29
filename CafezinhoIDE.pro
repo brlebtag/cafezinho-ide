@@ -29,7 +29,13 @@ SOURCES += main.cpp\
     CelulaMemoria.cpp \
     arvore_abstrata.cpp \
     CompInfo.cpp \
-    CompThread.cpp
+    CompThread.cpp \
+    semantico.cpp \
+    simbolo.cpp \
+    checa_tipo.cpp \
+    checa_vetor_dimensao.cpp \
+    checa_chamada.cpp \
+    nome.cpp
 
 HEADERS  += ide.h \
     GerenciadorDocumento.h \
@@ -48,7 +54,9 @@ HEADERS  += ide.h \
     CelulaMemoria.h \
     arvore_abstrata.h \
     CompInfo.h \
-    CompThread.h
+    CompThread.h \
+    semantico.h \
+    simbolo.h
 
 FORMS    += ide.ui \
     fontedialog.ui \

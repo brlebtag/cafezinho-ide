@@ -27,9 +27,11 @@ bool erro_compilador = false;
 bool erro_lexico = false;
 using namespace std;
 
-void yyerror(CompThread *thread, NBloco * bloco, const char *s);
+void yyerror(NBloco * bloco, const char *s);
 bool checa_vetor(ListaExpressao *dimensao, ListaExpressao *lista, int indice, int dim, int tam);
 %}
+
+
 
 %union
 {
@@ -53,7 +55,43 @@ bool checa_vetor(ListaExpressao *dimensao, ListaExpressao *lista, int indice, in
     NListaExpressoes *nlistExpr;
 }
 
-%parse-param { CompThread *thread }
+%destructor{ delete $$; $$ = 0; } <sval>
+%destructor{ delete $$; $$ = 0; } <bloco>
+%destructor{ delete $$; $$ = 0; } <expr>
+%destructor{ delete $$; $$ = 0; } <ident>
+%destructor{ delete $$; $$ = 0; } <inst>
+%destructor{ delete $$; $$ = 0; } <uni>
+%destructor{ delete $$; $$ = 0; } <declVar>
+%destructor{ delete $$; $$ = 0; } <declFunc>
+%destructor{ delete $$; $$ = 0; } <nlistExpr>
+%destructor{ delete $$; $$ = 0; } <vetDim>
+%destructor{
+        for(ListaVariavel::iterator it = $$->begin(); it!= $$->end(); ++it)
+        {
+                delete (*it);
+        }
+        delete $$;
+        $$ = 0;
+ } <listVar>
+
+ %destructor{
+        for(ListaExpressao::iterator it = $$->begin(); it!= $$->end(); ++it)
+        {
+                delete (*it);
+        }
+        delete $$;
+        $$ = 0;
+ } <listExpr>
+
+  %destructor{
+        for(ListaInstrucao::iterator it = $$->begin(); it!= $$->end(); ++it)
+        {
+                delete (*it);
+        }
+        delete $$;
+        $$ = 0;
+ } <listInstr>
+
 %parse-param { NBloco *bloco }
 %error-verbose
 
@@ -307,7 +345,7 @@ inicio_declarador
                         NDeclVarEscalar *decEsc = dynamic_cast<NDeclVarEscalar*>($1);
                         if((dynamic_cast<No*>($3->at(0)))->tipoNo()==TipoNo::LISTA_INICIALIZADOR)
                         {
-                                cout<<"ERRO SEMANTICO INICIALIZADOR NAO ESTA NO FORMATO CORRETO, ESPERADO APENAS 1 PARAMETRO PERTO DE "<<yylineno<<"\n";
+                                CompInfo::out()<<"[ERRO SEMANTICO] Inicializador não está no formato correto, esperado apenas 1 valor próximo a "<<yylineno<<"\n";
                                 erro_compilador = true;
                                 YYABORT;
                         }
@@ -333,7 +371,7 @@ inicio_declarador
                         $$ = new ListaInstrucao();
                         if((dynamic_cast<No*>($3->at(0)))->tipoNo()!=TipoNo::LISTA_INICIALIZADOR)
                         {
-                                cout<<"ERRO SEMANTICO INICIALIZADOR NAO ESTA NO FORMATO CORRETO PERTO DE "<<yylineno<<"\n";
+                                CompInfo::out()<<"[ERRO SEMANTICO] Inicializador não está no formato correto próximo a "<<yylineno<<"\n";
                                 erro_compilador = true;
                                 YYABORT;
                         }
@@ -344,7 +382,7 @@ inicio_declarador
                                 {
                                         qtd_dimensao *= dynamic_cast<NInteiro*>(*it)->valor;
                                 }
-                                cout<<"ERRO SEMANTICO INICIALIZADOR NAO ESTA NO FORMATO CORRETO ESPERADO "<<qtd_dimensao<<" VALORES PERTO DE "<<yylineno<<"\n";
+                                CompInfo::out()<<"[ERRO SEMANTICO] Inicializador não está no formato correto, esperado "<<qtd_dimensao<<" valores para ser inicializado próximo a "<<yylineno<<"\n";
                                 erro_compilador = true;
                                 YYABORT;
                         }
@@ -533,28 +571,18 @@ bool checa_vetor(ListaExpressao *dimensao, ListaExpressao *lista, int indice, in
         return true;
 }
 
-void yyerror(CompThread *thread, NBloco * bloco, const char *s)
+void yyerror(NBloco * bloco, const char *s)
 {
     QString erro;
 
     if(!erro_lexico)
     {
-        erro ="ERRO SINTATICO JUNTO AO TOKEN ";
-        erro+=ultimo_token;
-        erro+=" PERTO DE ";
-        erro+=QString::number(yylineno);
-        erro+="\n";
+        CompInfo::out()<<"[ERRO SINTATICO] Junto ao token "<<ultimo_token<<" próximo a "<<yylineno<<"\n";
     }
     else
     {
-        erro ="ERRO SEMANTICO ";
-        erro+=s;
-        erro+=" PERTO DE ";
-        erro+=QString::number(yylineno);
-        erro+="\n";
+        CompInfo::out()<<"[ERRO LEXICO] Junto ao token "<<ultimo_token<<" próximo a "<<yylineno<<"\n";
         erro_lexico = false;
     }
-
     erro_compilador = true;
-    thread->appendMsg(erro);
 }

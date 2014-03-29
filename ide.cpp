@@ -974,7 +974,7 @@ void IDE::reiniciarInterfaceClicado()
     ver_debugger = true;
     this->ui->actionDebugger->setChecked(ver_debugger);
 
-    //Debug
+    //executar programa
     ver_exec_prog = true;
     this->ui->actionExecProg->setChecked(ver_exec_prog);
 }
@@ -1215,6 +1215,10 @@ void IDE::compilar()
         msgErro("[CAFEZINHO] Nao foi possivel executar esta operação", "Nenhum arquivo foi selecionado como alvo da operação\nPor favor salve o documento atual ou abra algum documento.");
         return;
     }
+    ver_exec_prog = true;
+    this->ui->actionExecProg->setChecked(ver_exec_prog);
+    this->ui->tabgadget->show();
+    this->ui->execProg->clear();
     this->ui->actionExecutar->setEnabled(false);
     this->ui->actionExecutar_passo_a_passo->setEnabled(false);
     CompInfo::inst()->arquivo = doc->getCaminhoCompleto();

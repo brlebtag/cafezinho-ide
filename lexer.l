@@ -3,10 +3,11 @@
 #include "arvore_abstrata.h"
 #include "parser.h"
 #include "CompThread.h"
+#include "CompInfo.h"
 
 #define YY_DECL extern "C" int yylex()
 
-extern void yyerror(CompThread *thread, NBloco * bloco, const char *s);
+extern void yyerror(NBloco * bloco, const char *s);
 extern bool erro_lexico;
 extern bool erro_compilador;
 
@@ -98,7 +99,7 @@ OC 			[0-7]
                     if ( c == EOF )
                     {
                         erro_lexico = true;
-                        yyerror(0, 0, "COMENTARIO NAO TERMINA" );
+                        yyerror(0, "COMENTARIO NAO TERMINA" );
                         break;
                     }
                 }
@@ -120,7 +121,7 @@ OC 			[0-7]
                         if(c==EOF)
                         {
                             erro_lexico = true;
-                            yyerror(0, 0, "CADEIA DE CARACTERES OCUPA MAIS DE UMA LINHA" );
+                            yyerror(0, "CADEIA DE CARACTERES OCUPA MAIS DE UMA LINHA" );
                             break;
                         }
                         else
@@ -130,19 +131,19 @@ OC 			[0-7]
                     {
                         yylval.sval = new QString(val) ;
                         ultimo_token = "PALAVRA LITERAL";
-                        return PALAVRA_LITERAL;
+                        return ::PALAVRA_LITERAL;
                         break;
                     }
                     if( c == '\n')
                     {
                         erro_lexico = true;
-                        yyerror(0, 0, "CADEIA DE CARACTERES OCUPA MAIS DE UMA LINHA" );
+                        yyerror(0, "CADEIA DE CARACTERES OCUPA MAIS DE UMA LINHA" );
                         break;
                     }
                     if ( c == EOF )
                     {
                         erro_lexico = true;
-                        yyerror(0, 0, "CADEIA DE CARACTERES OCUPA MAIS DE UMA LINHA" );
+                        yyerror(0, "CADEIA DE CARACTERES OCUPA MAIS DE UMA LINHA" );
                         break;
                     }
                 }
@@ -150,67 +151,67 @@ OC 			[0-7]
 
 "**="		{
                 ultimo_token = "**=";
-                return POT_ATRIBUICAO;
+                return ::POT_ATRIBUICAO;
             }
 
 ">>="		{
                 ultimo_token = ">>=";
-                return DIR_ATRIBUICAO;
+                return ::DIR_ATRIBUICAO;
             }
 
 "<<="		{
                 ultimo_token = "<<=";
-                return ESQ_ATRIBUICAO;
+                return ::ESQ_ATRIBUICAO;
             }
 
 "+="		{
                 ultimo_token = "+=";
-                return ADICAO_ATRIBUICAO;
+                return ::ADICAO_ATRIBUICAO;
             }
 
 "-="		{
                 ultimo_token = "-=";
-                return SUBTRACAO_ATRIBUICAO;
+                return ::SUBTRACAO_ATRIBUICAO;
             }
 
 "*="		{
                 ultimo_token = "*=";
-                return MULT_ATRIBUICAO;
+                return ::MULT_ATRIBUICAO;
             }
 
 "/="		{
                 ultimo_token = "/=";
-                return DIV_ATRIBUICAO;
+                return ::DIV_ATRIBUICAO;
             }
 
 "%="		{
                 ultimo_token = "%=";
-                return MOD_ATRIBUICAO;
+                return ::MOD_ATRIBUICAO;
             }
 
 "&="		{
                 ultimo_token = "&=";
-                return E_ATRIBUICAO;
+                return ::E_ATRIBUICAO;
             }
 
 "^="		{
                 ultimo_token = "^=";
-                return XOR_ATRIBUICAO;
+                return ::XOR_ATRIBUICAO;
             }
 
 "|="		{
                 ultimo_token = "|=";
-                return OU_ATRIBUICAO;
+                return ::OU_ATRIBUICAO;
             }
 
 ">>"		{
                 ultimo_token = ">>";
-                return DIR_OP;
+                return ::DIR_OP;
             }
 
 "<<"		{
                 ultimo_token = "<<";
-                return ESQ_OP;
+                return ::ESQ_OP;
             }
 
 "++"		{
@@ -227,37 +228,37 @@ OC 			[0-7]
 
 "&&"		{
                 ultimo_token = "&&";
-                return E_OP;
+                return ::E_OP;
             }
 
 "||"		{
                 ultimo_token = "||";
-                return OU_OP;
+                return ::OU_OP;
             }
 
 "**"		{
                 ultimo_token = "**";
-                return POT_OP;
+                return ::POT_OP;
             }
 
 "<="		{
                 ultimo_token = "<=";
-                return LE_OP;
+                return ::LE_OP;
             }
 
 ">="		{
                 ultimo_token = ">=";
-                return GE_OP;
+                return ::GE_OP;
             }
 
 "=="		{
                 ultimo_token = "==";
-                return EQ_OP;
+                return ::EQ_OP;
             }
 
 "!="		{
                 ultimo_token = "!=";
-                return NE_OP;
+                return ::NE_OP;
             }
 
 ";"			{
@@ -355,12 +356,12 @@ OC 			[0-7]
 
 ">"			{
                 ultimo_token = ">";
-                return BT_OP;
+                return ::BT_OP;
             }
 
 "<"			{
                 ultimo_token = "<";
-                return LT_OP;
+                return ::LT_OP;
             }
 
 "^"			{
@@ -403,11 +404,11 @@ OC 			[0-7]
 
                     if(a=='\'')
                     {
-                        yyerror(0, 0, "CONSTANTE CARACTERE VAZIA" );
+                        yyerror(0, "CONSTANTE CARACTERE VAZIA" );
                     }
                     else
                     {
-                        yyerror(0, 0, "ESTOURO DE CONSTANTE CARACTERE" );
+                        yyerror(0, "ESTOURO DE CONSTANTE CARACTERE" );
                     }
                 }
 
@@ -425,42 +426,42 @@ OC 			[0-7]
 
 "real" 		{
                 ultimo_token = "real";
-                return REAL;
+                return ::REAL;
             }
 
 "int"		{
                 ultimo_token = "int";
-                return INT;
+                return ::INT;
             }
 
 "retorne"	{
                 yylval.ival = yylineno;
                 ultimo_token = "retorne";
-                return RETORNE;
+                return ::RETORNE;
             }
 
 "leia"		{
                 yylval.ival = yylineno;
                 ultimo_token = "leia";
-                return LEIA;
+                return ::LEIA;
             }
 
 "escreva"	{
                 yylval.ival = yylineno;
                 ultimo_token = "escreva";
-                return ESCREVA;
+                return ::ESCREVA;
             }
 
 "novalinha"	{
                 yylval.ival = yylineno;
                 ultimo_token = "novalinha";
-                return NOVA_LINHA;
+                return ::NOVA_LINHA;
             }
 
 "se" 		{
                 yylval.ival = yylineno;
                 ultimo_token = "se";
-                return SE;
+                return ::SE;
             }
 
 "senao" 	{
@@ -477,7 +478,7 @@ OC 			[0-7]
 "enquanto"	{
                 yylval.ival = yylineno;
                 ultimo_token = "enquanto";
-                return ENQUANTO;
+                return ::ENQUANTO;
             }
 
 "execute"	{
@@ -487,31 +488,31 @@ OC 			[0-7]
 
 "e" 		{
                 ultimo_token = "e";
-                return E_OP;
+                return ::E_OP;
             }
 
 "ou"		{
                 ultimo_token = "ou";
-                return OU_OP;
+                return ::OU_OP;
             }
 
 "terminar"	{
                 ultimo_token = "terminar";
                 yylval.ival = yylineno;
-                return TERMINAR;
+                return ::TERMINAR;
             }
 
 "limpar"	{
                 ultimo_token = "limpar";
                 yylval.ival = yylineno;
-                return LIMPAR;
+                return ::LIMPAR;
             }
 
 {ID}+ 		{
                 ultimo_token = "IDENTIFICADOR ";
                 ultimo_token += yytext;
                 yylval.sval = new QString(yytext) ;
-                return IDENTIFICADOR;
+                return ::IDENTIFICADOR;
             }
 
 
@@ -522,7 +523,7 @@ OC 			[0-7]
                 QString erro = "JUNTO AO TOKEN";
                 erro += yytext;
                 ultimo_token = yytext;
-                yyerror(0, 0, erro.toLocal8Bit().constData());
+                yyerror(0, erro.toLocal8Bit().constData());
             }
 
 %%
