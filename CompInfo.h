@@ -6,18 +6,55 @@
 
 class CompThread;
 
+class Output
+{
+public:
+    Output();
+    void setTexto(QString texto);
+    friend Output &operator<<(Output& out, const QString text);
+    friend Output &operator<<(Output& out, const QString* text);
+    friend Output &operator<<(Output& out, int text);
+    friend Output &operator<<(Output& out, double text);
+    friend Output &operator<<(Output& out, char text);
+};
+
+class Error
+{
+public:
+    Error();
+    void appendTexto(QString texto);
+    void appendTexto(const char* texto);
+    QString &getTexto();
+    bool isFimLinha();
+    void limpar();
+    void descarga(QString &texto);
+    friend Error &operator<<(Error& err, const QString text);
+    friend Error &operator<<(Error& err, const QString* text);
+    friend Error &operator<<(Error& err, const int text);
+    friend Error &operator<<(Error& err, const char* text);
+private:
+    QString texto;
+
+};
+
 class CompInfo : public QObject
 {
     Q_OBJECT
 public:
+    friend class Output;
+    friend class Error;
     static CompInfo* inst();
     QString arquivo;
-    static CompThread& out();
+    static Output &out();
+    static Error &err();
     static void setOut(CompThread *thread);
 private:
     explicit CompInfo(QObject *parent = 0);
+    ~CompInfo();
     static CompInfo* cmpInfo;
     CompThread * thread;
+    Error *_err;
+    Output *_out;
 
 public slots:
 

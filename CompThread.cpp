@@ -8,7 +8,7 @@ extern bool erro_lexico;
 extern int yylineno;
 
 CompThread::CompThread(QObject *parent) :
-    QThread(parent), texto("")
+    QThread(parent)
 {
 }
 
@@ -45,7 +45,19 @@ void CompThread::run()
     }
 
     if(!erro_compilador)
-        *this<<"[CAFEZINHO] Compilado com sucesso!\n";
+    {
+        TabelaRef tabela;
+        MaquinaVirtual vm;
+
+        gerar_codigo(vm,tabela, bloco, 0, 0, 0);
+
+        if((*vm.rotulo[0])!=-1)
+        {
+            vm.executar();
+        }
+        else
+            CompInfo::err()<<"[Cafezinho] A função nulo programa() não foi definida!";
+    }
 
     delete bloco;
 
@@ -54,34 +66,10 @@ void CompThread::run()
 
 void CompThread::appendMsg(QString msg)
 {
-    texto += msg;
-    if(texto[texto.size()-1]=='\n')
-    {
-        emit mensagem("<b><span style=\"color:#B40404;\">"+texto+"</span><b/>");
-        texto = "";
-    }
+    emit mensagem(msg);
 }
 
-CompThread &operator<<(CompThread &out, const int text)
+void CompThread::appendTexto(QString texto)
 {
-    out.appendMsg(QString::number(text));
-    return out;
-}
-
-CompThread &operator<<(CompThread &out, const char *text)
-{
-    out.appendMsg(QString(text));
-    return out;
-}
-
-CompThread &operator<<(CompThread &out, const QString *text)
-{
-    out.appendMsg(*text);
-    return out;
-}
-
-CompThread &operator<<(CompThread& out, const QString text)
-{
-    out.appendMsg(text);
-    return out;
+    emit texto_puro(texto);
 }

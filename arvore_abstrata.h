@@ -268,7 +268,6 @@ public:
     ListaVariavel* parametros;
     NBloco* bloco;
     bool possuiRetorno;
-    NDeclaracaoFuncao();
     NDeclaracaoFuncao(TipoVariavel::TipoVariavel tipo, QString* nome = 0, ListaVariavel* parametros = 0, NBloco* bloco = 0, int linha = 0);
     NDeclaracaoFuncao(ListaVariavel* parametros = 0, NBloco* bloco = 0, int linha = 0);
     NDeclaracaoFuncao(QString* nome = 0, ListaVariavel* parametros = 0, int linha = 0);

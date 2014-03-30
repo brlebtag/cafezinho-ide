@@ -7,6 +7,11 @@
 #include <QDebug>
 #include <QPlainTextEdit>
 #include "semantico.h"
+#include <QObject>
+#include <QList>
+#include <QTextEdit>
+#include "GerarCodigo.h"
+#include "MaquinaVirtual.h"
 
 class CompThread;
 
@@ -16,16 +21,15 @@ class CompThread : public QThread
 public:
     explicit CompThread(QObject *parent = 0);
     void appendMsg(QString msg);
-    friend CompThread &operator<<(CompThread& out, const QString text);
-    friend CompThread &operator<<(CompThread& out, const QString* text);
-    friend CompThread &operator<<(CompThread& out, const int text);
-    friend CompThread &operator<<(CompThread& out, const char* text);
+    void appendTexto(QString texto);
+
 private:
     void run();
-    QString texto;
+    QList<QTextEdit::ExtraSelection> selecoes;
 
 signals:
     emit void mensagem(QString msg);
+    emit void texto_puro(QString texto);
 
 public slots:
 

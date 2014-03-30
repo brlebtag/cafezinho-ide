@@ -992,7 +992,7 @@ void IDE::proximoDocumento()
 void IDE::anteriroDocumento()
 {
     int index = getAbaAtual();
-    if(--index <= 0)
+    if(--index < 0)
     {
         index = genDoc.tamanho()-1;
     }
@@ -1224,6 +1224,7 @@ void IDE::compilar()
     CompInfo::inst()->arquivo = doc->getCaminhoCompleto();
     CompThread compilar;
     connect(&compilar, SIGNAL(mensagem(QString)), this, SLOT(mensagem(QString)));
+    connect(&compilar, SIGNAL(texto_puro(QString)), this, SLOT(output(QString)));
     connect(&compilar, SIGNAL(finished()), this, SLOT(compilou()));
     compilar.start();
     compilar.wait();
@@ -1232,6 +1233,11 @@ void IDE::compilar()
 void IDE::mensagem(QString msg)
 {
     this->ui->execProg->appendHtml(msg);
+}
+
+void IDE::output(QString msg)
+{
+    this->ui->execProg->insertPlainText(msg);
 }
 
 void IDE::compilou()

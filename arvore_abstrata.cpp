@@ -224,14 +224,12 @@ NChamadaFuncao::~NChamadaFuncao()
 }
 
 /************** Declaracao de Funcao ****************/
-NDeclaracaoFuncao::NDeclaracaoFuncao()
-    : NInstrucao(0), nome(0), parametros(0), bloco(0),possuiRetorno(false) { }
 NDeclaracaoFuncao::NDeclaracaoFuncao(TipoVariavel::TipoVariavel tipo, QString* nome, ListaVariavel* parametros, NBloco* bloco, int linha)
     : NInstrucao(linha), nome(nome), parametros(parametros), bloco(bloco),possuiRetorno(false) { }
 NDeclaracaoFuncao::NDeclaracaoFuncao(ListaVariavel* parametros, NBloco* bloco, int linha)
     : NInstrucao(linha), parametros(parametros), bloco(bloco),possuiRetorno(false) { }
 NDeclaracaoFuncao::NDeclaracaoFuncao(QString * nome, ListaVariavel * parametros, int linha)
-    : NInstrucao(linha), nome(nome), parametros(parametros),possuiRetorno(false) { }
+    : NInstrucao(linha), nome(nome), parametros(parametros),possuiRetorno(false), bloco(0) { }
 NDeclaracaoFuncao::~NDeclaracaoFuncao()
 {
     if(nome!=0)

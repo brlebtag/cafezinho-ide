@@ -4,6 +4,7 @@
 #include "parser.h"
 #include "CompThread.h"
 #include "CompInfo.h"
+#include <QSharedPointer>
 
 #define YY_DECL extern "C" int yylex()
 

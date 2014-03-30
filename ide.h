@@ -202,6 +202,7 @@ private slots:
     //Compilar
     void compilar();
     void mensagem(QString msg);
+    void output(QString msg);
     void compilou();
 
 };

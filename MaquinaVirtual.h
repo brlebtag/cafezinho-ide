@@ -1,54 +1,51 @@
 #ifndef MAQUINAVIRTUAL_H
 #define MAQUINAVIRTUAL_H
 
-#include <QObject>
-#include <QList>
-#include <QHash>
-#include <Instrucao.h>
-#include <CelulaMemoria.h>
 #include <QString>
+#include <QVector>
+#include "Instrucao.h"
+#include "CelulaMemoria.h"
+#include "CompThread.h"
+#include "CompInfo.h"
 
-class MaquinaVirtual : public QObject
+
+using namespace std;
+
+class MaquinaVirtual
 {
-    Q_OBJECT
 public:
-    explicit MaquinaVirtual(QObject *parent = 0);
+    explicit MaquinaVirtual();
     virtual ~MaquinaVirtual();
     void executar();
     void parar();
-    void rodar();
     void passo();
-    void inserirInstrucao(Instrucao* i);
-    void empilhar(CelulaMemoria m);
-    void desempilhar();
-    void escreva(QString texto);
-    int lerInt();
-    double lerReal();
-    char lerCar();
-    CelulaMemoria &getCelula(int offset);
-    void setCelula(CelulaMemoria& registrador, int offset);
-    int aloca(int quantidade);
+    void reiniciar();
+    void msgErro(QString _err);
     int pc; //Contator de programa
-    int sp; //Ponteiro da pilha
+    CelulaMemoria pp; //Ponteiro da pilha
     CelulaMemoria eax; // registrador acumulador
     CelulaMemoria ebx; // registrador de proposito geral
     CelulaMemoria ecx; // registrador de proposito geral
     CelulaMemoria edx; // registrador de proposito geral
-    int bp; // ponteiro base pilha (usar como fp do assembly MIPS)
-    int ra; // endereço de retorno
+    CelulaMemoria bp; // ponteiro base pilha (usar como fp do assembly MIPS)
+    CelulaMemoria er; // endereço de retorno
+    CelulaMemoria pg; // Ponteiro Global...
     bool bf; //flag maior que...
     bool sf; //flag menor que...
     bool ef; //flag igual a...
     bool erf; //Flag indicando erro...
-private:
+    QVector<CelulaMemoria> memoria;
+    QVector<Instrucao*> codigo;
+    QVector<int*>rotulo;
+    void escreveInt(int c);
+    void escreveChar(char c);
+    void escreveDouble(double c);
+    void escrevePalavra(QString *palavra);
+    int leInt();
+    char leChar();
+    double leDouble();
     bool execute;
-    QList<CelulaMemoria> memoria;
-    QList<Instrucao*> codigo;
-
-signals:
-
-public slots:
-
+    void sistema(Sistema::Comando comando);
 };
 
 #endif // MAQUINAVIRTUAL_H

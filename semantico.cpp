@@ -58,12 +58,12 @@ IteradorTabelaSimbolo analise_semantica(TabelaSimbolo &tabela, No* no, int profu
         {
             if(CHECA_NO(itSim.value()->top()->no, DECLARACAO_FUNCAO))
             {
-                CompInfo::out()<<"[ERRO SEMANTICO] Variavel "<<var->nome<<" já foi preveamente declarado como sendo outro tipo de simbolo próximo a "<<var->linha<<"\n";
+                CompInfo::err()<<"[ERRO SEMANTICO] Variavel "<<var->nome<<" já foi preveamente declarado como sendo outro tipo de simbolo próximo a "<<var->linha<<"\n";
                 erro_compilador = true;
             }
             else
             {
-                CompInfo::out()<<"[ERRO SEMANTICO] Variavel "<<var->nome<<" já foi preveamente declarado próximo a "<<var->linha<<"\n";
+                CompInfo::err()<<"[ERRO SEMANTICO] Variavel "<<var->nome<<" já foi preveamente declarado próximo a "<<var->linha<<"\n";
                 erro_compilador = true;
             }
 
@@ -73,7 +73,7 @@ IteradorTabelaSimbolo analise_semantica(TabelaSimbolo &tabela, No* no, int profu
         {
             if(CHECA_NO(no, DECLARACAO_VARIAVEL_VETORIAL)&&(!checa_vetor_dimensao(dynamic_cast<NDeclVarVetorial*>(no)->eParametro, (NDeclVarVetorial*)no)))
             {
-                CompInfo::out()<<"[ERRO SEMANTICO] Variavel vetorial "<<var->nome<<" não foi declarado corretamente as dimensões do vetor próximo a "<<var->linha<<"\n";
+                CompInfo::err()<<"[ERRO SEMANTICO] Variavel vetorial "<<var->nome<<" não foi declarado corretamente as dimensões do vetor próximo a "<<var->linha<<"\n";
                 erro_compilador = true;
                 return tabela.end();
             }
@@ -101,12 +101,12 @@ IteradorTabelaSimbolo analise_semantica(TabelaSimbolo &tabela, No* no, int profu
 
             if(CHECA_NO(itSim.value()->top()->no , DECLARACAO_VARIAVEL_ESCALAR) || CHECA_NO(itSim.value()->top()->no , DECLARACAO_VARIAVEL_VETORIAL))
             {
-                CompInfo::out()<<"[ERRO SEMANTICO] Função "<<func->nome<<" já foi declarado como sendo outro tipo de simbolo próximo a "<<func->linha<<"\n";
+                CompInfo::err()<<"[ERRO SEMANTICO] Função "<<func->nome<<" já foi declarado como sendo outro tipo de simbolo próximo a "<<func->linha<<"\n";
                 erro_compilador = true;
             }
             else
             {
-                CompInfo::out()<<"[ERRO SEMANTICO] Função "<<func->nome<<" já foi preveamente declarado próximo a "<<func->linha<<"\n";
+                CompInfo::err()<<"[ERRO SEMANTICO] Função "<<func->nome<<" já foi preveamente declarado próximo a "<<func->linha<<"\n";
                 erro_compilador = true;
             }
 
@@ -149,7 +149,7 @@ IteradorTabelaSimbolo analise_semantica(TabelaSimbolo &tabela, No* no, int profu
 
         if(func->possuiRetorno==false&&func->tipo!=TIPO_NULO)
         {
-            CompInfo::out()<<"[ERRO SEMANTICO] Nenhum retorno foi definido para "<<func->nome<<" esperado tipo "<<nome_tipo(func->tipo)<<" próximo a "<<func->linha<<"\n";
+            CompInfo::err()<<"[ERRO SEMANTICO] Nenhum retorno foi definido para "<<func->nome<<" esperado tipo "<<nome_tipo(func->tipo)<<" próximo a "<<func->linha<<"\n";
             erro_compilador = true;
         }
 
@@ -169,7 +169,7 @@ IteradorTabelaSimbolo analise_semantica(TabelaSimbolo &tabela, No* no, int profu
 
         if(tipo != func->tipo)
         {
-            CompInfo::out()<<"[ERRO SEMANTICO] Esperado retorno do tipo "<<nome_tipo(func->tipo)<<" encontrado do tipo "<<nome_tipo(tipo)<<" próximo a "<<ret->linha<<"\n";
+            CompInfo::err()<<"[ERRO SEMANTICO] Esperado retorno do tipo "<<nome_tipo(func->tipo)<<" encontrado do tipo "<<nome_tipo(tipo)<<" próximo a "<<ret->linha<<"\n";
             erro_compilador = true;
         }
 
@@ -193,7 +193,7 @@ IteradorTabelaSimbolo analise_semantica(TabelaSimbolo &tabela, No* no, int profu
 
             if(tipo == TIPO_ERRO || tipo == TIPO_NULO || tipo== TIPO_PALAVRA|| tipo == TIPO_NOVALINHA)
             {
-                CompInfo::out()<<"[ERRO SEMANTICO] Não é possivel realizar está operação encontrado valor tipo "<<nome_tipo(tipo)<<" próximo a "<<ler->linha<<"\n";
+                CompInfo::err()<<"[ERRO SEMANTICO] Não é possivel realizar está operação encontrado valor tipo "<<nome_tipo(tipo)<<" próximo a "<<ler->linha<<"\n";
                 erro_compilador = true;
             }
 
@@ -205,19 +205,19 @@ IteradorTabelaSimbolo analise_semantica(TabelaSimbolo &tabela, No* no, int profu
 
                 if(tipo == TIPO_ERRO || tipo == TIPO_NULO || tipo== TIPO_PALAVRA|| tipo == TIPO_NOVALINHA)
                 {
-                    CompInfo::out()<<"[ERRO SEMANTICO] Não é possivel realizar está operação encontrado valor tipo "<<nome_tipo(tipo)<<" próximo a "<<ler->linha<<"\n";
+                    CompInfo::err()<<"[ERRO SEMANTICO] Não é possivel realizar está operação encontrado valor tipo "<<nome_tipo(tipo)<<" próximo a "<<ler->linha<<"\n";
                     erro_compilador = true;
                 }
 
                 if(NCHECA_NO(r1, IDENTIFICADOR_ESCALAR)&&NCHECA_NO(r, IDENTIFICADOR_VETORIAL))
                 {
-                    CompInfo::out()<<"[ERRO SEMANTICO] Não é possivel realizar está operação sobre o operador do tipo não identificador próximo a "<<ler->linha<<"\n";
+                    CompInfo::err()<<"[ERRO SEMANTICO] Não é possivel realizar está operação sobre o operador do tipo não identificador próximo a "<<ler->linha<<"\n";
                     erro_compilador = true;
                 }
             }
             else if(NCHECA_NO(r, IDENTIFICADOR_ESCALAR)&&NCHECA_NO(r, IDENTIFICADOR_VETORIAL))
             {
-                CompInfo::out()<<"[ERRO SEMANTICO] Não é possivel realizar está operação sobre o operador do tipo não identificador próximo a "<<ler->linha<<"\n";
+                CompInfo::err()<<"[ERRO SEMANTICO] Não é possivel realizar está operação sobre o operador do tipo não identificador próximo a "<<ler->linha<<"\n";
                 erro_compilador = true;
             }
         }
@@ -238,7 +238,7 @@ IteradorTabelaSimbolo analise_semantica(TabelaSimbolo &tabela, No* no, int profu
 
             if(tipo == TIPO_ERRO || tipo == TIPO_NULO)
             {
-                CompInfo::out()<<"[ERRO SEMANTICO] Não é possivel realizar está operação encontrado valor tipo "<<nome_tipo(tipo)<<" próximo a "<<escreve->linha<<"\n";
+                CompInfo::err()<<"[ERRO SEMANTICO] Não é possivel realizar está operação encontrado valor tipo "<<nome_tipo(tipo)<<" próximo a "<<escreve->linha<<"\n";
                 erro_compilador = true;
             }
         }
@@ -257,7 +257,7 @@ IteradorTabelaSimbolo analise_semantica(TabelaSimbolo &tabela, No* no, int profu
 
         if(tipo==TIPO_ERRO||tipo==TIPO_PALAVRA||tipo==TIPO_NULO)
         {
-            CompInfo::out()<<"[ERRO SEMANTICO] Não é possivel avaliar está expressão encontrado valor do tipo "<<nome_tipo(tipo)<<" próximo a "<<ifinstr->linha<<"\n";
+            CompInfo::err()<<"[ERRO SEMANTICO] Não é possivel avaliar está expressão encontrado valor do tipo "<<nome_tipo(tipo)<<" próximo a "<<ifinstr->linha<<"\n";
             erro_compilador = true;
         }
 
@@ -273,7 +273,7 @@ IteradorTabelaSimbolo analise_semantica(TabelaSimbolo &tabela, No* no, int profu
 
         if(tipo==TIPO_ERRO||tipo==TIPO_PALAVRA||tipo==TIPO_NULO)
         {
-            CompInfo::out()<<"[ERRO SEMANTICO] Não é possivel avaliar está expressão encontrado valor do tipo "<<nome_tipo(tipo)<<" próximo a "<<ifinstr->linha<<"\n";
+            CompInfo::err()<<"[ERRO SEMANTICO] Não é possivel avaliar está expressão encontrado valor do tipo "<<nome_tipo(tipo)<<" próximo a "<<ifinstr->linha<<"\n";
             erro_compilador = true;
         }
 
@@ -290,7 +290,7 @@ IteradorTabelaSimbolo analise_semantica(TabelaSimbolo &tabela, No* no, int profu
 
         if(tipo==TIPO_ERRO||tipo==TIPO_PALAVRA||tipo==TIPO_NULO)
         {
-            CompInfo::out()<<"[ERRO SEMANTICO] Não é possivel avaliar está expressão encontrado valor do tipo "<<nome_tipo(tipo)<<" próximo a "<<enq->linha<<"\n";
+            CompInfo::err()<<"[ERRO SEMANTICO] Não é possivel avaliar está expressão encontrado valor do tipo "<<nome_tipo(tipo)<<" próximo a "<<enq->linha<<"\n";
             erro_compilador = true;
         }
 
@@ -306,7 +306,7 @@ IteradorTabelaSimbolo analise_semantica(TabelaSimbolo &tabela, No* no, int profu
 
         if(itSim==tabela.end())
         {
-            CompInfo::out()<<"[ERRO SEMANTICO] Variavel "<<list->nome<<" não foi preveamente declarado próximo a "<<list->linha<<"\n";
+            CompInfo::err()<<"[ERRO SEMANTICO] Variavel "<<list->nome<<" não foi preveamente declarado próximo a "<<list->linha<<"\n";
             erro_compilador = true;
         }
         else
@@ -314,12 +314,12 @@ IteradorTabelaSimbolo analise_semantica(TabelaSimbolo &tabela, No* no, int profu
 
             if(CHECA_NO(itSim.value()->top()->no, DECLARACAO_FUNCAO))
             {
-                CompInfo::out()<<"[ERRO SEMANTICO] Esperado variavel vetorial encontrado função próximo a "<<list->linha<<"\n";
+                CompInfo::err()<<"[ERRO SEMANTICO] Esperado variavel vetorial encontrado função próximo a "<<list->linha<<"\n";
                 erro_compilador = true;
             }
             else if(CHECA_NO(itSim.value()->top()->no, DECLARACAO_VARIAVEL_ESCALAR))
             {
-                CompInfo::out()<<"[ERRO SEMANTICO] Esperado variavel vetorial encontrado variavel escalar próximo a "<<list->linha<<"\n";
+                CompInfo::err()<<"[ERRO SEMANTICO] Esperado variavel vetorial encontrado variavel escalar próximo a "<<list->linha<<"\n";
                 erro_compilador = true;
             }
             else
@@ -337,7 +337,7 @@ IteradorTabelaSimbolo analise_semantica(TabelaSimbolo &tabela, No* no, int profu
                 if(!resultado)
                 {
                     //mensagem de erro...
-                    CompInfo::out()<<"[ERRO SEMANTICO] Valores para inicializar o vetor não coincidem com o tipo esperado "<<nome_tipo(var->tipo)<<" próximo a"<<list->linha<<"\n";
+                    CompInfo::err()<<"[ERRO SEMANTICO] Valores para inicializar o vetor não coincidem com o tipo esperado "<<nome_tipo(var->tipo)<<" próximo a"<<list->linha<<"\n";
                     erro_compilador = true;
                 }
             }
@@ -368,7 +368,7 @@ IteradorTabelaSimbolo analise_semantica(TabelaSimbolo &tabela, No* no, int profu
         CHECA_NO(no, PALAVRA_LITERAL)
     )
     {
-        CompInfo::out()<<"[ERRO SEMANTICO] Esperado nada encontrado "<<(tipo_no(no))<<" próximo a "<<no->linha<<"\n";
+        CompInfo::err()<<"[ERRO SEMANTICO] Esperado nada encontrado "<<(tipo_no(no))<<" próximo a "<<no->linha<<"\n";
         erro_compilador = true;
         return tabela.end();
     }

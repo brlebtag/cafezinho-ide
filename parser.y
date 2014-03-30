@@ -16,8 +16,8 @@
 #include <QString>
 #include <QList>
 #include <QDebug>
-#include "CompInfo.h"
 #include "CompThread.h"
+#include "CompInfo.h"
 
 extern "C" int yylex();
 extern "C" FILE *yyin;
@@ -25,13 +25,12 @@ extern int yylineno;
 extern QString ultimo_token;
 bool erro_compilador = false;
 bool erro_lexico = false;
+
 using namespace std;
 
 void yyerror(NBloco * bloco, const char *s);
 bool checa_vetor(ListaExpressao *dimensao, ListaExpressao *lista, int indice, int dim, int tam);
 %}
-
-
 
 %union
 {
@@ -73,8 +72,7 @@ bool checa_vetor(ListaExpressao *dimensao, ListaExpressao *lista, int indice, in
         delete $$;
         $$ = 0;
  } <listVar>
-
- %destructor{
+%destructor{
         for(ListaExpressao::iterator it = $$->begin(); it!= $$->end(); ++it)
         {
                 delete (*it);
@@ -83,7 +81,7 @@ bool checa_vetor(ListaExpressao *dimensao, ListaExpressao *lista, int indice, in
         $$ = 0;
  } <listExpr>
 
-  %destructor{
+%destructor{
         for(ListaInstrucao::iterator it = $$->begin(); it!= $$->end(); ++it)
         {
                 delete (*it);
@@ -577,11 +575,11 @@ void yyerror(NBloco * bloco, const char *s)
 
     if(!erro_lexico)
     {
-        CompInfo::out()<<"[ERRO SINTATICO] Junto ao token "<<ultimo_token<<" próximo a "<<yylineno<<"\n";
+        CompInfo::err()<<"[ERRO SINTATICO] Erro junto ao token "<<ultimo_token<<" próximo a "<<yylineno<<"\n";
     }
     else
     {
-        CompInfo::out()<<"[ERRO LEXICO] Junto ao token "<<ultimo_token<<" próximo a "<<yylineno<<"\n";
+        CompInfo::err()<<"[ERRO LEXICO] Erro junto ao token "<<ultimo_token<<" próximo a "<<yylineno<<"\n";
         erro_lexico = false;
     }
     erro_compilador = true;

@@ -7,8 +7,8 @@
 #include <QString>
 #include "arvore_abstrata.h"
 #include "simbolo.h"
-#include "CompInfo.h"
 #include "CompThread.h"
+#include "CompInfo.h"
 
 using namespace std;
 using namespace TipoVariavel;

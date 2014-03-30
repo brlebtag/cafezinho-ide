@@ -18,7 +18,7 @@ bool checar_chamada(TabelaSimbolo &tabela, No* parametro, No* argumento)
 
        if(NCHECA_NO(no, IDENTIFICADOR_ESCALAR))
        {
-           CompInfo::out()<<"[ERRO SEMANTICO] Esperado variavel vetorial encontrado "<<tipo_no(no)<<" próximo a "<<argumento->linha<<"\n";
+           CompInfo::err()<<"[ERRO SEMANTICO] Esperado variavel vetorial encontrado "<<tipo_no(no)<<" próximo a "<<argumento->linha<<"\n";
            erro_compilador = true;
            return false;
        }
@@ -30,7 +30,7 @@ bool checar_chamada(TabelaSimbolo &tabela, No* parametro, No* argumento)
 
            if(itSim==tabela.end())
            {
-               CompInfo::out()<<"[ERRO SEMANTICO] Variavel "<<ident->nome<<" não foi previamente declarado próximo a "<<ident->linha<<"\n";
+               CompInfo::err()<<"[ERRO SEMANTICO] Variavel "<<ident->nome<<" não foi previamente declarado próximo a "<<ident->linha<<"\n";
                erro_compilador = true;
                return false;
            }
@@ -38,13 +38,13 @@ bool checar_chamada(TabelaSimbolo &tabela, No* parametro, No* argumento)
            {
                if(CHECA_NO(itSim.value()->top()->no, DECLARACAO_FUNCAO))
                {
-                   CompInfo::out()<<"[ERRO SEMANTICO] Esperado variavel vetorial encontrado função próximo a "<<ident->linha<<"\n";
+                   CompInfo::err()<<"[ERRO SEMANTICO] Esperado variavel vetorial encontrado função próximo a "<<ident->linha<<"\n";
                    erro_compilador = true;
                    return false;
                }
                else if(CHECA_NO(itSim.value()->top()->no, DECLARACAO_VARIAVEL_ESCALAR))
                {
-                   CompInfo::out()<<"[ERRO SEMANTICO] Esperado variavel vetorial encontrado variavel escalar próximo a "<<ident->linha<<"\n";
+                   CompInfo::err()<<"[ERRO SEMANTICO] Esperado variavel vetorial encontrado variavel escalar próximo a "<<ident->linha<<"\n";
                    erro_compilador = true;
                    return false;
                }
@@ -55,7 +55,7 @@ bool checar_chamada(TabelaSimbolo &tabela, No* parametro, No* argumento)
 
                    if(param->dimensoes->size()!=arg->dimensoes->size())
                    {
-                       CompInfo::out()<<"[ERRO SEMANTICO] Parametro possui "<<param->dimensoes->size()<<" dimensões enquanto que argumento possui "<<arg->dimensoes->size()<<" próximo a "<<ident->linha<<"\n";
+                       CompInfo::err()<<"[ERRO SEMANTICO] Parametro possui "<<param->dimensoes->size()<<" dimensões enquanto que argumento possui "<<arg->dimensoes->size()<<" próximo a "<<ident->linha<<"\n";
                        erro_compilador = true;
                        return false;
                    }
@@ -95,14 +95,14 @@ bool checar_chamada(TabelaSimbolo &tabela, No* parametro, No* argumento)
 
                    if(!resultado)
                    {
-                       CompInfo::out()<<"[ERRO SEMANTICO] Argumento possui "<<arg->nome<<"["<<dimArg<<"] dimensões enquanto que o parametros possui "<<param->nome<<"["<<dimParam<<"] dimensões próximo a "<<ident->linha<<"\n";
+                       CompInfo::err()<<"[ERRO SEMANTICO] Argumento possui "<<arg->nome<<"["<<dimArg<<"] dimensões enquanto que o parametros possui "<<param->nome<<"["<<dimParam<<"] dimensões próximo a "<<ident->linha<<"\n";
                        erro_compilador = true;
                        return false;
                    }
 
                    if(param->tipo!=arg->tipo)
                    {
-                       CompInfo::out()<<"[ERRO SEMANTICO] Parametro é do tipo "<<param->tipo<<"* enquanto que argumento é do tipo "<<arg->tipo<<"* próximo a "<<ident->linha<<"\n";
+                       CompInfo::err()<<"[ERRO SEMANTICO] Parametro é do tipo "<<param->tipo<<"* enquanto que argumento é do tipo "<<arg->tipo<<"* próximo a "<<ident->linha<<"\n";
                        erro_compilador = true;
                        return false;
                    }

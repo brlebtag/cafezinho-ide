@@ -35,7 +35,13 @@ SOURCES += main.cpp\
     checa_tipo.cpp \
     checa_vetor_dimensao.cpp \
     checa_chamada.cpp \
-    nome.cpp
+    nome.cpp \
+    GerarCodigo.cpp \
+    Comandos.cpp \
+    gerar_inicializador.cpp \
+    gerenciamento.cpp \
+    alocar_variavel.cpp \
+    referencia.cpp
 
 HEADERS  += ide.h \
     GerenciadorDocumento.h \
@@ -56,7 +62,9 @@ HEADERS  += ide.h \
     CompInfo.h \
     CompThread.h \
     semantico.h \
-    simbolo.h
+    simbolo.h \
+    GerarCodigo.h \
+    referencia.h
 
 FORMS    += ide.ui \
     fontedialog.ui \

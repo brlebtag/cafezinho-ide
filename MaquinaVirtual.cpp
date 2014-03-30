@@ -1,33 +1,76 @@
 #include "MaquinaVirtual.h"
 #include "Instrucao.h"
 
-MaquinaVirtual::MaquinaVirtual(QObject *parent) :
-    QObject(parent)
+MaquinaVirtual::MaquinaVirtual()
+    : memoria(100)
 {
-    pc = 0;
-    sp = 0;
-    eax = 0;
-    ebx = 0;
-    ecx = 0;
-    edx = 0;
-    bp = 0;
-    ra = 0;
-    bf = false;
-    sf = false;
-    ef = false;
-    erf = false;
+    reiniciar();
 }
 
 MaquinaVirtual::~MaquinaVirtual()
 {
     //remove todas as instruções criadas...
-    for(int i=0; i<codigo.size(); i++)
-        delete codigo[i];
+    try
+    {
+        for(int i=0; i<codigo.size(); ++i)
+        {
+           delete codigo[i];
+        }
+
+        for(int i=0; i<rotulo.size(); ++i)
+        {
+            delete rotulo[i];
+        }
+    }
+    catch(exception &e)
+    {
+
+    }
+
+}
+
+void MaquinaVirtual::reiniciar()
+{
+    pc = 0;
+    pp = 0;
+    eax = 0;
+    ebx = 0;
+    ecx = 0;
+    edx = 0;
+    bp = 0;
+    er = 0;
+    pg = 0;
+    bf = false;
+    sf = false;
+    ef = false;
+    erf = false;
+    execute = true;
+}
+
+void MaquinaVirtual::msgErro(QString _err)
+{
+    CompInfo::err()<<_err;
 }
 
 void MaquinaVirtual::executar()
 {
-    execute = true;
+    while(execute&&(!erf))
+    {
+        try
+        {
+            codigo[pc]->execute(*this);
+        }
+        catch(exception &e)
+        {
+            cout<<"PROGRAMA ACABOU DE FORMA INESPERADA\n";
+            erf = true;
+        }
+        if(pc<0||pc>=codigo.size())
+        {
+            cout<<"PROGRAMA ACABOU DE FORMA INESPERADA\n";
+            erf = true;
+        }
+    }
 }
 
 void MaquinaVirtual::parar()
@@ -35,84 +78,61 @@ void MaquinaVirtual::parar()
     execute = false;
 }
 
-void MaquinaVirtual::rodar()
-{
-    while(execute&&(!erf))
-    {
-        codigo[pc]->execute();
-        if(erf)
-            break;
-    }
-}
-
 void MaquinaVirtual::passo()
 {
     if(execute&&(!erf))
-        codigo[pc]->execute();
-}
-
-void MaquinaVirtual::inserirInstrucao(Instrucao *i)
-{
-    codigo.push_back(i);
-}
-
-void MaquinaVirtual::empilhar(CelulaMemoria m)
-{
-    memoria.push_back(m);
-}
-
-void MaquinaVirtual::desempilhar()
-{
-    memoria.pop_back();
-}
-
-void MaquinaVirtual::escreva(QString texto)
-{
-
-}
-
-int MaquinaVirtual::lerInt()
-{
-    return 0;
-}
-
-double MaquinaVirtual::lerReal()
-{
-    return 0.0;
-}
-
-char MaquinaVirtual::lerCar()
-{
-    return '\0';
-}
-
-CelulaMemoria &MaquinaVirtual::getCelula(int offset)
-{
-    if(offset>=0 && offset<memoria.size())
-        return memoria[offset];
-    //senao emite erro de segmentacao...
-    erf = true;
-}
-
-void MaquinaVirtual::setCelula(CelulaMemoria &registrador, int offset)
-{
-    if(offset>=0 && offset<memoria.size())
-        memoria[offset] = registrador;
-    //senao emite erro de segmentacao...
-    erf = true;
-}
-
-int MaquinaVirtual::aloca(int quantidade)
-{
-    int atual = memoria.size();
-    memoria.reserve(quantidade+1);
-
-    //inicializa memeoria
-
-    for(int i=0; i<quantidade; i++)
     {
-        memoria[atual + i] = 0;
+        try
+        {
+            codigo[pc]->execute(*this);
+        }
+        catch(exception &e)
+        {
+            cout<<"PROGRAMA ACABOU DE FORMA INESPERADA\n";
+            erf = true;
+        }
     }
+}
 
-    return atual;
+void MaquinaVirtual::escreveInt(int c)
+{
+    CompInfo::out()<<c;
+}
+void MaquinaVirtual::escreveChar(char c)
+{
+    CompInfo::out()<<c;
+}
+void MaquinaVirtual::escreveDouble(double c)
+{
+    CompInfo::out()<<c;
+}
+void MaquinaVirtual::escrevePalavra(QString *palavra)
+{
+    CompInfo::out()<<palavra;
+}
+int MaquinaVirtual::leInt()
+{
+    int temp;
+    return temp;
+}
+char MaquinaVirtual::leChar()
+{
+    char temp;
+    return temp;
+}
+double MaquinaVirtual::leDouble()
+{
+    double temp;
+    return temp;
+}
+
+void MaquinaVirtual::sistema(Sistema::Comando comando)
+{
+    switch(comando)
+    {
+        case Sistema::LIMPAR:
+        {
+
+        }
+    }
 }
