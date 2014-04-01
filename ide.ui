@@ -28,7 +28,7 @@
         <property name="currentIndex">
          <number>0</number>
         </property>
-        <widget class="QWidget" name="tab">
+        <widget class="QWidget" name="">
          <attribute name="title">
           <string/>
          </attribute>
@@ -43,25 +43,11 @@
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
-        <widget class="QWidget" name="groupExecProgPage1">
+        <widget class="QWidget" name="">
          <attribute name="title">
           <string>Execução do Programa</string>
          </attribute>
-         <layout class="QGridLayout" name="gridLayout">
-          <item row="0" column="0">
-           <widget class="QPlainTextEdit" name="execProg">
-            <property name="readOnly">
-             <bool>false</bool>
-            </property>
-            <property name="plainText">
-             <string/>
-            </property>
-            <property name="overwriteMode">
-             <bool>false</bool>
-            </property>
-           </widget>
-          </item>
-         </layout>
+         <layout class="QGridLayout" name="gridLayout"/>
         </widget>
        </widget>
       </item>
@@ -116,7 +102,7 @@
          </sizepolicy>
         </property>
         <property name="currentIndex">
-         <number>0</number>
+         <number>1</number>
         </property>
         <widget class="QWidget" name="tab_3">
          <attribute name="title">
@@ -208,7 +194,7 @@
      <x>0</x>
      <y>0</y>
      <width>877</width>
-     <height>21</height>
+     <height>20</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuArquivo">
@@ -323,8 +309,6 @@
     </widget>
     <addaction name="actionFonte"/>
     <addaction name="menuTamanho_Fonte"/>
-    <addaction name="separator"/>
-    <addaction name="actionConfigRealce"/>
    </widget>
    <addaction name="menuArquivo"/>
    <addaction name="menuEditar"/>
@@ -656,8 +640,14 @@
    </property>
   </action>
   <action name="actionConfigRealce">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
    <property name="text">
     <string>Realçe...</string>
+   </property>
+   <property name="iconVisibleInMenu">
+    <bool>false</bool>
    </property>
   </action>
   <action name="actionMaior">

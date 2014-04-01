@@ -1,6 +1,7 @@
 #ifndef MAQUINAVIRTUAL_H
 #define MAQUINAVIRTUAL_H
 
+#include <QObject>
 #include <QString>
 #include <QVector>
 #include "Instrucao.h"
@@ -9,12 +10,11 @@
 #include "CompInfo.h"
 
 
-using namespace std;
-
-class MaquinaVirtual
+class MaquinaVirtual : public QObject
 {
+    Q_OBJECT
 public:
-    explicit MaquinaVirtual();
+    explicit MaquinaVirtual(QObject *parent = 0);
     virtual ~MaquinaVirtual();
     void executar();
     void parar();
@@ -46,6 +46,11 @@ public:
     double leDouble();
     bool execute;
     void sistema(Sistema::Comando comando);
+
+signals:
+    void limpar_terminal();
+public slots:
+
 };
 
 #endif // MAQUINAVIRTUAL_H

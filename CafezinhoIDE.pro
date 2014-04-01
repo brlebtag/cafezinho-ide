@@ -24,7 +24,6 @@ SOURCES += main.cpp\
     Realcador.cpp \
     Documento.cpp \
     DadoBlocoTexto.cpp \
-    MaquinaVirtual.cpp \
     Instrucao.cpp \
     CelulaMemoria.cpp \
     arvore_abstrata.cpp \
@@ -41,7 +40,9 @@ SOURCES += main.cpp\
     gerar_inicializador.cpp \
     gerenciamento.cpp \
     alocar_variavel.cpp \
-    referencia.cpp
+    referencia.cpp \
+    terminal.cpp \
+    MaquinaVirtual.cpp
 
 HEADERS  += ide.h \
     GerenciadorDocumento.h \
@@ -55,7 +56,6 @@ HEADERS  += ide.h \
     Realcador.h \
     Documento.h \
     DadoBlocoTexto.h \
-    MaquinaVirtual.h \
     Instrucao.h \
     CelulaMemoria.h \
     arvore_abstrata.h \
@@ -64,7 +64,9 @@ HEADERS  += ide.h \
     semantico.h \
     simbolo.h \
     GerarCodigo.h \
-    referencia.h
+    referencia.h \
+    terminal.h \
+    MaquinaVirtual.h
 
 FORMS    += ide.ui \
     fontedialog.ui \

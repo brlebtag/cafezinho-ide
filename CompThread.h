@@ -12,6 +12,7 @@
 #include <QTextEdit>
 #include "GerarCodigo.h"
 #include "MaquinaVirtual.h"
+#include <QMutex>
 
 class CompThread;
 
@@ -22,16 +23,22 @@ public:
     explicit CompThread(QObject *parent = 0);
     void appendMsg(QString msg);
     void appendTexto(QString texto);
+    void modoEntrada();
 
 private:
     void run();
     QList<QTextEdit::ExtraSelection> selecoes;
+    bool spinlock;
 
 signals:
     emit void mensagem(QString msg);
     emit void texto_puro(QString texto);
+    emit void iniciarModoEntrada();
+    emit void limpar_terminal();
 
 public slots:
+    void limpar_tela();
+
 
 };
 

@@ -27,6 +27,7 @@
 #include "GerenciadorProcura.h"
 #include "CompInfo.h"
 #include "CompThread.h"
+#include "terminal.h"
 
 
 //Ajustar o clipboard posteriormente...
@@ -61,11 +62,15 @@ private:
     bool ver_exec_prog;
     bool ver_barra_ferramentas;
     bool ver_barra_status;
+    Terminal terminal;
 
     int tamanho_fonte;
     QString familia_fonte;
 
     //Metodos
+
+    //Terminal
+    void adicionarTerminal();
 
     //Gerenciar Criacao de Documento
     QWidget* criarAba(QString title, int *index = 0, QWidget *tab = 0, QWidget *botao = 0);
@@ -204,6 +209,9 @@ private slots:
     void mensagem(QString msg);
     void output(QString msg);
     void compilou();
+    void modoEntrada();
+    void terminouEntradaDados(QString dado);
+    void limpar_terminal();
 
 };
 

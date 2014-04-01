@@ -10,6 +10,7 @@ extern int yylineno;
 CompThread::CompThread(QObject *parent) :
     QThread(parent)
 {
+
 }
 
 void CompThread::run()
@@ -48,6 +49,7 @@ void CompThread::run()
     {
         TabelaRef tabela;
         MaquinaVirtual vm;
+        connect(&vm, SIGNAL(limpar_terminal()), this, SLOT(limpar_tela()));
 
         gerar_codigo(vm,tabela, bloco, 0, 0, 0);
 
@@ -59,9 +61,16 @@ void CompThread::run()
             CompInfo::err()<<"[Cafezinho] A função nulo programa() não foi definida!";
     }
 
+    appendMsg("<b>Programa terminado com sucesso!</b>");
+
     delete bloco;
 
     fclose(file);
+}
+
+void CompThread::limpar_tela()
+{
+    emit limpar_terminal();
 }
 
 void CompThread::appendMsg(QString msg)
@@ -72,4 +81,9 @@ void CompThread::appendMsg(QString msg)
 void CompThread::appendTexto(QString texto)
 {
     emit texto_puro(texto);
+}
+
+void CompThread::modoEntrada()
+{
+    emit iniciarModoEntrada();
 }

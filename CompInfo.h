@@ -3,6 +3,8 @@
 
 #include <QObject>
 #include <QPlainTextEdit>
+#include <QWaitCondition>
+#include <QMutex>
 
 class CompThread;
 
@@ -48,6 +50,11 @@ public:
     static Output &out();
     static Error &err();
     static void setOut(CompThread *thread);
+    static void modoEntrada();
+    QMutex mutexIO;//EntradaSaidaMutex
+    QString entrada;
+    QWaitCondition waitIO;
+
 private:
     explicit CompInfo(QObject *parent = 0);
     ~CompInfo();
@@ -55,6 +62,7 @@ private:
     CompThread * thread;
     Error *_err;
     Output *_out;
+
 
 public slots:
 

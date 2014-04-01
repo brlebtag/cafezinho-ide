@@ -25,6 +25,11 @@ void CompInfo::setOut(CompThread* thread)
     CompInfo::inst()->thread = thread;
 }
 
+void CompInfo::modoEntrada()
+{
+    CompInfo::inst()->thread->modoEntrada();
+}
+
 CompInfo::CompInfo(QObject *parent) :
     QObject(parent), _out(new Output()),_err(new Error())
 {

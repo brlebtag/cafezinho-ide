@@ -1,8 +1,8 @@
 #include "MaquinaVirtual.h"
 #include "Instrucao.h"
 
-MaquinaVirtual::MaquinaVirtual()
-    : memoria(100)
+MaquinaVirtual::MaquinaVirtual(QObject *parent) :
+    QObject(parent), memoria(100)
 {
     reiniciar();
 }
@@ -26,8 +26,8 @@ MaquinaVirtual::~MaquinaVirtual()
     {
 
     }
-
 }
+
 
 void MaquinaVirtual::reiniciar()
 {
@@ -62,12 +62,12 @@ void MaquinaVirtual::executar()
         }
         catch(exception &e)
         {
-            cout<<"PROGRAMA ACABOU DE FORMA INESPERADA\n";
+            CompInfo::err()<<"[SISTEMA] PROGRAMA ACABOU DE FORMA INESPERADA\n";
             erf = true;
         }
         if(pc<0||pc>=codigo.size())
         {
-            cout<<"PROGRAMA ACABOU DE FORMA INESPERADA\n";
+            CompInfo::err()<<"[SISTEMA] PROGRAMA ACABOU DE FORMA INESPERADA\n";
             erf = true;
         }
     }
@@ -88,7 +88,7 @@ void MaquinaVirtual::passo()
         }
         catch(exception &e)
         {
-            cout<<"PROGRAMA ACABOU DE FORMA INESPERADA\n";
+            CompInfo::err()<<"[SISTEMA] PROGRAMA ACABOU DE FORMA INESPERADA\n";
             erf = true;
         }
     }
@@ -98,32 +98,47 @@ void MaquinaVirtual::escreveInt(int c)
 {
     CompInfo::out()<<c;
 }
+
 void MaquinaVirtual::escreveChar(char c)
 {
     CompInfo::out()<<c;
 }
+
 void MaquinaVirtual::escreveDouble(double c)
 {
     CompInfo::out()<<c;
 }
+
 void MaquinaVirtual::escrevePalavra(QString *palavra)
 {
     CompInfo::out()<<palavra;
 }
+
 int MaquinaVirtual::leInt()
 {
-    int temp;
-    return temp;
+    CompInfo::modoEntrada();
+    CompInfo::inst()->mutexIO.lock();
+    CompInfo::inst()->waitIO.wait(&(CompInfo::inst()->mutexIO));
+    CompInfo::inst()->mutexIO.unlock();
+    return CompInfo::inst()->entrada.toInt();
 }
+
 char MaquinaVirtual::leChar()
 {
-    char temp;
-    return temp;
+    CompInfo::modoEntrada();
+    CompInfo::inst()->mutexIO.lock();
+    CompInfo::inst()->waitIO.wait(&(CompInfo::inst()->mutexIO));
+    CompInfo::inst()->mutexIO.unlock();
+    return CompInfo::inst()->entrada[0].toLatin1();
 }
+
 double MaquinaVirtual::leDouble()
 {
-    double temp;
-    return temp;
+    CompInfo::modoEntrada();
+    CompInfo::inst()->mutexIO.lock();
+    CompInfo::inst()->waitIO.wait(&(CompInfo::inst()->mutexIO));
+    CompInfo::inst()->mutexIO.unlock();
+    return CompInfo::inst()->entrada.toDouble();
 }
 
 void MaquinaVirtual::sistema(Sistema::Comando comando)
@@ -132,7 +147,8 @@ void MaquinaVirtual::sistema(Sistema::Comando comando)
     {
         case Sistema::LIMPAR:
         {
-
+            emit limpar_terminal();
         }
+        break;
     }
 }

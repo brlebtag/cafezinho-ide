@@ -7,6 +7,7 @@ IDE::IDE(QWidget *parent) :
     ui(new Ui::IDE),
     genReabrir(this),
     genProc(this),
+    terminal(this),
     configuracoes(QSettings::IniFormat, QSettings::UserScope, "UFG", "CafezinhoIDE")
 {
     ui->setupUi(this);
@@ -62,12 +63,19 @@ IDE::IDE(QWidget *parent) :
     //Compilar
     connect(this->ui->actionExecutar, SIGNAL(triggered()), this,SLOT(compilar()));
 
+    //Adicionar terminal na interface gráfica...
+    adicionarTerminal();
+
+    //Adiciona o conector para receber o dado quando este terminar de ser processado..
+    connect(&terminal, SIGNAL(terminouEntradaDados(QString)), this, SLOT(terminouEntradaDados(QString)));
+
     //Tab Widget Arquivos
     connect(this->ui->tabWidgetArquivos,SIGNAL(currentChanged(int)),this, SLOT(mudouAbaAtual(int)));
 
     //Conecto o menu reabrir para receber quando um item do menu for clicado para reabrir ele...
     connect(&genReabrir,SIGNAL(menuReabrirClicou(QString)),this,SLOT(menuReabrirClicou(QString)));
 
+    //Crio o Documento Inicial...
     Documento* doc = criarDocumento("Novo Arquivo");
 
     //Inserir Botao nova Aba no canto direto da  TabWidget...
@@ -267,6 +275,27 @@ EditorCodigo* IDE::criarEditor(QWidget* aba)
     return edit;
 }
 
+void IDE::adicionarTerminal()
+{
+    this->ui->tabgadget->removeTab(0);
+
+    //Criar a aba..
+    QWidget* tab = new QWidget();
+
+    //configura a politica de tamanho
+    terminal.setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+
+    //Cria um layout
+    QVBoxLayout * layout = new QVBoxLayout();
+
+    //Inseri o TextEdit no layout
+    layout->addWidget(&terminal);
+
+    tab->setLayout(layout);
+
+    this->ui->tabgadget->addTab(tab,"Execução do Programa");
+}
+
 Documento* IDE::criarDocumento(QString title, int *index)
 {
     //Criar a aba..
@@ -462,6 +491,8 @@ Documento *IDE::getDocumentoAtual()
 {
     return genDoc.procurar(getAbaAtual());
 }
+
+
 
 void IDE::setDicaAba(int index, QString &tip)
 {
@@ -1218,31 +1249,50 @@ void IDE::compilar()
     ver_exec_prog = true;
     this->ui->actionExecProg->setChecked(ver_exec_prog);
     this->ui->tabgadget->show();
-    this->ui->execProg->clear();
+    terminal.clear();
     this->ui->actionExecutar->setEnabled(false);
     this->ui->actionExecutar_passo_a_passo->setEnabled(false);
     CompInfo::inst()->arquivo = doc->getCaminhoCompleto();
-    CompThread compilar;
-    connect(&compilar, SIGNAL(mensagem(QString)), this, SLOT(mensagem(QString)));
-    connect(&compilar, SIGNAL(texto_puro(QString)), this, SLOT(output(QString)));
-    connect(&compilar, SIGNAL(finished()), this, SLOT(compilou()));
-    compilar.start();
-    compilar.wait();
+    CompThread *compilar = new CompThread();
+    connect(compilar, SIGNAL(mensagem(QString)), this, SLOT(mensagem(QString)));
+    connect(compilar, SIGNAL(texto_puro(QString)), this, SLOT(output(QString)));
+    connect(compilar, SIGNAL(finished()), this, SLOT(compilou()));
+    connect(compilar, SIGNAL(iniciarModoEntrada()), this, SLOT(modoEntrada()));
+    connect(compilar, SIGNAL(limpar_terminal()), this,SLOT(limpar_terminal()));
+    compilar->start();
 }
 
 void IDE::mensagem(QString msg)
 {
-    this->ui->execProg->appendHtml(msg);
+    terminal.appendHtml(msg);
 }
 
 void IDE::output(QString msg)
 {
-    this->ui->execProg->insertPlainText(msg);
+    terminal.insertPlainText(msg);
 }
 
 void IDE::compilou()
 {
     this->ui->actionExecutar->setEnabled(true);
     this->ui->actionExecutar_passo_a_passo->setEnabled(true);
+}
+
+void IDE::modoEntrada()
+{
+    terminal.setFocus();
+    terminal.modoEntrada();
+
+}
+
+void IDE::terminouEntradaDados(QString dado)
+{
+    CompInfo::inst()->entrada = dado;
+    CompInfo::inst()->waitIO.wakeAll();
+}
+
+void IDE::limpar_terminal()
+{
+    terminal.clear();
 }
 
