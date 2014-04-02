@@ -42,7 +42,9 @@ SOURCES += main.cpp\
     alocar_variavel.cpp \
     referencia.cpp \
     terminal.cpp \
-    MaquinaVirtual.cpp
+    MaquinaVirtual.cpp \
+    debugar_ast.cpp \
+    debugar_codigo.cpp
 
 HEADERS  += ide.h \
     GerenciadorDocumento.h \
@@ -66,7 +68,8 @@ HEADERS  += ide.h \
     GerarCodigo.h \
     referencia.h \
     terminal.h \
-    MaquinaVirtual.h
+    MaquinaVirtual.h \
+    debugar_geracao.h
 
 FORMS    += ide.ui \
     fontedialog.ui \

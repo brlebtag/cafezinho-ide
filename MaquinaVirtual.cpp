@@ -150,5 +150,10 @@ void MaquinaVirtual::sistema(Sistema::Comando comando)
             emit limpar_terminal();
         }
         break;
+        case Sistema::NOVA_LINHA:
+        {
+            CompInfo::appendTexto("</br>");
+        }
+        break;
     }
 }

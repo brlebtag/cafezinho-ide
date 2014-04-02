@@ -9,7 +9,8 @@ namespace Sistema
 {
     enum Comando
     {
-        LIMPAR
+        LIMPAR,
+        NOVA_LINHA
     };
 };
 

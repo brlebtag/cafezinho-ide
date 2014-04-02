@@ -734,7 +734,7 @@ void gerar_codigo(MaquinaVirtual &vm, TabelaRef &tabela, No *no, int profundidad
             NNovaLinha *novalinha = dynamic_cast<NNovaLinha*>(no);
 
             // echo palavra
-            vm.codigo.push_back(new IEscritaPalavraIm(novalinha->valor));
+            vm.codigo.push_back(new ISistema(Sistema::NOVA_LINHA));
         }
         break;
         case TipoNo::CAST:

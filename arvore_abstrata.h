@@ -378,7 +378,6 @@ public:
 class NNovaLinha : public NExpressao
 {
 public:
-    QString *valor;
     NNovaLinha(int linha = 0);
     virtual TipoNo::TipoNo tipoNo();
     virtual ~NNovaLinha();

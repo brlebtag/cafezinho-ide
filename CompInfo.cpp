@@ -30,6 +30,11 @@ void CompInfo::modoEntrada()
     CompInfo::inst()->thread->modoEntrada();
 }
 
+void CompInfo::appendTexto(QString texto)
+{
+    CompInfo::inst()->thread->appendMsg(texto);
+}
+
 CompInfo::CompInfo(QObject *parent) :
     QObject(parent), _out(new Output()),_err(new Error())
 {
@@ -60,7 +65,7 @@ Output &operator<<(Output &out, double text)
 
 Output &operator<<(Output &out, char text)
 {
-    out.setTexto(QString::number(text));
+    out.setTexto(QString(text));
     return out;
 }
 

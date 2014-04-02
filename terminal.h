@@ -16,8 +16,11 @@ public:
     void modoEntrada();
 protected:
     virtual void keyPressEvent(QKeyEvent *e);
+    virtual void mousePressEvent (QMouseEvent * e);
+    virtual void mouseDoubleClickEvent (QMouseEvent * e);
 private:
     int fixCursor;
+    bool _modoEntrada;
     void desligarModoEntrada();
 signals:
     void terminouEntradaDados(QString texto);

@@ -13,6 +13,7 @@
 #include "GerarCodigo.h"
 #include "MaquinaVirtual.h"
 #include <QMutex>
+#include "debugar_geracao.h"
 
 class CompThread;
 

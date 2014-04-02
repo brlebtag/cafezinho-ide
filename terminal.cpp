@@ -3,18 +3,20 @@
 Terminal::Terminal(QWidget *parent) : QPlainTextEdit(parent)
 {
     this->setReadOnly(true);
-
+    _modoEntrada = false;
 }
 
 void Terminal::modoEntrada()
 {
     this->setReadOnly(false);
     this->fixCursor = this->textCursor().position();
+    _modoEntrada = true;
 }
 
 void Terminal::desligarModoEntrada()
 {
     this->setReadOnly(true);
+    _modoEntrada = false;
 }
 
 void Terminal::keyPressEvent(QKeyEvent *e)
@@ -68,4 +70,20 @@ void Terminal::keyPressEvent(QKeyEvent *e)
     }
 
     QPlainTextEdit::keyPressEvent(e);
+}
+
+void Terminal::mousePressEvent(QMouseEvent *e)
+{
+    if(_modoEntrada)
+        e->ignore();
+    else
+        QPlainTextEdit::mousePressEvent(e);
+}
+
+void Terminal::mouseDoubleClickEvent(QMouseEvent *e)
+{
+    if(_modoEntrada)
+        e->ignore();
+    else
+        QPlainTextEdit::mouseDoubleClickEvent(e);
 }

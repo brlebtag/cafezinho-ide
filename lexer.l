@@ -62,7 +62,7 @@ OC 			[0-7]
 /* Numero real  */
                         QString ss = yytext;
                         bool ok;
-                        yylval.ival = ss.toDouble(&ok);
+                        yylval.dval = ss.toDouble(&ok);
                         ultimo_token = ss;
                         return(REAL_CONST);
                     }
@@ -71,7 +71,7 @@ OC 			[0-7]
 /* Numero real  */
                             QString ss = yytext;
                             bool ok;
-                            yylval.ival = ss.toDouble(&ok);
+                            yylval.dval = ss.toDouble(&ok);
                             ultimo_token = ss;
                             return(REAL_CONST);
                         }
@@ -80,7 +80,7 @@ OC 			[0-7]
 /* Numero real  */
                             QString ss = yytext;
                             bool ok;
-                            yylval.ival = ss.toDouble(&ok);
+                            yylval.dval = ss.toDouble(&ok);
                             ultimo_token = ss;
                             return(REAL_CONST);
                         }

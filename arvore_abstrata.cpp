@@ -377,14 +377,14 @@ NEscreva::~NEscreva ()
 
 /************** Nova Linha ******************/
 NNovaLinha::NNovaLinha(int linha)
-    : NExpressao(TipoVariavel::TIPO_NOVALINHA, linha), valor(new QString("\n")) { }
+    : NExpressao(TipoVariavel::TIPO_NOVALINHA, linha) { }
 TipoNo::TipoNo NNovaLinha::tipoNo()
 {
     return TipoNo::NOVA_LINHA;
 }
 NNovaLinha::~NNovaLinha()
 {
-    delete valor;
+
 }
 
 /************** Se *************************/

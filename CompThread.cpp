@@ -45,6 +45,10 @@ void CompThread::run()
         analise_semantica(tabela, bloco, 0, 0);
     }
 
+    //Para Debugar a arvore (Abstract Syntatic Tree)
+    //debug_arvore(bloco, 0);
+
+
     if(!erro_compilador)
     {
         TabelaRef tabela;
@@ -53,15 +57,20 @@ void CompThread::run()
 
         gerar_codigo(vm,tabela, bloco, 0, 0, 0);
 
+        //Para Debugar o codigo gerado
+        //debug_codigo(vm);
+
         if((*vm.rotulo[0])!=-1)
         {
             vm.executar();
         }
         else
             CompInfo::err()<<"[Cafezinho] A função nulo programa() não foi definida!";
+
+        if(!vm.erf)
+            appendMsg("<b>Programa terminado com sucesso!</b>");
     }
 
-    appendMsg("<b>Programa terminado com sucesso!</b>");
 
     delete bloco;
 
