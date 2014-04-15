@@ -234,6 +234,7 @@ private slots:
 
     //editor
     void texto_mudou(QTextDocument *documento);
+    void itemAtualMudou(QTreeWidgetItem *atual, QTreeWidgetItem *anterior);
 };
 
 #endif // IDE_H

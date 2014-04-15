@@ -62,6 +62,7 @@ IDE::IDE(QWidget *parent) :
 
     //Compilar
     connect(this->ui->actionExecutar, SIGNAL(triggered()), this,SLOT(compilar()));
+    connect(this->ui->func_widget, SIGNAL(currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)), SLOT(itemAtualMudou(QTreeWidgetItem*,QTreeWidgetItem*)));
 
     //Adicionar terminal na interface gráfica...
     adicionarTerminal();
@@ -1245,25 +1246,28 @@ void IDE::localizarAnteriroClicado()
 void IDE::compilar()
 {
     Documento * doc = getDocumentoAtual();
-    if(!doc->isAberto()||doc->isSujo())
+    if(doc!=NULL)
     {
-        msgErro("[CAFEZINHO] Nao foi possivel executar esta operação", "Nenhum arquivo foi selecionado como alvo da operação\nPor favor salve o documento atual ou abra algum documento.");
-        return;
+        if(!doc->isAberto()||doc->isSujo())
+        {
+            msgErro("[CAFEZINHO] Nao foi possivel executar esta operação", "Nenhum arquivo foi selecionado como alvo da operação\nPor favor salve o documento atual ou abra algum documento.");
+            return;
+        }
+        ver_exec_prog = true;
+        this->ui->actionExecProg->setChecked(ver_exec_prog);
+        this->ui->tabgadget->show();
+        terminal.clear();
+        this->ui->actionExecutar->setEnabled(false);
+        this->ui->actionExecutar_passo_a_passo->setEnabled(false);
+        CompInfo::inst()->arquivo = doc->getCaminhoCompleto();
+        CompThread *compilar = new CompThread();
+        connect(compilar, SIGNAL(mensagem(QString)), this, SLOT(mensagem(QString)));
+        connect(compilar, SIGNAL(texto_puro(QString)), this, SLOT(output(QString)));
+        connect(compilar, SIGNAL(finished()), this, SLOT(compilou()));
+        connect(compilar, SIGNAL(iniciarModoEntrada()), this, SLOT(modoEntrada()));
+        connect(compilar, SIGNAL(limpar_terminal()), this,SLOT(limpar_terminal()));
+        compilar->start();
     }
-    ver_exec_prog = true;
-    this->ui->actionExecProg->setChecked(ver_exec_prog);
-    this->ui->tabgadget->show();
-    terminal.clear();
-    this->ui->actionExecutar->setEnabled(false);
-    this->ui->actionExecutar_passo_a_passo->setEnabled(false);
-    CompInfo::inst()->arquivo = doc->getCaminhoCompleto();
-    CompThread *compilar = new CompThread();
-    connect(compilar, SIGNAL(mensagem(QString)), this, SLOT(mensagem(QString)));
-    connect(compilar, SIGNAL(texto_puro(QString)), this, SLOT(output(QString)));
-    connect(compilar, SIGNAL(finished()), this, SLOT(compilou()));
-    connect(compilar, SIGNAL(iniciarModoEntrada()), this, SLOT(modoEntrada()));
-    connect(compilar, SIGNAL(limpar_terminal()), this,SLOT(limpar_terminal()));
-    compilar->start();
 }
 
 void IDE::mensagem(QString msg)
@@ -1302,13 +1306,71 @@ void IDE::limpar_terminal()
 
 void IDE::texto_mudou(QTextDocument *documento)
 {
-    /*QTextCursor cursor(documento);
+    QTextCursor cursor(documento);
+
+    for(QHash<QString,Info_Func*>::iterator it = decl_func.begin(); it!=decl_func.end(); ++it)
+    {
+        it.value()->ref = false;
+    }
+
     while(!cursor.isNull() && !cursor.atEnd())
     {
-        cursor = documento->find(QRegExp("\\b(int|real|car)\\s+[A-Za-z0-9_]+(?=\\()"), cursor);
+        cursor = documento->find(QRegExp("\\b(int|real|car|nulo)\\s+[A-Za-z0-9_]+(?=\\()"), cursor);
         if (!cursor.isNull())
         {
+            QStringList lista;
 
+            lista <<QString::number(cursor.blockNumber()+1);
+            lista << cursor.selectedText().split(QRegExp("\\s+"));
+            lista.swap(1, 2);
+
+            //linha+nome+tipo
+            QString chave = lista.join("");
+
+            if(decl_func.contains(chave))
+            {
+                decl_func[chave]->ref = true;
+            }
+            else
+            {
+                QTreeWidgetItem *item = new QTreeWidgetItem(lista);
+                decl_func.insert(chave, new Info_Func(item, true));
+                ui->func_widget->addTopLevelItem(item);
+            }
         }
-    }*/
+    }
+
+    for(QHash<QString,Info_Func*>::iterator it = decl_func.begin(); it!=decl_func.end(); )
+    {
+        if(!it.value()->ref)
+        {
+            QHash<QString,Info_Func*>::iterator itRem = it;
+            ++it;
+            //remove ele do iterator...
+            decl_func.erase(itRem);
+            ui->func_widget->removeItemWidget(itRem.value()->item, 0);
+            ui->func_widget->removeItemWidget(itRem.value()->item, 1);
+            ui->func_widget->removeItemWidget(itRem.value()->item, 2);
+            delete itRem.value()->item;
+        }
+        else
+        {
+            ++it;
+        }
+    }
+
+    //ordena os elementos...
+    ui->func_widget->sortByColumn(0, Qt::AscendingOrder);
+
+}
+
+void IDE::itemAtualMudou(QTreeWidgetItem *atual, QTreeWidgetItem *anterior)
+{
+    Documento * doc = getDocumentoAtual();
+    if(doc!=NULL)
+    {
+        doc->sujou();
+        doc->setPosicaoCursor(atual->text(0).toInt());
+        doc->limpou();
+    }
 }
