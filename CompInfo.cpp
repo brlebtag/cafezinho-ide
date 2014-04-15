@@ -129,6 +129,7 @@ void Error::descarga(QString &texto)
     CompInfo::inst()->thread->appendMsg("<b><span style=\"color:#B40404;\">"+texto+"</span><b/>");
 }
 
+
 Error &operator<<(Error &err, const char *text)
 {
     err.appendTexto(text);

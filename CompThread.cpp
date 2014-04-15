@@ -16,6 +16,8 @@ CompThread::CompThread(QObject *parent) :
 void CompThread::run()
 {
 
+    CompInfo::err().limpar();
+
     FILE *file = fopen(CompInfo::inst()->arquivo.toLocal8Bit().constData(), "r");
 
     if (!file)
@@ -65,12 +67,14 @@ void CompThread::run()
             vm.executar();
         }
         else
-            CompInfo::err()<<"[Cafezinho] A função nulo programa() não foi definida!";
+        {
+            CompInfo::err()<<"[Cafezinho] A função nulo programa() não foi definida!\n";
+            vm.erf = true;
+        }
 
         if(!vm.erf)
             appendMsg("<b>Programa terminado com sucesso!</b>");
     }
-
 
     delete bloco;
 
