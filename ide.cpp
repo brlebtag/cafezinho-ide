@@ -310,8 +310,12 @@ Documento* IDE::criarDocumento(QString title, int *index)
     //Criar o EditorCodigo
     EditorCodigo* edit = criarEditor(aba);
 
+    Documento * doc = new Documento(aba, edit, botao);
+
+    connect(doc,SIGNAL(textoMudou(QTextDocument*)), this, SLOT(texto_mudou(QTextDocument*)));
+
     //Retorna um documento...
-    return new Documento(aba, edit, botao);
+    return doc;
 }
 
 QString IDE::nomeDocParaDocId(QString &fileName)
@@ -1296,3 +1300,15 @@ void IDE::limpar_terminal()
     terminal.clear();
 }
 
+void IDE::texto_mudou(QTextDocument *documento)
+{
+    /*QTextCursor cursor(documento);
+    while(!cursor.isNull() && !cursor.atEnd())
+    {
+        cursor = documento->find(QRegExp("\\b(int|real|car)\\s+[A-Za-z0-9_]+(?=\\()"), cursor);
+        if (!cursor.isNull())
+        {
+
+        }
+    }*/
+}

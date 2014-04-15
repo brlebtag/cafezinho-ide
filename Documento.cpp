@@ -17,6 +17,7 @@ Documento::Documento(QWidget *widget, EditorCodigo *edit, QObject *botao, bool s
     primeiraChamada = true;
     QFontMetrics metrics(edit->font());
     edit->setTabStopWidth(4*metrics.width(' '));
+    connect(edit,SIGNAL(cursorPositionChanged()),this,SLOT(texto_mudou()));
 }
 
 Documento::Documento(QWidget *widget, EditorCodigo *edit, bool sujo) :
@@ -34,6 +35,7 @@ Documento::Documento(QWidget *widget, EditorCodigo *edit, bool sujo) :
     primeiraChamada = true;
     QFontMetrics metrics(edit->font());
     edit->setTabStopWidth(4*metrics.width(' '));
+    connect(edit,SIGNAL(cursorPositionChanged()),this,SLOT(cursorPositionChanged()));
 }
 
 bool Documento::isVazio()
@@ -257,4 +259,20 @@ QObject *Documento::getBotao()
 void Documento::setBotao(QObject *botao)
 {
     this->botao = botao;
+}
+
+void Documento::setSelecoes(QList<QTextEdit::ExtraSelection> selecoes)
+{
+    this->edit->setExtraSelections(selecoes);
+}
+
+void Documento::limparSelecoes()
+{
+    QList<QTextEdit::ExtraSelection> selecoes;
+    this->edit->setExtraSelections(selecoes);
+}
+
+void Documento::texto_mudou()
+{
+    emit textoMudou(edit->document());
 }

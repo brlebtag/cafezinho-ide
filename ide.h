@@ -28,7 +28,14 @@
 #include "CompInfo.h"
 #include "CompThread.h"
 #include "terminal.h"
-
+#include <QTextEdit>
+#include <QHash>
+#include <QRegExp>
+#include <QTreeWidgetItem>
+#include <QStringList>
+#include <QTextDocument>
+#include <QTextBlock>
+#include <QTextBlock>
 
 //Ajustar o clipboard posteriormente...
 
@@ -63,6 +70,18 @@ private:
     bool ver_barra_ferramentas;
     bool ver_barra_status;
     Terminal terminal;
+
+    struct Info_Func
+    {
+        Info_Func(QTreeWidgetItem* item = NULL, bool ref = false) : item(item), ref(ref)
+        {
+        }
+
+        QTreeWidgetItem* item;
+        bool ref;
+    };
+
+    QHash<QString,Info_Func*> decl_func;
 
     int tamanho_fonte;
     QString familia_fonte;
@@ -213,6 +232,8 @@ private slots:
     void terminouEntradaDados(QString dado);
     void limpar_terminal();
 
+    //editor
+    void texto_mudou(QTextDocument *documento);
 };
 
 #endif // IDE_H

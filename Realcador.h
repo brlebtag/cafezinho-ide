@@ -36,7 +36,7 @@ private:
     QTextCharFormat formatoPalavrasChaves;
     QTextCharFormat formatoCaracterLiteral;
     QTextCharFormat formatoPalavraLiteral;
-
 };
+
 
 #endif // REALCADOR_H

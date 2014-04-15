@@ -64,7 +64,6 @@ private:
     Error *_err;
     Output *_out;
 
-
 public slots:
 
 };

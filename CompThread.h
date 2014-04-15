@@ -9,7 +9,6 @@
 #include "semantico.h"
 #include <QObject>
 #include <QList>
-#include <QTextEdit>
 #include "GerarCodigo.h"
 #include "MaquinaVirtual.h"
 #include <QMutex>
@@ -28,8 +27,6 @@ public:
 
 private:
     void run();
-    QList<QTextEdit::ExtraSelection> selecoes;
-    bool spinlock;
 
 signals:
     emit void mensagem(QString msg);

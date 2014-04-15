@@ -58,7 +58,8 @@ public:
     QPlainTextEdit* getEditor();
     QObject *getBotao();
     void setBotao(QObject *botao);
-
+    void setSelecoes(QList<QTextEdit::ExtraSelection> selecoes);
+    void limparSelecoes();
 private:
     const static int TAB_SPACE;
     bool primeiraChamada;
@@ -71,8 +72,10 @@ private:
     bool aberto;
 
 signals:
+    void textoMudou(QTextDocument *documento);
 
 public slots:
+    void texto_mudou();
 
 };
 
