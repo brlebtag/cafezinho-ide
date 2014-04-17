@@ -2,6 +2,13 @@
 
 void gerar_codigo(MaquinaVirtual &vm, TabelaRef &tabela, No *no, int profundidade, int offset, No *funcao)
 {
+    int linha_decl_var_atual = -1; //contém a linha da ultima declaração
+    /*
+     * Eu irei da break apenas na primeira instrucao de declaração de variavel (na arvore
+     * para cada declaracao de variavel possui um nó porém eu só vou dar break para a primeira
+     * ocorrencia naquela linha) esta variavel de controle gerencia isto!
+     */
+
     switch(no->tipoNo())
     {
         case TipoNo::BLOCO:
@@ -29,6 +36,14 @@ void gerar_codigo(MaquinaVirtual &vm, TabelaRef &tabela, No *no, int profundidad
                 {
                     if(CHECA_NO((*it), TipoNo::DECLARACAO_VARIAVEL_ESCALAR) || CHECA_NO((*it), TipoNo::DECLARACAO_VARIAVEL_VETORIAL))
                     {
+                        if(CompInfo::isDebug())
+                        {
+                            if(linha_decl_var_atual!=(*it)->linha)
+                            {
+                                linha_decl_var_atual = (*it)->linha;
+                                inserir_debug_instrucao(vm, (*it));
+                            }
+                        }
                         Alocado resultado = alocar_variavel(vm, tabela, (*it), profundidade, offset + i);
                         i += resultado.first;
                         remover.push_back(resultado.second);
@@ -49,6 +64,9 @@ void gerar_codigo(MaquinaVirtual &vm, TabelaRef &tabela, No *no, int profundidad
                 {
                     if(NCHECA_NO((*it), TipoNo::DECLARACAO_VARIAVEL_ESCALAR) && NCHECA_NO((*it), TipoNo::DECLARACAO_VARIAVEL_VETORIAL))
                     {
+                        if(CompInfo::isDebug())
+                            inserir_debug_instrucao(vm, (*it));
+
                         //Reinicializa o offset...
                         gerar_codigo(vm, tabela, (*it), profundidade, 0, funcao);
                     }
@@ -60,16 +78,28 @@ void gerar_codigo(MaquinaVirtual &vm, TabelaRef &tabela, No *no, int profundidad
                 {
                     if(CHECA_NO((*it), TipoNo::BLOCO))
                     {
+                        if(CompInfo::isDebug())
+                            inserir_debug_instrucao(vm, (*it));
                         gerar_codigo(vm, tabela, (*it), profundidade +1, offset + i -1, funcao);
                     }
                     else if(CHECA_NO((*it), TipoNo::DECLARACAO_VARIAVEL_ESCALAR) || CHECA_NO((*it), TipoNo::DECLARACAO_VARIAVEL_VETORIAL))
                     {
+                        if(CompInfo::isDebug())
+                        {
+                            if(linha_decl_var_atual!=(*it)->linha)
+                            {
+                                linha_decl_var_atual = (*it)->linha;
+                                inserir_debug_instrucao(vm, (*it));
+                            }
+                        }
                         Alocado resultado = alocar_variavel(vm, tabela, (*it), profundidade, offset + i);
                         i += resultado.first;
                         remover.push_back(resultado.second);
                     }
                     else
                     {
+                        if(CompInfo::isDebug())
+                            inserir_debug_instrucao(vm, (*it));
                         gerar_codigo(vm, tabela, (*it), profundidade, offset + i -1 , funcao);
                     }
                 }

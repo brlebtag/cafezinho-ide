@@ -10,6 +10,7 @@
 #include <QList>
 #include <QQueue>
 #include <QString>
+#include "CompInfo.h"
 
 using namespace std;
 
@@ -52,6 +53,7 @@ int dimensao_vetor(NDeclVarVetorial *var);
 No* ultimo_elemento(MaquinaVirtual &vm, TabelaRef &tabela, No *no, int profundidade, int offset, No *funcao);
 void gerar_indice(MaquinaVirtual &vm, TabelaRef &tabela, No *no, int profundidade, int offset, No* funcao);
 void gerar_atribuicao(MaquinaVirtual &vm, TabelaRef &tabela, No *no, int profundidade, int offset, No* funcao);
+void inserir_debug_instrucao(MaquinaVirtual &vm, No* n);
 
 //gerar_inicializador.cpp
 void gerar_inicializador(MaquinaVirtual &vm, TabelaRef &tabela, NInicializadorVetor *list, int profundidade, int offset, No* funcao);;

@@ -63,6 +63,7 @@ IDE::IDE(QWidget *parent) :
     //Compilar
     connect(this->ui->actionExecutar, SIGNAL(triggered()), this,SLOT(compilar()));
     connect(this->ui->actionParar, SIGNAL(triggered()), this, SLOT(parar_execucao()));
+    connect(this->ui->actionExecutar_passo_a_passo, SIGNAL(triggered()), SLOT(passo_passo_execucao()));
 
     //connect(this->ui->func_widget, SIGNAL(currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)), SLOT(itemAtualMudou(QTreeWidgetItem*,QTreeWidgetItem*)));
 
@@ -1314,6 +1315,39 @@ void IDE::parar_execucao()
     CompInfo::inst()->pararExecucao();
 
     terminouEntradaDados("");
+
+}
+
+void IDE::passo_passo_execucao()
+{
+    Documento * doc = getDocumentoAtual();
+    if(doc!=NULL)
+    {
+        if(!doc->isAberto()||doc->isSujo())
+        {
+            msgErro("[CAFEZINHO] Nao foi possivel executar esta operação", "Nenhum arquivo foi selecionado como alvo da operação\nPor favor salve o documento atual ou abra algum documento.");
+            return;
+        }
+        ver_exec_prog = true;
+        this->ui->actionExecProg->setChecked(ver_exec_prog);
+        this->ui->tabgadget->show();
+        terminal.clear();
+        this->ui->actionExecutar->setEnabled(false);
+        this->ui->actionExecutar_passo_a_passo->setEnabled(false);
+        CompInfo::inst()->setDebug(true);
+        CompInfo::inst()->arquivo = doc->getCaminhoCompleto();
+        CompThread *compilar = new CompThread();
+        connect(compilar, SIGNAL(mensagem(QString)), this, SLOT(mensagem(QString)));
+        connect(compilar, SIGNAL(texto_puro(QString)), this, SLOT(output(QString)));
+        connect(compilar, SIGNAL(finished()), this, SLOT(compilou()));
+        connect(compilar, SIGNAL(iniciarModoEntrada()), this, SLOT(modoEntrada()));
+        connect(compilar, SIGNAL(limpar_terminal()), this,SLOT(limpar_terminal()));
+        compilar->start();
+    }
+}
+
+void IDE::setMarcadorLinhaAtual(int linha)
+{
 
 }
 

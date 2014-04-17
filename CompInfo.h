@@ -56,6 +56,9 @@ public:
     QString entrada;
     QWaitCondition waitIO;
     static void pararExecucao();
+    static bool isDebug();
+    static void setDebug(bool debug);
+    bool debug;
 
 private:
     explicit CompInfo(QObject *parent = 0);

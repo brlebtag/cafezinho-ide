@@ -116,3 +116,8 @@ void gerar_atribuicao(MaquinaVirtual &vm, TabelaRef &tabela, No *no, int profund
         vm.codigo.push_back(new ISalva(vm.ebx, vm.eax));
     }
 }
+
+void inserir_debug_instrucao(MaquinaVirtual &vm, No* n)
+{
+    vm.codigo.push_back(new IDebugPasso(n->linha, false));
+}

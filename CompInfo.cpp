@@ -40,8 +40,13 @@ void CompInfo::pararExecucao()
     CompInfo::inst()->thread->cancelarExecucao();
 }
 
+void CompInfo::setDebug(bool debug)
+{
+    this->debug = debug;
+}
+
 CompInfo::CompInfo(QObject *parent) :
-    QObject(parent), _out(new Output()),_err(new Error())
+    QObject(parent), _out(new Output()),_err(new Error()), debug(false)
 {
 
 }

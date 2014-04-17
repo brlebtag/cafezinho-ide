@@ -1223,3 +1223,7 @@ TipoInstrucao::TipoInstrucao ISistema::tipoInstucao()
 {
     return TipoInstrucao::SISTEMA;
 }
+
+
+IDebugPasso::IDebugPasso(int linha, bool breakpoint)
+    :linha(linha), breakpoint(breakpoint) { }

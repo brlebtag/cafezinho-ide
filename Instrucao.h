@@ -789,4 +789,14 @@ public:
     Sistema::Comando comando;
 };
 
+//Instruções para Debug
+
+class IDebugPasso : public Instrucao
+{
+public:
+    IDebugPasso(int linha, bool breakpoint);
+    int linha;
+    bool breakpoint;
+};
+
 #endif // INSTRUCAO_H

@@ -232,6 +232,8 @@ private slots:
     void terminouEntradaDados(QString dado);
     void limpar_terminal();
     void parar_execucao();
+    void passo_passo_execucao();
+    void setMarcadorLinhaAtual(int linha);
 
     //editor
     void texto_mudou(QTextDocument *documento);
