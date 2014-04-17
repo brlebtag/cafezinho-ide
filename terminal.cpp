@@ -19,6 +19,11 @@ void Terminal::desligarModoEntrada()
     _modoEntrada = false;
 }
 
+bool Terminal::isModoEntrada()
+{
+    return this->_modoEntrada;
+}
+
 void Terminal::keyPressEvent(QKeyEvent *e)
 {
     setFocusPolicy(Qt::ClickFocus);

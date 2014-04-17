@@ -96,22 +96,26 @@ void MaquinaVirtual::passo()
 
 void MaquinaVirtual::escreveInt(int c)
 {
-    CompInfo::out()<<c;
+    if(!this->erf)
+        CompInfo::out()<<c;
 }
 
 void MaquinaVirtual::escreveChar(char c)
 {
-    CompInfo::out()<<c;
+    if(!this->erf)
+        CompInfo::out()<<c;
 }
 
 void MaquinaVirtual::escreveDouble(double c)
 {
-    CompInfo::out()<<c;
+    if(!this->erf)
+        CompInfo::out()<<c;
 }
 
 void MaquinaVirtual::escrevePalavra(QString *palavra)
 {
-    CompInfo::out()<<palavra;
+    if(!this->erf)
+        CompInfo::out()<<palavra;
 }
 
 int MaquinaVirtual::leInt()

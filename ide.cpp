@@ -62,7 +62,9 @@ IDE::IDE(QWidget *parent) :
 
     //Compilar
     connect(this->ui->actionExecutar, SIGNAL(triggered()), this,SLOT(compilar()));
-    connect(this->ui->func_widget, SIGNAL(currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)), SLOT(itemAtualMudou(QTreeWidgetItem*,QTreeWidgetItem*)));
+    connect(this->ui->actionParar, SIGNAL(triggered()), this, SLOT(parar_execucao()));
+
+    //connect(this->ui->func_widget, SIGNAL(currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)), SLOT(itemAtualMudou(QTreeWidgetItem*,QTreeWidgetItem*)));
 
     //Adicionar terminal na interface gráfica...
     adicionarTerminal();
@@ -313,7 +315,7 @@ Documento* IDE::criarDocumento(QString title, int *index)
 
     Documento * doc = new Documento(aba, edit, botao);
 
-    connect(doc,SIGNAL(textoMudou(QTextDocument*)), this, SLOT(texto_mudou(QTextDocument*)));
+    //connect(doc,SIGNAL(textoMudou(QTextDocument*)), this, SLOT(texto_mudou(QTextDocument*)));
 
     //Retorna um documento...
     return doc;
@@ -1304,9 +1306,20 @@ void IDE::limpar_terminal()
     terminal.clear();
 }
 
+void IDE::parar_execucao()
+{
+    if(terminal.isModoEntrada())
+        terminal.desligarModoEntrada();
+
+    CompInfo::inst()->pararExecucao();
+
+    terminouEntradaDados("");
+
+}
+
 void IDE::texto_mudou(QTextDocument *documento)
 {
-    QTextCursor cursor(documento);
+    /*QTextCursor cursor(documento);
 
     for(QHash<QString,Info_Func*>::iterator it = decl_func.begin(); it!=decl_func.end(); ++it)
     {
@@ -1359,18 +1372,20 @@ void IDE::texto_mudou(QTextDocument *documento)
         }
     }
 
+    ui->func_widget->clear();
+
     //ordena os elementos...
-    ui->func_widget->sortByColumn(0, Qt::AscendingOrder);
+    ui->func_widget->sortByColumn(0, Qt::AscendingOrder);*/
 
 }
 
 void IDE::itemAtualMudou(QTreeWidgetItem *atual, QTreeWidgetItem *anterior)
 {
-    Documento * doc = getDocumentoAtual();
+    /*Documento * doc = getDocumentoAtual();
     if(doc!=NULL)
     {
         doc->sujou();
         doc->setPosicaoCursor(atual->text(0).toInt());
         doc->limpou();
-    }
+    }*/
 }

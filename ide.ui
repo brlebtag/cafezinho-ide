@@ -275,6 +275,7 @@
     </widget>
     <addaction name="actionExecutar"/>
     <addaction name="actionExecutar_passo_a_passo"/>
+    <addaction name="actionParar"/>
     <addaction name="separator"/>
     <addaction name="menuDebugger"/>
     <addaction name="separator"/>
@@ -693,6 +694,11 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+D</string>
+   </property>
+  </action>
+  <action name="actionParar">
+   <property name="text">
+    <string>Parar</string>
    </property>
   </action>
  </widget>

@@ -35,6 +35,11 @@ void CompInfo::appendTexto(QString texto)
     CompInfo::inst()->thread->appendMsg(texto);
 }
 
+void CompInfo::pararExecucao()
+{
+    CompInfo::inst()->thread->cancelarExecucao();
+}
+
 CompInfo::CompInfo(QObject *parent) :
     QObject(parent), _out(new Output()),_err(new Error())
 {

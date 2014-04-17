@@ -14,6 +14,8 @@ class Terminal : public QPlainTextEdit
 public:
     Terminal(QWidget *parent = 0);
     void modoEntrada();
+    void desligarModoEntrada();
+    bool isModoEntrada();
 protected:
     virtual void keyPressEvent(QKeyEvent *e);
     virtual void mousePressEvent (QMouseEvent * e);
@@ -21,7 +23,7 @@ protected:
 private:
     int fixCursor;
     bool _modoEntrada;
-    void desligarModoEntrada();
+
 signals:
     void terminouEntradaDados(QString texto);
 };

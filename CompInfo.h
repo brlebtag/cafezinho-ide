@@ -55,6 +55,7 @@ public:
     QMutex mutexIO;//EntradaSaidaMutex
     QString entrada;
     QWaitCondition waitIO;
+    static void pararExecucao();
 
 private:
     explicit CompInfo(QObject *parent = 0);

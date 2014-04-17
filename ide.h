@@ -231,6 +231,7 @@ private slots:
     void modoEntrada();
     void terminouEntradaDados(QString dado);
     void limpar_terminal();
+    void parar_execucao();
 
     //editor
     void texto_mudou(QTextDocument *documento);

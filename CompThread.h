@@ -24,9 +24,11 @@ public:
     void appendMsg(QString msg);
     void appendTexto(QString texto);
     void modoEntrada();
+    void cancelarExecucao();
 
 private:
     void run();
+    MaquinaVirtual *vm;
 
 signals:
     emit void mensagem(QString msg);
@@ -36,7 +38,6 @@ signals:
 
 public slots:
     void limpar_tela();
-
 
 };
 
