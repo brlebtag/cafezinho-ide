@@ -7,6 +7,7 @@
 #include <QMutex>
 
 class CompThread;
+class MaquinaVirtual;
 
 class Output
 {
@@ -46,6 +47,7 @@ public:
     friend class Output;
     friend class Error;
     static CompInfo* inst();
+    static MaquinaVirtual* getVM();
     QString arquivo;
     static Output &out();
     static Error &err();
@@ -54,22 +56,24 @@ public:
     static void appendTexto(QString texto);
     QMutex mutexIO;//EntradaSaidaMutex
     QString entrada;
-    QWaitCondition waitIO;
+    QWaitCondition wait;
     static void pararExecucao();
     static bool isDebug();
     static void setDebug(bool debug);
     bool debug;
+    QMutex mutexPasso; //variavel para controlar o acesso a exec_passo
+    bool isExecPasso; //variavel para verificar se eu já estou executando um passo...
 
 private:
     explicit CompInfo(QObject *parent = 0);
     ~CompInfo();
     static CompInfo* cmpInfo;
-    CompThread * thread;
     Error *_err;
     Output *_out;
+    CompThread * thread;
 
 public slots:
-
+    void thread_terminou();
 };
 
 #endif // COMPINFO_H

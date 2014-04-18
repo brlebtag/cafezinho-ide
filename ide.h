@@ -35,7 +35,10 @@
 #include <QStringList>
 #include <QTextDocument>
 #include <QTextBlock>
-#include <QTextBlock>
+#include <QTextCursor>
+#include <QTextEdit>
+#include <QColor>
+#include "MaquinaVirtual.h"
 
 //Ajustar o clipboard posteriormente...
 
@@ -70,6 +73,7 @@ private:
     bool ver_barra_ferramentas;
     bool ver_barra_status;
     Terminal terminal;
+    bool executando_processo;
 
     struct Info_Func
     {
@@ -227,15 +231,19 @@ private slots:
     void compilar();
     void mensagem(QString msg);
     void output(QString msg);
-    void compilou();
+    void terminou_processo();
     void modoEntrada();
     void terminouEntradaDados(QString dado);
     void limpar_terminal();
     void parar_execucao();
     void passo_passo_execucao();
     void setMarcadorLinhaAtual(int linha);
+    void entrar_instrucao();
+    void prox_instrucao();
+    CompThread* criarCompThreadEConfigurar();
 
     //editor
+    void mudou_instrucao(int linha);
     void texto_mudou(QTextDocument *documento);
     void itemAtualMudou(QTreeWidgetItem *atual, QTreeWidgetItem *anterior);
 };

@@ -11,6 +11,7 @@ CompThread::CompThread(QObject *parent) :
     QThread(parent)
 {
     vm = new MaquinaVirtual(this);
+    connect(this, SIGNAL(finished()),CompInfo::inst(),SLOT(thread_terminou()));
 }
 
 void CompThread::run()
@@ -104,4 +105,9 @@ void CompThread::cancelarExecucao()
 {
     vm->erf = true;
     appendMsg("<b>Programa encerrado com sucesso!</b>");
+}
+
+void CompThread::getVM()
+{
+    return this->vm;
 }

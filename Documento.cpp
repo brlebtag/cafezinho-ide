@@ -191,31 +191,25 @@ int Documento::getQuantidadeLinhas()
     return this->edit->document()->blockCount();
 }
 
-void Documento::setPosicaoCursor(int posicao)
+void Documento::setPosicaoCursor(int linha)
 {
     QTextCursor cursor(this->edit->textCursor());
 
     int posCursorAtual = getPosicaoCursor();
 
-    //Marca como uma unica operação...
-    cursor.beginEditBlock();
-
     //Movimenta o cursor para o inicio da linha
     cursor.movePosition(QTextCursor::StartOfLine);
 
-    if(posicao > posCursorAtual)
+    if(linha > posCursorAtual)
     {
         //mover para baixo
-        cursor.movePosition(QTextCursor::Down, QTextCursor::MoveAnchor, posicao - posCursorAtual);
+        cursor.movePosition(QTextCursor::Down, QTextCursor::MoveAnchor, linha - posCursorAtual);
     }
     else
     {
         //mover para cima
-        cursor.movePosition(QTextCursor::Up, QTextCursor::MoveAnchor, posCursorAtual - posicao);
+        cursor.movePosition(QTextCursor::Up, QTextCursor::MoveAnchor, posCursorAtual - linha);
     }
-
-    //Termina a marcação como unica operação
-    cursor.endEditBlock();
 
     //Seta a posicao do novo Cursor
     this->edit->setTextCursor(cursor);
@@ -264,6 +258,20 @@ void Documento::setBotao(QObject *botao)
 void Documento::setSelecoes(QList<QTextEdit::ExtraSelection> selecoes)
 {
     this->edit->setExtraSelections(selecoes);
+}
+
+void Documento::setSelecao(QTextEdit::ExtraSelection selecao)
+{
+    QList<QTextEdit::ExtraSelection> selecoes;
+    selecoes.append(selecao);
+    setSelecoes(selecoes);
+}
+
+void Documento::appendSelecao(QTextEdit::ExtraSelection selecao)
+{
+    QList<QTextEdit::ExtraSelection> selecoes = this->edit->extraSelections();
+    selecoes.append(selecao);
+    setSelecoes(selecoes);
 }
 
 void Documento::limparSelecoes()

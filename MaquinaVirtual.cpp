@@ -62,15 +62,19 @@ void MaquinaVirtual::executar()
         }
         catch(exception &e)
         {
-            CompInfo::err()<<"[SISTEMA] PROGRAMA ACABOU DE FORMA INESPERADA\n";
-            erf = true;
+            //Não reporta erro só reportar embaixo mesmo... para não aparecer a mensagem x2
         }
-        if(pc<0||pc>=codigo.size())
+        if(pc<0||pc>=codigo.size()||erf)
         {
             CompInfo::err()<<"[SISTEMA] PROGRAMA ACABOU DE FORMA INESPERADA\n";
             erf = true;
         }
     }
+}
+
+void MaquinaVirtual::debugar()
+{
+
 }
 
 void MaquinaVirtual::parar()
@@ -87,6 +91,10 @@ void MaquinaVirtual::passo()
             codigo[pc]->execute(*this);
         }
         catch(exception &e)
+        {
+             //Não reporta erro só reportar embaixo mesmo... para não aparecer a mensagem x2
+        }
+        if(pc<0||pc>=codigo.size()||erf)
         {
             CompInfo::err()<<"[SISTEMA] PROGRAMA ACABOU DE FORMA INESPERADA\n";
             erf = true;
@@ -122,7 +130,7 @@ int MaquinaVirtual::leInt()
 {
     CompInfo::modoEntrada();
     CompInfo::inst()->mutexIO.lock();
-    CompInfo::inst()->waitIO.wait(&(CompInfo::inst()->mutexIO));
+    CompInfo::inst()->wait.wait(&(CompInfo::inst()->mutexIO));
     CompInfo::inst()->mutexIO.unlock();
     return CompInfo::inst()->entrada.toInt();
 }
@@ -131,7 +139,7 @@ char MaquinaVirtual::leChar()
 {
     CompInfo::modoEntrada();
     CompInfo::inst()->mutexIO.lock();
-    CompInfo::inst()->waitIO.wait(&(CompInfo::inst()->mutexIO));
+    CompInfo::inst()->wait.wait(&(CompInfo::inst()->mutexIO));
     CompInfo::inst()->mutexIO.unlock();
     return CompInfo::inst()->entrada[0].toLatin1();
 }
@@ -140,7 +148,7 @@ double MaquinaVirtual::leDouble()
 {
     CompInfo::modoEntrada();
     CompInfo::inst()->mutexIO.lock();
-    CompInfo::inst()->waitIO.wait(&(CompInfo::inst()->mutexIO));
+    CompInfo::inst()->wait.wait(&(CompInfo::inst()->mutexIO));
     CompInfo::inst()->mutexIO.unlock();
     return CompInfo::inst()->entrada.toDouble();
 }

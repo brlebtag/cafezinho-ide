@@ -17,6 +17,7 @@ public:
     explicit MaquinaVirtual(QObject *parent = 0);
     virtual ~MaquinaVirtual();
     void executar();
+    void debugar();
     void parar();
     void passo();
     void reiniciar();
@@ -49,6 +50,8 @@ public:
 
 signals:
     void limpar_terminal();
+    void mudou_instrucao(int linha);
+
 public slots:
 
 };

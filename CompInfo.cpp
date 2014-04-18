@@ -1,5 +1,6 @@
 #include "CompInfo.h"
 #include "CompThread.h"
+#include "MaquinaVirtual.h"
 
 CompInfo* CompInfo::cmpInfo = NULL;
 
@@ -8,6 +9,13 @@ CompInfo *CompInfo::inst()
     if(cmpInfo==NULL)
         cmpInfo = new CompInfo();
     return cmpInfo;
+}
+
+MaquinaVirtual *CompInfo::getVM()
+{
+    if(CompInfo::inst()->thread!=NULL)
+        return CompInfo::inst()->thread->getVM();
+    return NULL;
 }
 
 Output &CompInfo::out()
@@ -40,9 +48,14 @@ void CompInfo::pararExecucao()
     CompInfo::inst()->thread->cancelarExecucao();
 }
 
+bool CompInfo::isDebug()
+{
+    return CompInfo::inst()->debug;
+}
+
 void CompInfo::setDebug(bool debug)
 {
-    this->debug = debug;
+    CompInfo::inst()->debug = debug;
 }
 
 CompInfo::CompInfo(QObject *parent) :
@@ -55,6 +68,12 @@ CompInfo::~CompInfo()
 {
     delete _err;
     delete _out;
+}
+
+void CompInfo::thread_terminou()
+{
+    CompInfo::inst()->debug = false;
+    CompInfo::inst()->thread = NULL;
 }
 
 

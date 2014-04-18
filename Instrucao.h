@@ -84,7 +84,8 @@ namespace TipoInstrucao
         POTENCIA,
         POTENCIA_IM,
         CAST,
-        SISTEMA
+        SISTEMA,
+        DEBUG_PASSO
     };
 };
 
@@ -795,6 +796,8 @@ class IDebugPasso : public Instrucao
 {
 public:
     IDebugPasso(int linha, bool breakpoint);
+    void execute(MaquinaVirtual &vm);
+    TipoInstrucao::TipoInstrucao tipoInstucao();
     int linha;
     bool breakpoint;
 };

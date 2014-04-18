@@ -8,6 +8,7 @@ IDE::IDE(QWidget *parent) :
     genReabrir(this),
     genProc(this),
     terminal(this),
+    executando_processo(false)
     configuracoes(QSettings::IniFormat, QSettings::UserScope, "UFG", "CafezinhoIDE")
 {
     ui->setupUi(this);
@@ -1248,28 +1249,20 @@ void IDE::localizarAnteriroClicado()
 
 void IDE::compilar()
 {
-    Documento * doc = getDocumentoAtual();
-    if(doc!=NULL)
+    if(!executando_processo)
     {
-        if(!doc->isAberto()||doc->isSujo())
+        Documento * doc = getDocumentoAtual();
+        if(doc!=NULL)
         {
-            msgErro("[CAFEZINHO] Nao foi possivel executar esta operação", "Nenhum arquivo foi selecionado como alvo da operação\nPor favor salve o documento atual ou abra algum documento.");
-            return;
+            if(!doc->isAberto()||doc->isSujo())
+            {
+                msgErro("[CAFEZINHO] Nao foi possivel executar esta operação", "Nenhum arquivo foi selecionado como alvo da operação\nPor favor salve o documento atual ou abra algum documento.");
+                return;
+            }
+            CompThread *compilar = criarCompThreadEConfigurar();
+            executando_processo = true;
+            compilar->start();
         }
-        ver_exec_prog = true;
-        this->ui->actionExecProg->setChecked(ver_exec_prog);
-        this->ui->tabgadget->show();
-        terminal.clear();
-        this->ui->actionExecutar->setEnabled(false);
-        this->ui->actionExecutar_passo_a_passo->setEnabled(false);
-        CompInfo::inst()->arquivo = doc->getCaminhoCompleto();
-        CompThread *compilar = new CompThread();
-        connect(compilar, SIGNAL(mensagem(QString)), this, SLOT(mensagem(QString)));
-        connect(compilar, SIGNAL(texto_puro(QString)), this, SLOT(output(QString)));
-        connect(compilar, SIGNAL(finished()), this, SLOT(compilou()));
-        connect(compilar, SIGNAL(iniciarModoEntrada()), this, SLOT(modoEntrada()));
-        connect(compilar, SIGNAL(limpar_terminal()), this,SLOT(limpar_terminal()));
-        compilar->start();
     }
 }
 
@@ -1283,8 +1276,9 @@ void IDE::output(QString msg)
     terminal.insertPlainText(msg);
 }
 
-void IDE::compilou()
+void IDE::terminou_processo()
 {
+    executando_processo = false;
     this->ui->actionExecutar->setEnabled(true);
     this->ui->actionExecutar_passo_a_passo->setEnabled(true);
 }
@@ -1299,7 +1293,7 @@ void IDE::modoEntrada()
 void IDE::terminouEntradaDados(QString dado)
 {
     CompInfo::inst()->entrada = dado;
-    CompInfo::inst()->waitIO.wakeAll();
+    CompInfo::inst()->wait.wakeAll();
 }
 
 void IDE::limpar_terminal()
@@ -1320,6 +1314,8 @@ void IDE::parar_execucao()
 
 void IDE::passo_passo_execucao()
 {
+    if(!executando_processo)
+    {
     Documento * doc = getDocumentoAtual();
     if(doc!=NULL)
     {
@@ -1328,27 +1324,67 @@ void IDE::passo_passo_execucao()
             msgErro("[CAFEZINHO] Nao foi possivel executar esta operação", "Nenhum arquivo foi selecionado como alvo da operação\nPor favor salve o documento atual ou abra algum documento.");
             return;
         }
-        ver_exec_prog = true;
-        this->ui->actionExecProg->setChecked(ver_exec_prog);
-        this->ui->tabgadget->show();
-        terminal.clear();
-        this->ui->actionExecutar->setEnabled(false);
-        this->ui->actionExecutar_passo_a_passo->setEnabled(false);
-        CompInfo::inst()->setDebug(true);
-        CompInfo::inst()->arquivo = doc->getCaminhoCompleto();
-        CompThread *compilar = new CompThread();
-        connect(compilar, SIGNAL(mensagem(QString)), this, SLOT(mensagem(QString)));
-        connect(compilar, SIGNAL(texto_puro(QString)), this, SLOT(output(QString)));
-        connect(compilar, SIGNAL(finished()), this, SLOT(compilou()));
-        connect(compilar, SIGNAL(iniciarModoEntrada()), this, SLOT(modoEntrada()));
-        connect(compilar, SIGNAL(limpar_terminal()), this,SLOT(limpar_terminal()));
-        compilar->start();
+
+        MaquinaVirtual *vm = CompInfo::getVM();
+
+        if(vm==NULL)
+        {
+            CompThread *compilar = criarCompThreadEConfigurar();
+            connect(vm, SIGNAL(mudou_instrucao(int)),this, SLOT(mudou_instrucao(int)));
+            compilar->start();
+        }        
     }
 }
 
 void IDE::setMarcadorLinhaAtual(int linha)
 {
 
+}
+
+void IDE::entrar_instrucao()
+{
+
+}
+
+void IDE::prox_instrucao()
+{
+
+}
+
+CompThread *IDE::criarCompThreadEConfigurar()
+{
+    ver_exec_prog = true;
+    this->ui->actionExecProg->setChecked(ver_exec_prog);
+    this->ui->tabgadget->show();
+    terminal.clear();
+    this->ui->actionExecutar->setEnabled(false);
+    this->ui->actionExecutar_passo_a_passo->setEnabled(false);
+    CompInfo::inst()->setDebug(true);
+    CompInfo::inst()->arquivo = doc->getCaminhoCompleto();
+    CompThread *compilar = new CompThread();
+    connect(compilar, SIGNAL(mensagem(QString)), this, SLOT(mensagem(QString)));
+    connect(compilar, SIGNAL(texto_puro(QString)), this, SLOT(output(QString)));
+    connect(compilar, SIGNAL(finished()), this, SLOT(terminou_processo()));
+    connect(compilar, SIGNAL(iniciarModoEntrada()), this, SLOT(modoEntrada()));
+    connect(compilar, SIGNAL(limpar_terminal()), this,SLOT(limpar_terminal()));
+    return compilar;
+}
+
+void IDE::mudou_instrucao(int linha)
+{
+    Documento * doc = getDocumentoAtual();
+
+    if(doc!=NULL)
+    {
+        doc->setPosicaoCursor(linha);
+        QTextEdit::ExtraSelection selecao;
+        QColor lineColor = QColor(Qt::blue).lighter(160);
+        selecao.format.setBackground(lineColor);
+        selecao.format.setProperty(QTextFormat::FullWidthSelection, true);
+        selecao.cursor = textCursor();
+        selecao.cursor.clearSelection();
+        doc->setSelecao(selecao);
+    }
 }
 
 void IDE::texto_mudou(QTextDocument *documento)

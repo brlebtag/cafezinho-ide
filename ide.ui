@@ -267,9 +267,9 @@
      </property>
      <addaction name="actionProximo"/>
      <addaction name="actionEntrar"/>
+     <addaction name="actionContinuar"/>
      <addaction name="separator"/>
      <addaction name="actionInserir_Breakpoint"/>
-     <addaction name="actionRemover_Breakpoint"/>
      <addaction name="separator"/>
      <addaction name="actionVigiar_Variavel"/>
     </widget>
@@ -540,10 +540,16 @@
    <property name="text">
     <string>Executar</string>
    </property>
+   <property name="shortcut">
+    <string>F5</string>
+   </property>
   </action>
   <action name="actionExecutar_passo_a_passo">
    <property name="text">
     <string>Passo a passo</string>
+   </property>
+   <property name="shortcut">
+    <string>F6</string>
    </property>
   </action>
   <action name="actionDebugger_2">
@@ -560,15 +566,21 @@
    <property name="text">
     <string>Proximo</string>
    </property>
+   <property name="shortcut">
+    <string>F8</string>
+   </property>
   </action>
   <action name="actionEntrar">
    <property name="text">
     <string>Entrar</string>
    </property>
+   <property name="shortcut">
+    <string>F9</string>
+   </property>
   </action>
   <action name="actionInserir_Breakpoint">
    <property name="text">
-    <string>Inserir Breakpoint</string>
+    <string>Ligar/Desligar Breakpoint</string>
    </property>
   </action>
   <action name="actionRemover_Breakpoint">
@@ -625,6 +637,9 @@
   <action name="actionVigiar_Variavel">
    <property name="text">
     <string>Vigiar Variavel</string>
+   </property>
+   <property name="shortcut">
+    <string>F11</string>
    </property>
   </action>
   <action name="actionFechar">
@@ -699,6 +714,17 @@
   <action name="actionParar">
    <property name="text">
     <string>Parar</string>
+   </property>
+   <property name="shortcut">
+    <string>F7</string>
+   </property>
+  </action>
+  <action name="actionContinuar">
+   <property name="text">
+    <string>Continuar</string>
+   </property>
+   <property name="shortcut">
+    <string>F10</string>
    </property>
   </action>
  </widget>

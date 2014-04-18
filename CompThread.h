@@ -25,6 +25,7 @@ public:
     void appendTexto(QString texto);
     void modoEntrada();
     void cancelarExecucao();
+    void getVM();
 
 private:
     void run();

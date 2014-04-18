@@ -52,13 +52,15 @@ public:
     bool isRefazerDisponivel();
     void setFonte(QString familia, int tamanho);
     int getQuantidadeLinhas();
-    void setPosicaoCursor(int posicao); //posicao é referente a linha
+    void setPosicaoCursor(int linha); //posicao é referente a linha
     int getPosicaoCursor(); //posicao é referente a linha que o cursor se situa neste momento
     void duplicarLinha();
     QPlainTextEdit* getEditor();
     QObject *getBotao();
     void setBotao(QObject *botao);
     void setSelecoes(QList<QTextEdit::ExtraSelection> selecoes);
+    void setSelecao(QTextEdit::ExtraSelection selecao);
+    void appendSelecao(QTextEdit::ExtraSelection selecao);
     void limparSelecoes();
 private:
     const static int TAB_SPACE;

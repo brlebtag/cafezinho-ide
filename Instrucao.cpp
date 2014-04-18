@@ -1227,3 +1227,13 @@ TipoInstrucao::TipoInstrucao ISistema::tipoInstucao()
 
 IDebugPasso::IDebugPasso(int linha, bool breakpoint)
     :linha(linha), breakpoint(breakpoint) { }
+
+void IDebugPasso::execute(MaquinaVirtual &vm)
+{
+    //faz nada...
+}
+
+TipoInstrucao::TipoInstrucao IDebugPasso::tipoInstucao()
+{
+    return TipoInstrucao::DEBUG_PASSO;
+}
