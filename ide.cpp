@@ -767,8 +767,18 @@ bool IDE::salvarAba(Documento* doc)
 
 bool IDE::salvarEFecharAbas(bool salvar_alteracoes, bool fechar)
 {
-    if(executando_processo)
-        return false;
+    if(executando_processo&&salvar_alteracoes&&fechar)
+    {
+        //Perqunta se pode fechar assim mesmo
+        int result = QMessageBox::warning(
+                                            this,tr("CafezinhoIDE"),
+                                            tr("Deseja salvar as alterações?"),
+                                            QMessageBox::Ok |  QMessageBox::Cancel,
+                                            QMessageBox::Ok
+                                         );
+        if(result != QMessageBox::Ok)
+            return false; // não fechar...
+    }
 
     for(int index=genDoc.tamanho()-1; index>=0; index--)
     {

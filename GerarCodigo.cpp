@@ -122,7 +122,6 @@ void gerar_codigo(MaquinaVirtual &vm, TabelaRef &tabela, No *no, int profundidad
                                 inserir_debug_instrucao(vm, (*it));
                             }
                         }
-                        qDebug()<<nome_no(*it)<<(*it)->linha;
                         gerar_codigo(vm, tabela, (*it), profundidade, offset + i -1 , funcao);
                     }
                 }
