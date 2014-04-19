@@ -1230,7 +1230,8 @@ IDebugPasso::IDebugPasso(int linha, bool breakpoint)
 
 void IDebugPasso::execute(MaquinaVirtual &vm)
 {
-    //faz nada...
+    vm.sincronizar_passo(this->linha, this->breakpoint);
+    ++vm.pc;
 }
 
 TipoInstrucao::TipoInstrucao IDebugPasso::tipoInstucao()

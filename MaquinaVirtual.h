@@ -14,10 +14,10 @@ class MaquinaVirtual : public QObject
 {
     Q_OBJECT
 public:
+    friend class IDebugPasso;
     explicit MaquinaVirtual(QObject *parent = 0);
     virtual ~MaquinaVirtual();
     void executar();
-    void debugar();
     void parar();
     void passo();
     void reiniciar();
@@ -34,7 +34,8 @@ public:
     bool bf; //flag maior que...
     bool sf; //flag menor que...
     bool ef; //flag igual a...
-    bool erf; //Flag indicando erro...
+    bool erf; //Flag indicando erro ou finalizar o processo...
+    bool tp; //Flag indicando que não foi erro mais sim para terminar o processo
     QVector<CelulaMemoria> memoria;
     QVector<Instrucao*> codigo;
     QVector<int*>rotulo;
@@ -47,6 +48,8 @@ public:
     double leDouble();
     bool execute;
     void sistema(Sistema::Comando comando);
+protected:
+    void sincronizar_passo(int linha, bool breakpoint);
 
 signals:
     void limpar_terminal();

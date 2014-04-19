@@ -8,7 +8,9 @@ IDE::IDE(QWidget *parent) :
     genReabrir(this),
     genProc(this),
     terminal(this),
-    executando_processo(false)
+    executando_processo(false),
+    doc_exec_atual(NULL),
+    linha_atual(-1),
     configuracoes(QSettings::IniFormat, QSettings::UserScope, "UFG", "CafezinhoIDE")
 {
     ui->setupUi(this);
@@ -64,7 +66,13 @@ IDE::IDE(QWidget *parent) :
     //Compilar
     connect(this->ui->actionExecutar, SIGNAL(triggered()), this,SLOT(compilar()));
     connect(this->ui->actionParar, SIGNAL(triggered()), this, SLOT(parar_execucao()));
-    connect(this->ui->actionExecutar_passo_a_passo, SIGNAL(triggered()), SLOT(passo_passo_execucao()));
+    connect(this->ui->actionEntrar, SIGNAL(triggered()), this, SLOT(entrar_instrucao()));
+    connect(this->ui->actionProximo, SIGNAL(triggered()), this, SLOT(prox_instrucao()));
+
+    //marca o botão para como desabilitado por que não existe processo executando...
+    this->ui->actionParar->setEnabled(false);
+    //marca o botão Continuar como desabilitado por que não existe processo executando...
+    this->ui->actionContinuar->setEnabled(false);
 
     //connect(this->ui->func_widget, SIGNAL(currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)), SLOT(itemAtualMudou(QTreeWidgetItem*,QTreeWidgetItem*)));
 
@@ -264,6 +272,9 @@ EditorCodigo* IDE::criarEditor(QWidget* aba)
 
     //Para pegar os breakpoints
     connect(edit,SIGNAL(breakpoint(int,bool)),this,SLOT(breakpoint(int,bool)));
+
+    //Reforçar a selecao
+    connect(edit, SIGNAL(cursorPositionChanged()), this, SLOT(reforcar_selecao()));
 
     //configura a politica de tamanho
     edit->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
@@ -501,8 +512,6 @@ Documento *IDE::getDocumentoAtual()
     return genDoc.procurar(getAbaAtual());
 }
 
-
-
 void IDE::setDicaAba(int index, QString &tip)
 {
     this->ui->tabWidgetArquivos->setTabToolTip(index, tip);
@@ -689,6 +698,11 @@ void IDE::acaoFechar(int indice)
 
     //Pega o edit da hashtable
     Documento* doc = genDoc.procurar(index);
+
+    //Não fecha o documento que está sendo executado
+    if(doc == doc_exec_atual)
+        return;
+
     if(doc->isSujo())
     {
         //Perqunta se pode fechar assim mesmo
@@ -753,6 +767,9 @@ bool IDE::salvarAba(Documento* doc)
 
 bool IDE::salvarEFecharAbas(bool salvar_alteracoes, bool fechar)
 {
+    if(executando_processo)
+        return false;
+
     for(int index=genDoc.tamanho()-1; index>=0; index--)
     {
         Documento *doc = genDoc[index];
@@ -1132,6 +1149,24 @@ void IDE::configurarFonteEditor()
     doc->setFonte(familia_fonte,tamanho_fonte);
 }
 
+void IDE::criarSelecao(int linha)
+{
+    doc_exec_atual->setPosicaoCursor(linha);
+    QTextEdit::ExtraSelection selecao;
+    QColor lineColor = QColor(Qt::blue).lighter(160);
+    selecao.format.setBackground(lineColor);
+    selecao.format.setProperty(QTextFormat::FullWidthSelection, true);
+    selecao.cursor = doc_exec_atual->getEditor()->textCursor();
+    selecao.cursor.clearSelection();
+    doc_exec_atual->setSelecao(selecao);
+}
+
+void IDE::reforcar_selecao()
+{
+    if(executando_processo&&linha_atual!=-1)
+        criarSelecao(linha_atual);
+}
+
 void IDE::aumentarFonte()
 {
     //Não Fica Maior que 72
@@ -1247,25 +1282,6 @@ void IDE::localizarAnteriroClicado()
         genProc.localizarAnterior();
 }
 
-void IDE::compilar()
-{
-    if(!executando_processo)
-    {
-        Documento * doc = getDocumentoAtual();
-        if(doc!=NULL)
-        {
-            if(!doc->isAberto()||doc->isSujo())
-            {
-                msgErro("[CAFEZINHO] Nao foi possivel executar esta operação", "Nenhum arquivo foi selecionado como alvo da operação\nPor favor salve o documento atual ou abra algum documento.");
-                return;
-            }
-            CompThread *compilar = criarCompThreadEConfigurar();
-            executando_processo = true;
-            compilar->start();
-        }
-    }
-}
-
 void IDE::mensagem(QString msg)
 {
     terminal.appendHtml(msg);
@@ -1278,9 +1294,7 @@ void IDE::output(QString msg)
 
 void IDE::terminou_processo()
 {
-    executando_processo = false;
-    this->ui->actionExecutar->setEnabled(true);
-    this->ui->actionExecutar_passo_a_passo->setEnabled(true);
+    reiniciaEstadoCompilar();
 }
 
 void IDE::modoEntrada()
@@ -1293,7 +1307,7 @@ void IDE::modoEntrada()
 void IDE::terminouEntradaDados(QString dado)
 {
     CompInfo::inst()->entrada = dado;
-    CompInfo::inst()->wait.wakeAll();
+    CompInfo::inst()->waitIO.wakeAll();
 }
 
 void IDE::limpar_terminal()
@@ -1307,16 +1321,17 @@ void IDE::parar_execucao()
         terminal.desligarModoEntrada();
 
     CompInfo::inst()->pararExecucao();
+    CompInfo::inst()->setDebug(false);
 
     terminouEntradaDados("");
-
+    //restaura os botões
+    reiniciaEstadoCompilar();
 }
 
-void IDE::passo_passo_execucao()
+void IDE::compilar()
 {
-    if(!executando_processo)
-    {
     Documento * doc = getDocumentoAtual();
+
     if(doc!=NULL)
     {
         if(!doc->isAberto()||doc->isSujo())
@@ -1324,43 +1339,128 @@ void IDE::passo_passo_execucao()
             msgErro("[CAFEZINHO] Nao foi possivel executar esta operação", "Nenhum arquivo foi selecionado como alvo da operação\nPor favor salve o documento atual ou abra algum documento.");
             return;
         }
-
-        MaquinaVirtual *vm = CompInfo::getVM();
-
-        if(vm==NULL)
-        {
-            CompThread *compilar = criarCompThreadEConfigurar();
-            connect(vm, SIGNAL(mudou_instrucao(int)),this, SLOT(mudou_instrucao(int)));
-            compilar->start();
-        }        
+        //Seta o documento que está sendo executando atualmente
+        doc_exec_atual = doc;
+        //configura os botões
+        this->ui->actionExecutar->setEnabled(false);
+        this->ui->actionParar->setEnabled(true);
+        this->ui->actionProximo->setEnabled(false);
+        this->ui->actionEntrar->setEnabled(false);
+        this->ui->actionContinuar->setEnabled(false);
+        //Marca como executando
+        executando_processo = true;
+        //Passar o caminho do arquivo
+        CompInfo::inst()->arquivo = doc->getCaminhoCompleto();
+        //Configurar o panel de execução e limpar o terminal
+        configExecPanelETerminal();
+        //Criar a thread que irá compilar e executar
+        CompThread *compilar = criarCompThread();
+        //seta debug como false
+        CompInfo::inst()->setDebug(false);
+        //Trava o editor para não ser possivel editar
+        doc->getEditor()->setReadOnly(true);
+        //executa-lá
+        compilar->start();
     }
-}
-
-void IDE::setMarcadorLinhaAtual(int linha)
-{
-
 }
 
 void IDE::entrar_instrucao()
 {
 
+    if(!executando_processo)
+    {
+        Documento * doc = getDocumentoAtual();
+
+        if(doc!=NULL)
+        {
+            if(!doc->isAberto()||doc->isSujo())
+            {
+                msgErro("[CAFEZINHO] Nao foi possivel executar esta operação", "Nenhum arquivo foi selecionado como alvo da operação\nPor favor salve o documento atual ou abra algum documento.");
+                return;
+            }
+            //Seta o documento que está sendo executando atualmente
+            doc_exec_atual = doc;
+            //configura os botões
+            this->ui->actionExecutar->setEnabled(false);
+            this->ui->actionParar->setEnabled(true);
+            this->ui->actionProximo->setEnabled(true);
+            this->ui->actionEntrar->setEnabled(true);
+            this->ui->actionContinuar->setEnabled(true);
+            //Marca como executando
+            executando_processo = true;
+            //Passar o caminho do arquivo
+            CompInfo::inst()->arquivo = doc->getCaminhoCompleto();
+            //Configurar o panel de execução e limpar o terminal
+            configExecPanelETerminal();
+            //Criar a thread que irá compilar e executar
+            CompThread *compilar = criarCompThread();
+            //Pega a maquina virtual
+            MaquinaVirtual *vm = compilar->getVM();
+            connect(vm, SIGNAL(mudou_instrucao(int)),this, SLOT(mudou_instrucao(int)));
+            //seta como debug
+            CompInfo::inst()->setDebug(true);
+            //Trava o editor para não ser possivel editar
+            doc->getEditor()->setReadOnly(true);
+            //executa-lá
+            compilar->start();
+        }
+    }
+    else
+    {
+        //já está executando o programa...
+        CompInfo::inst()->waitSincPasso.wakeAll();
+    }
 }
 
 void IDE::prox_instrucao()
 {
+    if(!executando_processo)
+    {
+        Documento * doc = getDocumentoAtual();
 
+        if(doc!=NULL)
+        {
+            if(!doc->isAberto()||doc->isSujo())
+            {
+                msgErro("[CAFEZINHO] Nao foi possivel executar esta operação", "Nenhum arquivo foi selecionado como alvo da operação\nPor favor salve o documento atual ou abra algum documento.");
+                return;
+            }
+            //Seta o documento que está sendo executando atualmente
+            doc_exec_atual = doc;
+            //configura os botões
+            this->ui->actionExecutar->setEnabled(false);
+            this->ui->actionParar->setEnabled(true);
+            this->ui->actionProximo->setEnabled(true);
+            this->ui->actionEntrar->setEnabled(true);
+            this->ui->actionContinuar->setEnabled(true);
+            //Marca como executando
+            executando_processo = true;
+            //Passar o caminho do arquivo
+            CompInfo::inst()->arquivo = doc->getCaminhoCompleto();
+            //Configurar o panel de execução e limpar o terminal
+            configExecPanelETerminal();
+            //Criar a thread que irá compilar e executar
+            CompThread *compilar = criarCompThread();
+            //Pega a maquina virtual
+            MaquinaVirtual *vm = compilar->getVM();
+            connect(vm, SIGNAL(mudou_instrucao(int)),this, SLOT(mudou_instrucao(int)));
+            //seta como debug
+            CompInfo::inst()->setDebug(true);
+            //Trava o editor para não ser possivel editar
+            doc->getEditor()->setReadOnly(true);
+            //executa-lá
+            compilar->start();
+        }
+    }
+    else
+    {
+        //já está executando o programa...
+        CompInfo::inst()->waitSincPasso.wakeAll();
+    }
 }
 
-CompThread *IDE::criarCompThreadEConfigurar()
+CompThread *IDE::criarCompThread()
 {
-    ver_exec_prog = true;
-    this->ui->actionExecProg->setChecked(ver_exec_prog);
-    this->ui->tabgadget->show();
-    terminal.clear();
-    this->ui->actionExecutar->setEnabled(false);
-    this->ui->actionExecutar_passo_a_passo->setEnabled(false);
-    CompInfo::inst()->setDebug(true);
-    CompInfo::inst()->arquivo = doc->getCaminhoCompleto();
     CompThread *compilar = new CompThread();
     connect(compilar, SIGNAL(mensagem(QString)), this, SLOT(mensagem(QString)));
     connect(compilar, SIGNAL(texto_puro(QString)), this, SLOT(output(QString)));
@@ -1370,21 +1470,37 @@ CompThread *IDE::criarCompThreadEConfigurar()
     return compilar;
 }
 
+void IDE::configExecPanelETerminal()
+{
+    //habilita o painel execucao programa
+    ver_exec_prog = true;
+    this->ui->actionExecProg->setChecked(ver_exec_prog);
+    this->ui->tabgadget->show();
+
+    //reinicia o terminal
+    terminal.clear();
+}
+
+void IDE::reiniciaEstadoCompilar()
+{
+    linha_atual = -1;
+    doc_exec_atual = NULL;
+    executando_processo = false;
+    this->ui->actionExecutar->setEnabled(true);
+    this->ui->actionParar->setEnabled(false);
+    this->ui->actionProximo->setEnabled(true);
+    this->ui->actionEntrar->setEnabled(true);
+    this->ui->actionContinuar->setEnabled(false);
+    //Trava o editor para não ser possivel editar
+    Documento * doc = getDocumentoAtual();
+    doc->getEditor()->setReadOnly(false);
+}
+
 void IDE::mudou_instrucao(int linha)
 {
-    Documento * doc = getDocumentoAtual();
-
-    if(doc!=NULL)
-    {
-        doc->setPosicaoCursor(linha);
-        QTextEdit::ExtraSelection selecao;
-        QColor lineColor = QColor(Qt::blue).lighter(160);
-        selecao.format.setBackground(lineColor);
-        selecao.format.setProperty(QTextFormat::FullWidthSelection, true);
-        selecao.cursor = textCursor();
-        selecao.cursor.clearSelection();
-        doc->setSelecao(selecao);
-    }
+    linha_atual = linha;
+    setAbaAtual(doc_exec_atual->getWidget());
+    criarSelecao(linha);
 }
 
 void IDE::texto_mudou(QTextDocument *documento)
@@ -1400,7 +1516,7 @@ void IDE::texto_mudou(QTextDocument *documento)
     {
         cursor = documento->find(QRegExp("\\b(int|real|car|nulo)\\s+[A-Za-z0-9_]+(?=\\()"), cursor);
         if (!cursor.isNull())
-        {
+        {mudouSelecao
             QStringList lista;
 
             lista <<QString::number(cursor.blockNumber()+1);
@@ -1408,19 +1524,20 @@ void IDE::texto_mudou(QTextDocument *documento)
             lista.swap(1, 2);
 
             //linha+nome+tipo
-            QString chave = lista.join("");
+    mudouSelecao        QString chave = lista.join("");
 
             if(decl_func.contains(chave))
             {
                 decl_func[chave]->ref = true;
             }
             else
-            {
+            {reiniciaEstadoCompilar()
                 QTreeWidgetItem *item = new QTreeWidgetItem(lista);
                 decl_func.insert(chave, new Info_Func(item, true));
                 ui->func_widget->addTopLevelItem(item);
             }
-        }
+        }//Reforçar a seleção caso esteja executando
+    void reforcar_selecao();
     }
 
     for(QHash<QString,Info_Func*>::iterator it = decl_func.begin(); it!=decl_func.end(); )

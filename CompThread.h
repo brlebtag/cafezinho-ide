@@ -25,7 +25,8 @@ public:
     void appendTexto(QString texto);
     void modoEntrada();
     void cancelarExecucao();
-    void getVM();
+    MaquinaVirtual* getVM();
+    void setVM(MaquinaVirtual *vm);
 
 private:
     void run();

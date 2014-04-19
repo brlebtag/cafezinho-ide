@@ -45,6 +45,7 @@ void MaquinaVirtual::reiniciar()
     ef = false;
     erf = false;
     execute = true;
+    tp = false;
 }
 
 void MaquinaVirtual::msgErro(QString _err)
@@ -66,15 +67,13 @@ void MaquinaVirtual::executar()
         }
         if(pc<0||pc>=codigo.size()||erf)
         {
-            CompInfo::err()<<"[SISTEMA] PROGRAMA ACABOU DE FORMA INESPERADA\n";
-            erf = true;
+            if(!tp)
+            {
+                CompInfo::err()<<"[SISTEMA] PROGRAMA ACABOU DE FORMA INESPERADA\n";
+                erf = true;
+            }
         }
     }
-}
-
-void MaquinaVirtual::debugar()
-{
-
 }
 
 void MaquinaVirtual::parar()
@@ -130,7 +129,7 @@ int MaquinaVirtual::leInt()
 {
     CompInfo::modoEntrada();
     CompInfo::inst()->mutexIO.lock();
-    CompInfo::inst()->wait.wait(&(CompInfo::inst()->mutexIO));
+    CompInfo::inst()->waitIO.wait(&(CompInfo::inst()->mutexIO));
     CompInfo::inst()->mutexIO.unlock();
     return CompInfo::inst()->entrada.toInt();
 }
@@ -139,7 +138,7 @@ char MaquinaVirtual::leChar()
 {
     CompInfo::modoEntrada();
     CompInfo::inst()->mutexIO.lock();
-    CompInfo::inst()->wait.wait(&(CompInfo::inst()->mutexIO));
+    CompInfo::inst()->waitIO.wait(&(CompInfo::inst()->mutexIO));
     CompInfo::inst()->mutexIO.unlock();
     return CompInfo::inst()->entrada[0].toLatin1();
 }
@@ -148,7 +147,7 @@ double MaquinaVirtual::leDouble()
 {
     CompInfo::modoEntrada();
     CompInfo::inst()->mutexIO.lock();
-    CompInfo::inst()->wait.wait(&(CompInfo::inst()->mutexIO));
+    CompInfo::inst()->waitIO.wait(&(CompInfo::inst()->mutexIO));
     CompInfo::inst()->mutexIO.unlock();
     return CompInfo::inst()->entrada.toDouble();
 }
@@ -168,4 +167,12 @@ void MaquinaVirtual::sistema(Sistema::Comando comando)
         }
         break;
     }
+}
+
+void MaquinaVirtual::sincronizar_passo(int linha, bool breakpoint)
+{
+    emit mudou_instrucao(linha);
+    CompInfo::inst()->mutexSincPasso.lock();
+    CompInfo::inst()->waitSincPasso.wait(&CompInfo::inst()->mutexSincPasso);
+    CompInfo::inst()->mutexSincPasso.unlock();
 }

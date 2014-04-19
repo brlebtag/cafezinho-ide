@@ -49,7 +49,8 @@ void CompThread::run()
     }
 
     //Para Debugar a arvore (Abstract Syntatic Tree)
-    //debug_arvore(bloco, 0);
+    /*if(!erro_compilador)
+        debug_arvore(bloco, 0);*/
 
 
     if(!erro_compilador)
@@ -60,7 +61,8 @@ void CompThread::run()
         gerar_codigo(*vm,tabela, bloco, 0, 0, 0);
 
         //Para Debugar o codigo gerado
-        //debug_codigo(vm);
+        /*if(!erro_compilador)
+            debug_codigo(*vm);*/
 
         if((*vm->rotulo[0])!=-1)
         {
@@ -104,10 +106,11 @@ void CompThread::modoEntrada()
 void CompThread::cancelarExecucao()
 {
     vm->erf = true;
+    vm->tp = true;
     appendMsg("<b>Programa encerrado com sucesso!</b>");
 }
 
-void CompThread::getVM()
+MaquinaVirtual* CompThread::getVM()
 {
     return this->vm;
 }

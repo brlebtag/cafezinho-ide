@@ -3,12 +3,13 @@
 
 #include "arvore_abstrata.h"
 #include "MaquinaVirtual.h"
-#include "QDebug"
+#include <QDebug>
 
 using namespace std;
 
 //debug.cpp
 void debug_arvore(No* no, int nivel);
+QString nome_no(No* no);
 QString imprime_nivel(int nivel);
 //debug_codigo.cpp
 void debug_codigo(MaquinaVirtual &vm);

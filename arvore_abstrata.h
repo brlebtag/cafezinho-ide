@@ -294,6 +294,7 @@ public:
     NAtribuicao(NExpressao* lhs = 0, Operador::Operador op = Operador::ERR_OP, NExpressao* rhs = 0, int linha = 0);
     virtual ~NAtribuicao();
     virtual TipoNo::TipoNo tipoNo();
+    bool inicializa_variavel;
 };
 
 class NOperacaoBinaria : public NExpressao

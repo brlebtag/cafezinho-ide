@@ -36,6 +36,8 @@ void gerar_codigo(MaquinaVirtual &vm, TabelaRef &tabela, No *no, int profundidad
                 {
                     if(CHECA_NO((*it), TipoNo::DECLARACAO_VARIAVEL_ESCALAR) || CHECA_NO((*it), TipoNo::DECLARACAO_VARIAVEL_VETORIAL))
                     {
+                        //se tiver alguma coisa assim int a,b,c,d todos vão estar na "mesma linha" porem só vai ficar
+                        //para uma vez....
                         if(CompInfo::isDebug())
                         {
                             if(linha_decl_var_atual!=(*it)->linha)
@@ -64,8 +66,18 @@ void gerar_codigo(MaquinaVirtual &vm, TabelaRef &tabela, No *no, int profundidad
                 {
                     if(NCHECA_NO((*it), TipoNo::DECLARACAO_VARIAVEL_ESCALAR) && NCHECA_NO((*it), TipoNo::DECLARACAO_VARIAVEL_VETORIAL))
                     {
-                        if(CompInfo::isDebug())
-                            inserir_debug_instrucao(vm, (*it));
+                        //Não precisa colocar parada no bloco....
+                        if(CompInfo::isDebug()&&NCHECA_NO((*it), TipoNo::INICIALIZADOR_VETOR)&&NCHECA_NO((*it), TipoNo::BLOCO))
+                        {
+                            if(NCHECA_NO((*it), TipoNo::ATRIBUICAO))
+                            {
+                                inserir_debug_instrucao(vm, (*it));
+                            }
+                            else if(reinterpret_cast<NAtribuicao*>(*it)->inicializa_variavel!=true)
+                            {
+                                inserir_debug_instrucao(vm, (*it));
+                            }
+                        }
 
                         //Reinicializa o offset...
                         gerar_codigo(vm, tabela, (*it), profundidade, 0, funcao);
@@ -78,12 +90,13 @@ void gerar_codigo(MaquinaVirtual &vm, TabelaRef &tabela, No *no, int profundidad
                 {
                     if(CHECA_NO((*it), TipoNo::BLOCO))
                     {
-                        if(CompInfo::isDebug())
-                            inserir_debug_instrucao(vm, (*it));
+                        //Não precisa colocar parada no bloco....
                         gerar_codigo(vm, tabela, (*it), profundidade +1, offset + i -1, funcao);
                     }
                     else if(CHECA_NO((*it), TipoNo::DECLARACAO_VARIAVEL_ESCALAR) || CHECA_NO((*it), TipoNo::DECLARACAO_VARIAVEL_VETORIAL))
                     {
+                        //se tiver alguma coisa assim int a,b,c,d todos vão estar na "mesma linha" porem só vai ficar
+                        //para uma vez....
                         if(CompInfo::isDebug())
                         {
                             if(linha_decl_var_atual!=(*it)->linha)
@@ -98,8 +111,18 @@ void gerar_codigo(MaquinaVirtual &vm, TabelaRef &tabela, No *no, int profundidad
                     }
                     else
                     {
-                        if(CompInfo::isDebug())
-                            inserir_debug_instrucao(vm, (*it));
+                        if(CompInfo::isDebug()&&NCHECA_NO((*it), TipoNo::INICIALIZADOR_VETOR)&&NCHECA_NO((*it), TipoNo::BLOCO))
+                        {
+                            if(NCHECA_NO((*it), TipoNo::ATRIBUICAO))
+                            {
+                                inserir_debug_instrucao(vm, (*it));
+                            }
+                            else if(reinterpret_cast<NAtribuicao*>(*it)->inicializa_variavel!=true)
+                            {
+                                inserir_debug_instrucao(vm, (*it));
+                            }
+                        }
+                        qDebug()<<nome_no(*it)<<(*it)->linha;
                         gerar_codigo(vm, tabela, (*it), profundidade, offset + i -1 , funcao);
                     }
                 }
@@ -334,6 +357,10 @@ void gerar_codigo(MaquinaVirtual &vm, TabelaRef &tabela, No *no, int profundidad
             //salta se nao for igual
             cmp_imm(vm, vm.eax, 0);
             seq(vm, sair_se);
+            if(CompInfo::isDebug()&&NCHECA_NO(se->instrucao, TipoNo::BLOCO))
+            {
+                inserir_debug_instrucao(vm, se->instrucao);
+            }
             gerar_codigo(vm, tabela, se->instrucao, profundidade, offset, funcao);
             //vm.codigo.size() -1 contém a ultima instrucao inserida... logo vm.codigo.size() é a proxima instrucao...
             sair_se = vm.codigo.size();
@@ -349,11 +376,19 @@ void gerar_codigo(MaquinaVirtual &vm, TabelaRef &tabela, No *no, int profundidad
             //salta se nao for igual
             cmp_imm(vm, vm.eax, 0);
             seq(vm, senao);
+            if(CompInfo::isDebug()&&NCHECA_NO(seSenao->instrucaoSe, TipoNo::BLOCO))
+            {
+                inserir_debug_instrucao(vm, seSenao->instrucaoSe);
+            }
             gerar_codigo(vm, tabela, seSenao->instrucaoSe, profundidade, offset, funcao);
             vm.rotulo.push_back(new int(0));
             int &sair_se = (*vm.rotulo[vm.rotulo.size()-1]);
             si(vm, sair_se);
             senao = vm.codigo.size();
+            if(CompInfo::isDebug()&&NCHECA_NO(seSenao->instrucaoSenao, TipoNo::BLOCO))
+            {
+                inserir_debug_instrucao(vm, seSenao->instrucaoSenao);
+            }
             gerar_codigo(vm, tabela, seSenao->instrucaoSenao, profundidade, offset, funcao);
             sair_se = vm.codigo.size();
 
@@ -369,6 +404,10 @@ void gerar_codigo(MaquinaVirtual &vm, TabelaRef &tabela, No *no, int profundidad
             int &sair_loop = (*vm.rotulo[vm.rotulo.size()-1]);
             cmp_imm(vm, vm.eax, 0);
             seq(vm, sair_loop);
+            if(CompInfo::isDebug()&&NCHECA_NO(enq->instrucao, TipoNo::BLOCO))
+            {
+                inserir_debug_instrucao(vm, enq->instrucao);
+            }
             gerar_codigo(vm, tabela, enq->instrucao, profundidade, offset, funcao);
             si(vm, loop);
             sair_loop = vm.codigo.size();

@@ -83,14 +83,11 @@ void debug_arvore(No* no, int nivel)
         break;
         case TipoNo::IDENTIFICADOR_VETORIAL:
         {
-
-
             NIdentificadorVetorial *ident = dynamic_cast<NIdentificadorVetorial*>(no);
 
             qDebug()<<imprime_nivel(nivel)<<"IDENTIFICADOR VETORIAL: "<<*ident->nome<<", linha: "<<no->linha;
-
-            for(ListaExpressao::iterator it = ident->indice->begin(); it!= ident->indice->end(); ++it)
-                debug_arvore((*it), nivel+1);
+            for(int i=0; i<ident->indice->size(); ++i)
+                debug_arvore(ident->indice->at(i), nivel+1);
         }
         break;
         case TipoNo::DECLARACAO_VARIAVEL:
@@ -113,8 +110,8 @@ void debug_arvore(No* no, int nivel)
             NDeclVarVetorial *var = dynamic_cast<NDeclVarVetorial*>(no);
             qDebug()<<imprime_nivel(nivel)<<"DECLARACAO VARIAVEL VETORIAL: "<<*var->nome<<", linha: "<<no->linha;
 
-            for(ListaExpressao::iterator it = var->dimensoes->begin(); it!= var->dimensoes->end(); ++it)
-                debug_arvore((*it), nivel+1);
+            for(int i=0; i<var->dimensoes->size(); ++i)
+                debug_arvore(var->dimensoes->at(i), nivel+1);
 
         }
         break;
@@ -125,31 +122,28 @@ void debug_arvore(No* no, int nivel)
 
             NBloco *bloco = dynamic_cast<NBloco*>(no);
 
-            for(ListaInstrucao::iterator it = bloco->instrucoes->begin(); it!= bloco->instrucoes->end(); ++it)
-                debug_arvore((*it), nivel+1);
+            for(int i=0; i<bloco->instrucoes->size(); ++i)
+                debug_arvore(bloco->instrucoes->at(i), nivel+1);
         }
         break;
         case TipoNo::CHAMADA_FUNCAO:
         {
 
-
-
             NChamadaFuncao *call = dynamic_cast<NChamadaFuncao*>(no);
             qDebug()<<imprime_nivel(nivel)<<"CHAMADA FUNCAO: "<<*call->nome<<", linha: "<<no->linha;
 
-            for(ListaExpressao::iterator it = call->argumentos->begin(); it!= call->argumentos->end(); ++it)
-                debug_arvore((*it), nivel+1);
+            for(int i=0; i<call->argumentos->size(); ++i)
+                debug_arvore(call->argumentos->at(i), nivel+1);
         }
         break;
         case TipoNo::DECLARACAO_FUNCAO:
         {
 
-
             NDeclaracaoFuncao *func = dynamic_cast<NDeclaracaoFuncao*>(no);
             qDebug()<<imprime_nivel(nivel)<<"DECLARACAO FUNCAO: "<<*func->nome<<", linha: "<<no->linha;
 
-            for(ListaVariavel::iterator it = func->parametros->begin(); it!= func->parametros->end(); ++it)
-                debug_arvore((*it), nivel+1);
+            for(int i=0; i<func->parametros->size(); ++i)
+                debug_arvore(func->parametros->at(i), nivel+1);
 
             debug_arvore(func->bloco, nivel+1);
         }
@@ -166,9 +160,8 @@ void debug_arvore(No* no, int nivel)
         case TipoNo::ATRIBUICAO:
         {
 
-            qDebug()<<imprime_nivel(nivel)<<"ATRIBUICAO, linha: "<<no->linha;
-
             NAtribuicao *atr = dynamic_cast<NAtribuicao*>(no);
+            qDebug()<<imprime_nivel(nivel)<<"ATRIBUICAO, Init:"<<atr->inicializa_variavel<<", linha: "<<no->linha;
             debug_arvore(atr->lhs, nivel+1);
             debug_arvore(atr->rhs, nivel+1);
         }
@@ -283,8 +276,8 @@ void debug_arvore(No* no, int nivel)
 
             NListaExpressoes *list = dynamic_cast<NListaExpressoes*>(no);
 
-            for(ListaExpressao::iterator it = list->expressoes->begin(); it!= list->expressoes->end(); ++it)
-                debug_arvore((*it), nivel+1);
+            for(int i=0; i<list->expressoes->size(); ++i)
+                debug_arvore(list->expressoes->at(i), nivel+1);
         }
         break;
         case TipoNo::INICIALIZADOR_VETOR:
@@ -308,6 +301,190 @@ void debug_arvore(No* no, int nivel)
 
             for(ListaExpressao::iterator it = list->expressoes->begin(); it!= list->expressoes->end(); ++it, ++i)
                 debug_arvore((*it), nivel+1);
+        }
+        break;
+    }
+}
+
+
+QString nome_no(No* no)
+{
+    switch(no->tipoNo())
+    {
+        case TipoNo::NO:
+        {
+            return "No";
+        }
+        break;
+        case TipoNo::TERMINAR:
+        {
+            return "Terminar";
+        }
+        break;
+        case TipoNo::LIMPAR:
+        {
+            return "Limpar";
+        }
+        break;
+        case TipoNo::EXPRESSAO:
+        {
+            return "Expressao";
+        }
+        break;
+        case TipoNo::INSTRUCAO:
+        {
+            return "Instrucao";
+        }
+        break;
+        case TipoNo::INTEIRO:
+        {
+            return "Inteiro";
+        }
+        break;
+        case TipoNo::CARACTER:
+        {
+            return "Caracter";
+        }
+        break;
+        case TipoNo::REAL:
+        {
+
+            return "Real";
+        }
+        break;
+        case TipoNo::PALAVRA_LITERAL:
+        {
+
+            return "Palavra Literal";
+        }
+        break;
+        case TipoNo::IDENTIFICADOR:
+        {
+            return "Identificador";
+        }
+        break;
+        case TipoNo::IDENTIFICADOR_ESCALAR:
+        {
+            return "Identificador Escalar";
+        }
+        break;
+        case TipoNo::IDENTIFICADOR_VETORIAL:
+        {
+            return "Identificador Vetorial";
+        }
+        break;
+        case TipoNo::DECLARACAO_VARIAVEL:
+        {
+            return "Declaracao Variavel";
+        }
+        break;
+        case TipoNo::DECLARACAO_VARIAVEL_ESCALAR:
+        {
+            return "Declaracao Variavel Escalar";
+        }
+        break;
+        case TipoNo::DECLARACAO_VARIAVEL_VETORIAL:
+        {
+
+            return "Declaracao Variavel Vetorial";
+
+        }
+        break;
+        case TipoNo::BLOCO:
+        {
+
+            return "Bloco";
+        }
+        break;
+        case TipoNo::CHAMADA_FUNCAO:
+        {
+
+            return "Chamada Funcao";
+        }
+        break;
+        case TipoNo::DECLARACAO_FUNCAO:
+        {
+            return "Declaracao Funcao";
+        }
+        break;
+        case TipoNo::INSTRUCAO_EXPRESSAO:
+        {
+            return "Instrucao Expressao";
+        }
+        break;
+        case TipoNo::ATRIBUICAO:
+        {
+            return "Atribuicao";
+        }
+        break;
+        case TipoNo::OPERACAO_BINARIA:
+        {
+            return "Operacao Binaria";
+        }
+        break;
+        case TipoNo::OPERACAO_UNARIA:
+        {
+            return "Operacao Unaria";
+        }
+        break;
+        case TipoNo::OPERACAO_TERCIARIA:
+        {
+            return "Operacao Terciaria";
+        }
+        break;
+        case TipoNo::RETORNE:
+        {
+            return "Retorn";
+        }
+        break;
+        case TipoNo::LEIA:
+        {
+            return "Leia";
+        }
+        break;
+        case TipoNo::ESCREVA:
+        {
+            return "Escreva";
+        }
+        break;
+        case TipoNo::NOVA_LINHA:
+        {
+            return "Nova Linha";
+        }
+        break;
+        case TipoNo::SE:
+        {
+            return "Se";
+        }
+        break;
+        case TipoNo::SE_SENAO:
+        {
+            return "Se Senao";
+        }
+        break;
+        case TipoNo::ENQUANTO:
+        {
+            return "Enquanto";
+        }
+        break;
+        case TipoNo::CAST:
+        {
+            return "Cast";
+        }
+        break;
+        case TipoNo::LISTA_EXPRESSOES:
+        {
+            return "Lista Expressoes";
+        }
+        break;
+        case TipoNo::INICIALIZADOR_VETOR:
+        {
+            return "Inicializador Vetor";
+        }
+        break;
+        case TipoNo::LISTA_INICIALIZADOR:
+        {
+            return "Lista Inicializador";
         }
         break;
     }

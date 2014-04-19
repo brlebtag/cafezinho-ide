@@ -11,6 +11,7 @@
 #include <QQueue>
 #include <QString>
 #include "CompInfo.h"
+#include "debugar_geracao.h"
 
 using namespace std;
 

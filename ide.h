@@ -73,7 +73,10 @@ private:
     bool ver_barra_ferramentas;
     bool ver_barra_status;
     Terminal terminal;
+    //Para gerenciar a execução do processo
     bool executando_processo;
+    Documento* doc_exec_atual;
+    int linha_atual;
 
     struct Info_Func
     {
@@ -166,8 +169,12 @@ private:
     //Gerenciar o Editor
     void configurarFonteEditor();
 
+    //Criar Selecao
+    void criarSelecao(int linha);
+
 protected:
     void closeEvent(QCloseEvent *event);
+
 
 private slots:
 
@@ -186,7 +193,7 @@ private slots:
     void breakpoint(int line, bool checked); //OK
 
     // Tab Widget Arquivos
-    void mudouAbaAtual(int index); //OK
+    void mudouAbaAtual(int index); //OKpara
     void botaoFecharTabClicado();
     void botaoMaisTabClicado();
 
@@ -236,11 +243,14 @@ private slots:
     void terminouEntradaDados(QString dado);
     void limpar_terminal();
     void parar_execucao();
-    void passo_passo_execucao();
-    void setMarcadorLinhaAtual(int linha);
     void entrar_instrucao();
     void prox_instrucao();
-    CompThread* criarCompThreadEConfigurar();
+    CompThread* criarCompThread();
+    void configExecPanelETerminal();
+    void reiniciaEstadoCompilar();
+
+    //Reforçar a seleção caso esteja executando
+    void reforcar_selecao();
 
     //editor
     void mudou_instrucao(int linha);

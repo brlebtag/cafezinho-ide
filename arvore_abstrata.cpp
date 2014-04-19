@@ -264,7 +264,7 @@ TipoNo::TipoNo NInstrucaoExpressao::tipoNo()
 
 /******************** Atribuicao **********************/
 NAtribuicao::NAtribuicao(NExpressao* lhs, Operador::Operador op, NExpressao* rhs, int linha)
-    : NExpressao(linha), lhs(lhs), op(op), rhs(rhs) { }
+    : NExpressao(linha), lhs(lhs), op(op), rhs(rhs), inicializa_variavel(false) { }
 NAtribuicao::~NAtribuicao()
 {
     if(lhs!=0)

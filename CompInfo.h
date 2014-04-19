@@ -56,13 +56,13 @@ public:
     static void appendTexto(QString texto);
     QMutex mutexIO;//EntradaSaidaMutex
     QString entrada;
-    QWaitCondition wait;
+    QWaitCondition waitIO;
+    QMutex mutexSincPasso;
+    QWaitCondition waitSincPasso;
     static void pararExecucao();
     static bool isDebug();
     static void setDebug(bool debug);
     bool debug;
-    QMutex mutexPasso; //variavel para controlar o acesso a exec_passo
-    bool isExecPasso; //variavel para verificar se eu já estou executando um passo...
 
 private:
     explicit CompInfo(QObject *parent = 0);

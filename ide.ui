@@ -204,7 +204,7 @@
    </property>
    <widget class="QMenu" name="menuArquivo">
     <property name="title">
-     <string>Arquivo</string>
+     <string>&amp;Arquivo</string>
     </property>
     <addaction name="actionNovo"/>
     <addaction name="separator"/>
@@ -219,7 +219,7 @@
    </widget>
    <widget class="QMenu" name="menuEditar">
     <property name="title">
-     <string>Editar</string>
+     <string>&amp;Editar</string>
     </property>
     <addaction name="actionCopiar"/>
     <addaction name="actionColar"/>
@@ -232,7 +232,7 @@
    </widget>
    <widget class="QMenu" name="menuPesquisar">
     <property name="title">
-     <string>Pesquisar</string>
+     <string>&amp;Pesquisar</string>
     </property>
     <addaction name="actionLocalizar"/>
     <addaction name="actionLocalizar_Proximo"/>
@@ -243,7 +243,7 @@
    </widget>
    <widget class="QMenu" name="menuVer">
     <property name="title">
-     <string>Ver</string>
+     <string>&amp;Ver</string>
     </property>
     <addaction name="actionBarraFerramentas"/>
     <addaction name="actionBarraStatus"/>
@@ -259,7 +259,7 @@
    </widget>
    <widget class="QMenu" name="menuOpcoes">
     <property name="title">
-     <string>Execução</string>
+     <string>E&amp;xecução</string>
     </property>
     <widget class="QMenu" name="menuDebugger">
      <property name="title">
@@ -274,7 +274,6 @@
      <addaction name="actionVigiar_Variavel"/>
     </widget>
     <addaction name="actionExecutar"/>
-    <addaction name="actionExecutar_passo_a_passo"/>
     <addaction name="actionParar"/>
     <addaction name="separator"/>
     <addaction name="menuDebugger"/>
@@ -282,7 +281,7 @@
    </widget>
    <widget class="QMenu" name="menuDocumentos">
     <property name="title">
-     <string>Documentos</string>
+     <string>&amp;Documentos</string>
     </property>
     <addaction name="separator"/>
     <addaction name="actionProximoDocumento"/>
@@ -294,7 +293,7 @@
    </widget>
    <widget class="QMenu" name="menuAjuda">
     <property name="title">
-     <string>Ajuda</string>
+     <string>A&amp;juda</string>
     </property>
     <addaction name="actionAjuda"/>
     <addaction name="actionTutorial_Linguagem_Cafezinho"/>
@@ -302,7 +301,7 @@
    </widget>
    <widget class="QMenu" name="menuEditor">
     <property name="title">
-     <string>Editor</string>
+     <string>Edi&amp;tor</string>
     </property>
     <widget class="QMenu" name="menuTamanho_Fonte">
      <property name="title">
@@ -567,7 +566,7 @@
     <string>Proximo</string>
    </property>
    <property name="shortcut">
-    <string>F8</string>
+    <string>F7</string>
    </property>
   </action>
   <action name="actionEntrar">
@@ -575,12 +574,15 @@
     <string>Entrar</string>
    </property>
    <property name="shortcut">
-    <string>F9</string>
+    <string>F8</string>
    </property>
   </action>
   <action name="actionInserir_Breakpoint">
    <property name="text">
     <string>Ligar/Desligar Breakpoint</string>
+   </property>
+   <property name="shortcut">
+    <string>F10</string>
    </property>
   </action>
   <action name="actionRemover_Breakpoint">
@@ -716,7 +718,7 @@
     <string>Parar</string>
    </property>
    <property name="shortcut">
-    <string>F7</string>
+    <string>F6</string>
    </property>
   </action>
   <action name="actionContinuar">
@@ -724,7 +726,7 @@
     <string>Continuar</string>
    </property>
    <property name="shortcut">
-    <string>F10</string>
+    <string>F9</string>
    </property>
   </action>
  </widget>

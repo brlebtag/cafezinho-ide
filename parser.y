@@ -141,7 +141,9 @@ bool checa_vetor(ListaExpressao *dimensao, ListaExpressao *lista, int indice, in
 
 %%
 
-programa: unidade_traducao { bloco->instrucoes = $1; }
+programa
+        : unidade_traducao { bloco->instrucoes = $1; }
+        ;
 
 unidade_traducao
         : declaracao_externa {  $$ = $1; }
@@ -274,6 +276,7 @@ instrucao_entrada_saida
         : LEIA expressao ';' { $$ = new NLeia( $2, $1); }
         | ESCREVA expressao ';' { $$ = new NEscreva($2, $1); }
         | NOVA_LINHA ';' { $$ = new NInstrucaoExpressao( new NNovaLinha($1), $1); }
+        ;
 
 instrucao_salto
         : RETORNE ';' { $$ = new NRetorne(new NExpressao($1), $1); }
@@ -321,11 +324,24 @@ inicio_lista_declaracao
         : inicio_declarador { $$ = $1; }
         | inicio_lista_declaracao ',' inicio_declarador
         {
+            /*
+             * PARTE MUITO IMPORTANTE:
+             * se eu tiver uma coisa assim: int a,b,c,d,...; sendo q cada um está numa linha diferente
+             * eu vou fazer com que todos estejam na mesma linha para no debug eu executar está instrucão como
+             * uma só!!!!! o lado mais a esquerda da arvore possui o primeiro a ser inserido (a linguagem deriva
+             * a esquerda) dai eu pego o mais a esquerda e faço com que todos os outros tenham a mesma linha
+             * apesar de terem sido declaradas em outras linhas.....
+             */
                 $$ = $1;
+                //pega o primeiro que é mais a esquerda e tem a linha correta da primeira declaração!!!!
+                int linha = $$->at(0)->linha;
 
                 for(ListaInstrucao::iterator it = $3->begin(); it!= $3->end(); ++it)
                 {
-                        $$->push_back((*it));
+                    //seta para todos ficarem com a mesma linha
+                    (*it)->linha = linha;
+                    $$->push_back((*it));
+
                 }
 
                 delete $3;
@@ -351,9 +367,10 @@ inicio_declarador
 
                         $$ = new ListaInstrucao();
 
-                        NIdentificadorEscalar *ident = new NIdentificadorEscalar(new QString(*decEsc->nome), yylineno);
+                        NIdentificadorEscalar *ident = new NIdentificadorEscalar(new QString(*decEsc->nome), decEsc->linha);
 
-                        NAtribuicao* atrib = new NAtribuicao(ident, Operador::ATRIBUICAO_OP, $3->at(0), yylineno);
+                        NAtribuicao* atrib = new NAtribuicao(ident, Operador::ATRIBUICAO_OP, $3->at(0), decEsc->linha);
+                        atrib->inicializa_variavel = true;
 
                         $$->push_back($1);
                         $$->push_back((NInstrucao*)atrib);
@@ -385,7 +402,7 @@ inicio_declarador
                                 YYABORT;
                         }
                         $$->push_back($1);
-                        $$->push_back(new NInicializadorVetor(new QString(*decVet->nome), $3, yylineno));
+                        $$->push_back(new NInicializadorVetor(new QString(*decVet->nome), $3, decVet->linha));
                 }
         }
         ;
