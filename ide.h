@@ -248,6 +248,7 @@ private slots:
     CompThread* criarCompThread();
     void configExecPanelETerminal();
     void reiniciaEstadoCompilar();
+    void ligaDeslBreakPoint();
 
     //Reforçar a seleção caso esteja executando
     void reforcar_selecao();

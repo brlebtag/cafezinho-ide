@@ -68,6 +68,7 @@ IDE::IDE(QWidget *parent) :
     connect(this->ui->actionParar, SIGNAL(triggered()), this, SLOT(parar_execucao()));
     connect(this->ui->actionEntrar, SIGNAL(triggered()), this, SLOT(entrar_instrucao()));
     connect(this->ui->actionProximo, SIGNAL(triggered()), this, SLOT(prox_instrucao()));
+    connect(this->ui->actionLigDeslBreakPoint, SIGNAL(triggered()), this, SLOT(ligaDeslBreakPoint()));
 
     //marca o botão para como desabilitado por que não existe processo executando...
     this->ui->actionParar->setEnabled(false);
@@ -1504,6 +1505,16 @@ void IDE::reiniciaEstadoCompilar()
     //Trava o editor para não ser possivel editar
     Documento * doc = getDocumentoAtual();
     doc->getEditor()->setReadOnly(false);
+}
+
+void IDE::ligaDeslBreakPoint()
+{
+    Documento * doc = getDocumentoAtual();
+
+    if(doc!=NULL)
+    {
+        doc->ligaDeslBreakPoint(doc->getCursorLinhaAtual());
+    }
 }
 
 void IDE::mudou_instrucao(int linha)

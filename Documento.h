@@ -62,6 +62,8 @@ public:
     void setSelecao(QTextEdit::ExtraSelection selecao);
     void appendSelecao(QTextEdit::ExtraSelection selecao);
     void limparSelecoes();
+    bool ligaDeslBreakPoint(int linha);
+    int getCursorLinhaAtual();
 private:
     const static int TAB_SPACE;
     bool primeiraChamada;

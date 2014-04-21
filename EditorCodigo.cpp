@@ -56,6 +56,31 @@ bool EditorCodigo::isTextoSelecionado()
     return this->textoSelecionado;
 }
 
+QSet<int> EditorCodigo::getBreakPoints()
+{
+    return this->breakpoints;
+}
+
+bool EditorCodigo::ligaDeslBreakPoint(int linha)
+{
+    bool contem = breakpoints.contains(linha);
+
+    if(contem)
+    {
+        breakpoints.remove(linha);
+    }
+    else
+    {
+        breakpoints.insert(linha);
+    }
+
+    contem = ! contem;
+
+    this->areaNumero->repaint(this->areaNumero->rect());
+
+    return contem;
+}
+
 void EditorCodigo::atualizarLarguraAreaNumero(int /* newBlockCount */)
 {
     setViewportMargins(lineNumberAreaWidth(), 0, 0, 0);
@@ -76,24 +101,9 @@ void EditorCodigo::atualizarAreaNumero(const QRect &rect, int dy)
     }
 }
 
-void EditorCodigo::clicouAreaNumero(int line)
+void EditorCodigo::clicouAreaNumero(int linha)
 {
-    bool contain = breakpoints.contains(line);
-
-    if(contain)
-    {
-        breakpoints.remove(line);
-    }
-    else
-    {
-        breakpoints.insert(line);
-    }
-
-    contain = ! contain;
-
-    this->areaNumero->repaint(this->areaNumero->rect());
-
-    emit breakpoint(line,contain);
+    emit breakpoint(linha, ligaDeslBreakPoint(linha));
 }
 
 void EditorCodigo::textoSelecionadoHabilitado(bool yes)

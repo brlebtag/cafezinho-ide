@@ -269,7 +269,7 @@
      <addaction name="actionEntrar"/>
      <addaction name="actionContinuar"/>
      <addaction name="separator"/>
-     <addaction name="actionInserir_Breakpoint"/>
+     <addaction name="actionLigDeslBreakPoint"/>
      <addaction name="separator"/>
      <addaction name="actionVigiar_Variavel"/>
     </widget>
@@ -577,7 +577,7 @@
     <string>F8</string>
    </property>
   </action>
-  <action name="actionInserir_Breakpoint">
+  <action name="actionLigDeslBreakPoint">
    <property name="text">
     <string>Ligar/Desligar Breakpoint</string>
    </property>

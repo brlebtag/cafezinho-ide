@@ -280,6 +280,16 @@ void Documento::limparSelecoes()
     this->edit->setExtraSelections(selecoes);
 }
 
+bool Documento::ligaDeslBreakPoint(int linha)
+{
+    return this->edit->ligaDeslBreakPoint(linha);
+}
+
+int Documento::getCursorLinhaAtual()
+{
+    return this->edit->textCursor().blockNumber()+1;
+}
+
 void Documento::texto_mudou()
 {
     emit textoMudou(edit->document());

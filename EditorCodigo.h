@@ -32,6 +32,8 @@ public:
     static void setLineNumber(bool checked);
     void forceUpdate();
     bool isTextoSelecionado();
+    QSet<int> getBreakPoints();
+    bool ligaDeslBreakPoint(int linha);
 
 protected:
     void resizeEvent(QResizeEvent *event);
@@ -39,7 +41,7 @@ protected:
 private slots:
     void atualizarLarguraAreaNumero(int newBlockCount);
     void atualizarAreaNumero(const QRect &, int);
-    void clicouAreaNumero(int line);
+    void clicouAreaNumero(int linha);
     void textoSelecionadoHabilitado(bool yes);
     void mudouPosicaoCursor();
 

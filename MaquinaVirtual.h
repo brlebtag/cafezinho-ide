@@ -8,6 +8,18 @@
 #include "CelulaMemoria.h"
 #include "CompThread.h"
 #include "CompInfo.h"
+#include <QSet>
+
+/*
+ * Este enum é utilizado para fazer o controle se está executando normal
+ * se está em passo por cima, passa entrando...
+ */
+
+namespace StatusExec {
+    enum StatusExec {
+        ENTRA, CONT, CIMA
+    };
+}
 
 
 class MaquinaVirtual : public QObject
@@ -48,6 +60,16 @@ public:
     double leDouble();
     bool execute;
     void sistema(Sistema::Comando comando);
+    StatusExec::StatusExec statusExec;
+    /*
+     * Dentro do código quando eu entro no modo debug eu crio varios pontos de paradas que são quando se deve chamar para o usuario
+     * escolher entre passa por cima, passa entrando, continuar. Mas eu posso colocar os breakpoints em qualquer linha...
+     * Estes são breakpoints invalidos! Então eu faço um processo de coverter os breakpoints invalidos em válidos, ou seja breakpoints
+     * que são os pontos de paradas que foram colocados no modo debug...
+     */
+    QSet<int> valido_break;
+
+
 protected:
     void sincronizar_passo(int linha, bool breakpoint);
 
