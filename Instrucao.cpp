@@ -1225,16 +1225,44 @@ TipoInstrucao::TipoInstrucao ISistema::tipoInstucao()
 }
 
 
-IDebugPasso::IDebugPasso(int linha, bool breakpoint)
-    :linha(linha), breakpoint(breakpoint) { }
+IDebugPasso::IDebugPasso(int linha)
+    :linha(linha){ }
 
 void IDebugPasso::execute(MaquinaVirtual &vm)
 {
-    vm.sincronizar_passo(this->linha, this->breakpoint);
+    vm.sincronizar_passo(this->linha);
     ++vm.pc;
 }
 
 TipoInstrucao::TipoInstrucao IDebugPasso::tipoInstucao()
 {
     return TipoInstrucao::DEBUG_PASSO;
+}
+
+
+IDebugEmpilhaExec::IDebugEmpilhaExec() { }
+
+void IDebugEmpilhaExec::execute(MaquinaVirtual &vm)
+{
+    vm.empilha_chamada();
+    ++vm.pc;
+}
+
+TipoInstrucao::TipoInstrucao IDebugEmpilhaExec::tipoInstucao()
+{
+    return TipoInstrucao::DEBUG_EMPILHA;
+}
+
+
+IDebugDesempilhaExec::IDebugDesempilhaExec() { }
+
+void IDebugDesempilhaExec::execute(MaquinaVirtual &vm)
+{
+    vm.desempilha_chamada();
+    ++vm.pc;
+}
+
+TipoInstrucao::TipoInstrucao IDebugDesempilhaExec::tipoInstucao()
+{
+    return TipoInstrucao::DEBUG_DESEMPILHA;
 }

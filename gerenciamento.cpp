@@ -117,7 +117,18 @@ void gerar_atribuicao(MaquinaVirtual &vm, TabelaRef &tabela, No *no, int profund
     }
 }
 
-void inserir_debug_instrucao(MaquinaVirtual &vm, No* n)
+void inserir_debug_instrucao(MaquinaVirtual &vm, No* no)
 {
-    vm.codigo.push_back(new IDebugPasso(n->linha, false));
+    CompInfo::inserirParada(no->linha);
+    vm.codigo.push_back(new IDebugPasso(no->linha));
+}
+
+void empilha_exec(MaquinaVirtual &vm)
+{
+    vm.codigo.push_back(new IDebugEmpilhaExec());
+}
+
+void desempilha_exec(MaquinaVirtual &vm)
+{
+    vm.codigo.push_back(new IDebugDesempilhaExec());
 }

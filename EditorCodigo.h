@@ -32,7 +32,7 @@ public:
     static void setLineNumber(bool checked);
     void forceUpdate();
     bool isTextoSelecionado();
-    QSet<int> getBreakPoints();
+    QSet<int>& getBreakPoints();
     bool ligaDeslBreakPoint(int linha);
 
 protected:

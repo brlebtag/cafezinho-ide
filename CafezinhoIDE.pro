@@ -44,7 +44,8 @@ SOURCES += main.cpp\
     terminal.cpp \
     MaquinaVirtual.cpp \
     debugar_ast.cpp \
-    debugar_codigo.cpp
+    debugar_codigo.cpp \
+    validarbreakpoint.cpp
 
 HEADERS  += ide.h \
     GerenciadorDocumento.h \
@@ -69,7 +70,8 @@ HEADERS  += ide.h \
     referencia.h \
     terminal.h \
     MaquinaVirtual.h \
-    debugar_geracao.h
+    debugar_geracao.h \
+    validarbreakpoint.h
 
 FORMS    += ide.ui \
     fontedialog.ui \

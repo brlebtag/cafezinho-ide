@@ -58,6 +58,21 @@ void CompInfo::setDebug(bool debug)
     CompInfo::inst()->debug = debug;
 }
 
+void CompInfo::inserirParada(int linha)
+{
+    CompInfo::inst()->validar.inserirParada(linha);
+}
+
+bool CompInfo::isBreakPoint(int linha)
+{
+    return CompInfo::inst()->validar.isBreakPoint(linha);
+}
+
+void CompInfo::validarBreakPoint(QSet<int> &breakpoint)
+{
+    CompInfo::inst()->validar.validarBreakPoints(breakpoint);
+}
+
 CompInfo::CompInfo(QObject *parent) :
     QObject(parent), _out(new Output()),_err(new Error()), debug(false)
 {

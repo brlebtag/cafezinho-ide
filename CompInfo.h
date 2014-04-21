@@ -5,6 +5,8 @@
 #include <QPlainTextEdit>
 #include <QWaitCondition>
 #include <QMutex>
+#include "validarbreakpoint.h"
+#include <QSet>
 
 class CompThread;
 class MaquinaVirtual;
@@ -62,6 +64,9 @@ public:
     static void pararExecucao();
     static bool isDebug();
     static void setDebug(bool debug);
+    static void inserirParada(int linha);
+    static bool isBreakPoint(int linha);
+    static void validarBreakPoint(QSet<int> &breakpoint);
     bool debug;
 
 private:
@@ -71,6 +76,8 @@ private:
     Error *_err;
     Output *_out;
     CompThread * thread;
+    ValidarBreakPoint validar;
+    MaquinaVirtual *vm;
 
 public slots:
     void thread_terminou();

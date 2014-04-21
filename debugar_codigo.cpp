@@ -417,7 +417,17 @@ void imprime_instrucao(MaquinaVirtual &vm, Instrucao * instrucao, int posicao)
         case DEBUG_PASSO:
         {
             IDebugPasso *inst = dynamic_cast<IDebugPasso*>(instrucao);
-            qDebug()<<posicao<<": debug_passo linha: "<<inst->linha<<" breakpoint: "<<inst->breakpoint;
+            qDebug()<<posicao<<": debug_passo linha: "<<inst->linha;
+        }
+        case DEBUG_EMPILHA:
+        {
+            IDebugEmpilhaExec *inst = dynamic_cast<IDebugEmpilhaExec*>(instrucao);
+            qDebug()<<posicao<<": debug_empilha_exec";
+        }
+        case DEBUG_DESEMPILHA:
+        {
+            IDebugDesempilhaExec *inst = dynamic_cast<IDebugDesempilhaExec*>(instrucao);
+            qDebug()<<posicao<<": debug_desempilha_exec";
         }
     }
 }

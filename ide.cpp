@@ -69,6 +69,7 @@ IDE::IDE(QWidget *parent) :
     connect(this->ui->actionEntrar, SIGNAL(triggered()), this, SLOT(entrar_instrucao()));
     connect(this->ui->actionProximo, SIGNAL(triggered()), this, SLOT(prox_instrucao()));
     connect(this->ui->actionLigDeslBreakPoint, SIGNAL(triggered()), this, SLOT(ligaDeslBreakPoint()));
+    connect(this->ui->actionContinuar, SIGNAL(triggered()), this, SLOT(continuar()));
 
     //marca o botão para como desabilitado por que não existe processo executando...
     this->ui->actionParar->setEnabled(false);
@@ -966,7 +967,12 @@ void IDE::acaoHabilitarBarraStatus(bool checked)
 
 void IDE::breakpoint(int line, bool checked)
 {
-    qDebug()<<line<<", "<<checked;
+    //qDebug()<<line<<", "<<checked;
+    if(executando_processo)
+    {
+        //Atualiza Breakpoints
+        atualiza_breakpoints();
+    }
 }
 
 void IDE::mudouAbaAtual(int index)
@@ -1352,6 +1358,8 @@ void IDE::compilar()
         }
         //Seta o documento que está sendo executando atualmente
         doc_exec_atual = doc;
+        //Configura as informações necessarias para execução
+        configExecucao(doc);
         //configura os botões
         this->ui->actionExecutar->setEnabled(false);
         this->ui->actionParar->setEnabled(true);
@@ -1370,6 +1378,21 @@ void IDE::compilar()
         CompInfo::inst()->setDebug(false);
         //Trava o editor para não ser possivel editar
         doc->getEditor()->setReadOnly(true);
+        //Configura os estado
+        MaquinaVirtual *vm = compilar->getVM();
+        //Quando for começar a executar (ou seja o codigo já foi gerado) então
+        //atualiza os breakpoints
+        connect(vm, SIGNAL(comecar_execucao()), SLOT(atualiza_breakpoints()));
+        vm->modoContinuar();
+        if(!doc->getBreakPoints().isEmpty())
+        {
+            //Se não tiver empty ou seja tem breakpoints então poem no modo debug
+            CompInfo::inst()->setDebug(true);
+            //Conecta agora para receber o break...
+            connect(vm, SIGNAL(mudou_instrucao(int)),this, SLOT(mudou_instrucao(int)));
+            connect(vm, SIGNAL(breakpoint_encontrado(int)), this, SLOT(breakpoint_encontrado(int)));
+        }
+
         //executa-lá
         compilar->start();
     }
@@ -1391,6 +1414,8 @@ void IDE::entrar_instrucao()
             }
             //Seta o documento que está sendo executando atualmente
             doc_exec_atual = doc;
+            //Configura as informações necessarias para execução
+            configExecucao(doc);
             //configura os botões
             this->ui->actionExecutar->setEnabled(false);
             this->ui->actionParar->setEnabled(true);
@@ -1412,12 +1437,16 @@ void IDE::entrar_instrucao()
             CompInfo::inst()->setDebug(true);
             //Trava o editor para não ser possivel editar
             doc->getEditor()->setReadOnly(true);
+            //Configura os estado
+            vm->modoEntrar();
             //executa-lá
             compilar->start();
         }
     }
     else
     {
+        //Configura os estado
+        CompInfo::getVM()->modoEntrar();
         //já está executando o programa...
         CompInfo::inst()->waitSincPasso.wakeAll();
     }
@@ -1438,6 +1467,8 @@ void IDE::prox_instrucao()
             }
             //Seta o documento que está sendo executando atualmente
             doc_exec_atual = doc;
+            //Configura as informações necessarias para execução
+            configExecucao(doc);
             //configura os botões
             this->ui->actionExecutar->setEnabled(false);
             this->ui->actionParar->setEnabled(true);
@@ -1459,12 +1490,16 @@ void IDE::prox_instrucao()
             CompInfo::inst()->setDebug(true);
             //Trava o editor para não ser possivel editar
             doc->getEditor()->setReadOnly(true);
+            //Configura os estado
+            vm->modoProximo();
             //executa-lá
             compilar->start();
         }
     }
     else
     {
+        //Configura os estado
+        CompInfo::getVM()->modoProximo();
         //já está executando o programa...
         CompInfo::inst()->waitSincPasso.wakeAll();
     }
@@ -1492,6 +1527,11 @@ void IDE::configExecPanelETerminal()
     terminal.clear();
 }
 
+void IDE::configExecucao(Documento *doc)
+{
+    CompInfo::validarBreakPoint(doc->getBreakPoints());
+}
+
 void IDE::reiniciaEstadoCompilar()
 {
     linha_atual = -1;
@@ -1515,6 +1555,27 @@ void IDE::ligaDeslBreakPoint()
     {
         doc->ligaDeslBreakPoint(doc->getCursorLinhaAtual());
     }
+}
+
+void IDE::continuar()
+{
+    //Configura os estado
+    CompInfo::getVM()->modoContinuar();
+    //já está executando o programa...
+    CompInfo::inst()->waitSincPasso.wakeAll();
+}
+
+void IDE::atualiza_breakpoints()
+{
+    CompInfo::validarBreakPoint(doc_exec_atual->getBreakPoints());
+}
+
+void IDE::breakpoint_encontrado(int linha)
+{
+    //Habilita botoes do proximo, entrar, continuar...
+    this->ui->actionProximo->setEnabled(true);
+    this->ui->actionEntrar->setEnabled(true);
+    this->ui->actionContinuar->setEnabled(true);
 }
 
 void IDE::mudou_instrucao(int linha)

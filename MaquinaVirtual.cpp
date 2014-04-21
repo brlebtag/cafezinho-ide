@@ -46,6 +46,10 @@ void MaquinaVirtual::reiniciar()
     erf = false;
     execute = true;
     tp = false;
+    statusExec = StatusExec::CONTINUAR;
+    sinc_passo = true;
+    exec_id = 0;
+    empilha_exec = false;
 }
 
 void MaquinaVirtual::msgErro(QString _err)
@@ -55,6 +59,8 @@ void MaquinaVirtual::msgErro(QString _err)
 
 void MaquinaVirtual::executar()
 {
+    emit comecar_execucao();
+
     while(execute&&(!erf))
     {
         try
@@ -74,6 +80,8 @@ void MaquinaVirtual::executar()
             }
         }
     }
+
+    emit terminou_execucao(!erf);
 }
 
 void MaquinaVirtual::parar()
@@ -169,10 +177,69 @@ void MaquinaVirtual::sistema(Sistema::Comando comando)
     }
 }
 
-void MaquinaVirtual::sincronizar_passo(int linha, bool breakpoint)
+void MaquinaVirtual::empilha_chamada()
 {
-    emit mudou_instrucao(linha);
-    CompInfo::inst()->mutexSincPasso.lock();
-    CompInfo::inst()->waitSincPasso.wait(&CompInfo::inst()->mutexSincPasso);
-    CompInfo::inst()->mutexSincPasso.unlock();
+    if(empilha_exec)
+    {
+        sinc_passo = false;
+        pilha_exec.push_back(exec_id++);
+    }
+}
+
+void MaquinaVirtual::desempilha_chamada()
+{
+    if(empilha_exec&&(!pilha_exec.isEmpty()))
+    {
+        exec_id--;
+        pilha_exec.pop_back();
+        //Se a pilha ficar vazio entao volta da dar sinc...
+        if(pilha_exec.isEmpty())
+            sinc_passo = true;
+    }
+}
+
+void MaquinaVirtual::modoContinuar()
+{
+    statusExec = StatusExec::CONTINUAR;
+    sinc_passo = false;
+    empilha_exec = false;
+    exec_id = 0;
+    pilha_exec.clear();
+}
+
+void MaquinaVirtual::modoProximo()
+{
+    statusExec = StatusExec::PROXIMA;
+    sinc_passo = true;
+    empilha_exec = true;
+    exec_id = 0;
+    pilha_exec.clear();
+}
+
+void MaquinaVirtual::modoEntrar()
+{
+    statusExec = StatusExec::ENTRAR;
+    empilha_exec = false;
+    sinc_passo = true;
+    exec_id = 0;
+    pilha_exec.clear();
+}
+
+void MaquinaVirtual::sincronizar_passo(int linha)
+{
+    bool contem = CompInfo::isBreakPoint(linha);
+
+    if(contem)
+    {
+        emit breakpoint_encontrado(linha);
+    }
+
+    if(sinc_passo||contem)
+    {
+        emit mudou_instrucao(linha);
+        CompInfo::inst()->mutexSincPasso.lock();
+        CompInfo::inst()->waitSincPasso.wait(&CompInfo::inst()->mutexSincPasso);
+        CompInfo::inst()->mutexSincPasso.unlock();
+    }
+    //caso contrario só ignora...
 }

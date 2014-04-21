@@ -56,7 +56,7 @@ bool EditorCodigo::isTextoSelecionado()
     return this->textoSelecionado;
 }
 
-QSet<int> EditorCodigo::getBreakPoints()
+QSet<int> &EditorCodigo::getBreakPoints()
 {
     return this->breakpoints;
 }

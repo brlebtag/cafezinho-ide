@@ -16,6 +16,7 @@
 #include <QTextCursor>
 #include "Realcador.h"
 #include <QFontMetrics>
+#include <QSet>
 
 class Documento : public QObject
 {
@@ -64,6 +65,7 @@ public:
     void limparSelecoes();
     bool ligaDeslBreakPoint(int linha);
     int getCursorLinhaAtual();
+    QSet<int>& getBreakPoints();
 private:
     const static int TAB_SPACE;
     bool primeiraChamada;

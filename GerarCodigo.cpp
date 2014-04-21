@@ -16,7 +16,7 @@ void gerar_codigo(MaquinaVirtual &vm, TabelaRef &tabela, No *no, int profundidad
             NBloco *bloco = dynamic_cast<NBloco*>(no);
             RemoverRef remover;
             int i = 1;
-
+            //Não precisa colocar debug parar as variaveis globais nem para as declarações de funções...
             if(profundidade == 0)
             {
                 /*
@@ -36,16 +36,6 @@ void gerar_codigo(MaquinaVirtual &vm, TabelaRef &tabela, No *no, int profundidad
                 {
                     if(CHECA_NO((*it), TipoNo::DECLARACAO_VARIAVEL_ESCALAR) || CHECA_NO((*it), TipoNo::DECLARACAO_VARIAVEL_VETORIAL))
                     {
-                        //se tiver alguma coisa assim int a,b,c,d todos vão estar na "mesma linha" porem só vai ficar
-                        //para uma vez....
-                        if(CompInfo::isDebug())
-                        {
-                            if(linha_decl_var_atual!=(*it)->linha)
-                            {
-                                linha_decl_var_atual = (*it)->linha;
-                                inserir_debug_instrucao(vm, (*it));
-                            }
-                        }
                         Alocado resultado = alocar_variavel(vm, tabela, (*it), profundidade, offset + i);
                         i += resultado.first;
                         remover.push_back(resultado.second);
@@ -66,19 +56,6 @@ void gerar_codigo(MaquinaVirtual &vm, TabelaRef &tabela, No *no, int profundidad
                 {
                     if(NCHECA_NO((*it), TipoNo::DECLARACAO_VARIAVEL_ESCALAR) && NCHECA_NO((*it), TipoNo::DECLARACAO_VARIAVEL_VETORIAL))
                     {
-                        //Não precisa colocar parada no bloco....
-                        if(CompInfo::isDebug()&&NCHECA_NO((*it), TipoNo::INICIALIZADOR_VETOR)&&NCHECA_NO((*it), TipoNo::BLOCO))
-                        {
-                            if(NCHECA_NO((*it), TipoNo::ATRIBUICAO))
-                            {
-                                inserir_debug_instrucao(vm, (*it));
-                            }
-                            else if(reinterpret_cast<NAtribuicao*>(*it)->inicializa_variavel!=true)
-                            {
-                                inserir_debug_instrucao(vm, (*it));
-                            }
-                        }
-
                         //Reinicializa o offset...
                         gerar_codigo(vm, tabela, (*it), profundidade, 0, funcao);
                     }
@@ -245,8 +222,9 @@ void gerar_codigo(MaquinaVirtual &vm, TabelaRef &tabela, No *no, int profundidad
             }
 
             IteradorTabelaRef it = tabela.find(*cham->nome);
-
+            empilha_exec(vm);
             invoca(vm, (*vm.rotulo[it.value().top().offset]));
+            desempilha_exec(vm);
         }
         break;
         case TipoNo::RETORNE:

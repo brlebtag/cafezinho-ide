@@ -9,6 +9,7 @@
 #include "CompThread.h"
 #include "CompInfo.h"
 #include <QSet>
+#include <QList>
 
 /*
  * Este enum é utilizado para fazer o controle se está executando normal
@@ -17,7 +18,7 @@
 
 namespace StatusExec {
     enum StatusExec {
-        ENTRA, CONT, CIMA
+        ENTRAR, CONTINUAR, PROXIMA
     };
 }
 
@@ -60,22 +61,30 @@ public:
     double leDouble();
     bool execute;
     void sistema(Sistema::Comando comando);
+    void empilha_chamada();
+    void desempilha_chamada();
     StatusExec::StatusExec statusExec;
+    void modoContinuar();
+    void modoProximo();
+    void modoEntrar();
     /*
-     * Dentro do código quando eu entro no modo debug eu crio varios pontos de paradas que são quando se deve chamar para o usuario
-     * escolher entre passa por cima, passa entrando, continuar. Mas eu posso colocar os breakpoints em qualquer linha...
-     * Estes são breakpoints invalidos! Então eu faço um processo de coverter os breakpoints invalidos em válidos, ou seja breakpoints
-     * que são os pontos de paradas que foram colocados no modo debug...
+     * Com essa variavel eu guardarei as informação da pilha de execução, partir do momento que for acionado passar por cima
+     * eu vou adicionar/remover da pilha todas as chamadas de funções. Quando a pilha ficar vazia entao sinc_passo = true
      */
-    QSet<int> valido_break;
-
+    QList<int> pilha_exec;
+    bool sinc_passo;
+    int exec_id; //só para fazer a contagem (não é necessario...)
+    bool empilha_exec;
 
 protected:
-    void sincronizar_passo(int linha, bool breakpoint);
+    void sincronizar_passo(int linha);
 
 signals:
     void limpar_terminal();
     void mudou_instrucao(int linha);
+    void comecar_execucao();
+    void terminou_execucao(bool sucesso);
+    void breakpoint_encontrado(int linha);
 
 public slots:
 

@@ -290,6 +290,11 @@ int Documento::getCursorLinhaAtual()
     return this->edit->textCursor().blockNumber()+1;
 }
 
+QSet<int> &Documento::getBreakPoints()
+{
+    return this->edit->getBreakPoints();
+}
+
 void Documento::texto_mudou()
 {
     emit textoMudou(edit->document());
