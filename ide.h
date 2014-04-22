@@ -247,12 +247,12 @@ private slots:
     void prox_instrucao();
     CompThread* criarCompThread();
     void configExecPanelETerminal();
-    void configExecucao(Documento *doc);
-    void reiniciaEstadoCompilar();
     void ligaDeslBreakPoint();
     void continuar();
     void atualiza_breakpoints();
-    void breakpoint_encontrado(int linha);
+    void botoesModoCompilar();
+    void botoesModoDebug();
+    void botaoPararApenas();
 
     //Reforçar a seleção caso esteja executando
     void reforcar_selecao();
