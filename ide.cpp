@@ -123,6 +123,15 @@ IDE::IDE(QWidget *parent) :
 
     //Ajusta o ultimo caminho
     ultimoCaminho = genReabrir.getUltimoCaminho();
+
+    /*QStringList nome1,nome2;
+    nome1<<"var1[10]"<<"int"<<"";
+    nome2<<"var1[0]"<<"int"<<"0";
+    QTreeWidgetItem *item1 = new QTreeWidgetItem(ui->varWidget, nome1);
+    QTreeWidgetItem *item2 = new QTreeWidgetItem(item1, nome2);
+    item1->addChild(item2);
+    ui->varWidget->addTopLevelItem(item1);
+    ui->varWidget->topLevelItem(0)->child(0)->setText(2, "10");*/
 }
 
 void IDE::restaurarConfiguracoesFonte()
