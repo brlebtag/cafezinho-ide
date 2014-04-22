@@ -458,7 +458,7 @@ CelulaMemoria CelulaMemoria::pot(const CelulaMemoria &rhs)
     else
         b = rhs.celula.real;
 
-    m.celula.real = pow(a, b);
+    m.celula.real = qPow(a, b);
     m.tipo = REAL;
     return m;
 }
@@ -472,14 +472,14 @@ CelulaMemoria CelulaMemoria::pot(const double &rhs)
     else
         a = this->celula.real;
 
-    m.celula.real = pow(a, rhs);
+    m.celula.real = qPow(a, rhs);
     m.tipo = REAL;
     return m;
 }
 
 std::ostream& operator<<(std::ostream& os, const CelulaMemoria& celula)
 {
-    if(celula.tipo== CelulaMemoria::INTEIRO)
+    if(celula.tipo==CelulaMemoria::INTEIRO)
         os<<celula.toInt();
     else
         os<<celula.toDouble();

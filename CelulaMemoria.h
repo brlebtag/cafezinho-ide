@@ -1,10 +1,8 @@
 #ifndef CELULAMEMORIA_H
 #define CELULAMEMORIA_H
 
-#include <iostream>
-#include <string>
-#include <sstream>
-#include <math.h>
+#include <QtCore/qmath.h>
+#include "QString"
 
 using namespace std;
 

@@ -45,7 +45,11 @@ SOURCES += main.cpp\
     MaquinaVirtual.cpp \
     debugar_ast.cpp \
     debugar_codigo.cpp \
-    validarbreakpoint.cpp
+    validarbreakpoint.cpp \
+    GerenciadorVariaveis.cpp \
+    GenVarEscalar.cpp \
+    GenVarVetorial.cpp \
+    GenVar.cpp
 
 HEADERS  += ide.h \
     GerenciadorDocumento.h \
@@ -71,7 +75,11 @@ HEADERS  += ide.h \
     terminal.h \
     MaquinaVirtual.h \
     debugar_geracao.h \
-    validarbreakpoint.h
+    validarbreakpoint.h \
+    GerenciadorVariaveis.h \
+    GenVarEscalar.h \
+    GenVarVetorial.h \
+    GenVar.h
 
 FORMS    += ide.ui \
     fontedialog.ui \
