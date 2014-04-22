@@ -1301,6 +1301,9 @@ void IDE::localizarAnteriroClicado()
 
 void IDE::mensagem(QString msg)
 {
+    QTextCursor cursor = terminal.textCursor();
+    cursor.movePosition(QTextCursor::End, QTextCursor::MoveAnchor);
+    terminal.setTextCursor(cursor);
     terminal.appendHtml(msg);
 }
 
