@@ -260,7 +260,12 @@ instrucao
         ;
 
 instrucao_expressao
-        : ';' { $$ = new NInstrucaoExpressao(new NExpressao(yylineno)); }
+        : ';'
+        {
+            NListaExpressoes* l = new NListaExpressoes(new ListaExpressao(), yylineno);
+            l->expressoes->push_back(new NExpressao(yylineno));
+            $$ = new NInstrucaoExpressao(l, yylineno);
+        }
         | expressao ';' { $$ = new NInstrucaoExpressao($1, $1->linha); }
         ;
 
@@ -427,7 +432,7 @@ lista_inicializador
 
 expressao_atribuicao
         : expressao_condicional { $$ = $1; }
-        | expressao_unaria	operador_atribuicao expressao_atribuicao { $$ = new NAtribuicao($1, $2, $3, $1->linha); }
+        | expressao_unaria operador_atribuicao expressao_atribuicao { $$ = new NAtribuicao($1, $2, $3, $1->linha); }
         ;
 
 operador_atribuicao
@@ -552,7 +557,7 @@ lista_expr_vetor
         ;
 
 expressao
-        : lista_expressao  { $$ = new NListaExpressoes($1, yylineno); }
+        : lista_expressao  { $$ = new NListaExpressoes($1, $1->at(0)->linha); }
         ;
 
 lista_expressao

@@ -9,7 +9,6 @@
 #include "CompThread.h"
 #include "CompInfo.h"
 #include <QSet>
-#include <QList>
 
 /*
  * Este enum é utilizado para fazer o controle se está executando normal
@@ -64,17 +63,18 @@ public:
     void empilha_chamada();
     void desempilha_chamada();
     StatusExec::StatusExec statusExec;
-    void modoContinuar();
-    void modoProximo();
-    void modoEntrar();
+    void proximo();
+    void entrar();
+    void continuar();
+
     /*
      * Com essa variavel eu guardarei as informação da pilha de execução, partir do momento que for acionado passar por cima
      * eu vou adicionar/remover da pilha todas as chamadas de funções. Quando a pilha ficar vazia entao sinc_passo = true
      */
-    QList<int> pilha_exec;
+private:
+    int qtdChamadasFuncao;
     bool sinc_passo;
-    int exec_id; //só para fazer a contagem (não é necessario...)
-    bool empilha_exec;
+
 
 protected:
     void sincronizar_passo(int linha);
@@ -84,7 +84,7 @@ signals:
     void mudou_instrucao(int linha);
     void comecar_execucao();
     void terminou_execucao(bool sucesso);
-    void breakpoint_encontrado(int linha);
+    void desabilitar_botoes_debug();
 
 public slots:
 
