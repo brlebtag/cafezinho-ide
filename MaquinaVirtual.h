@@ -63,6 +63,9 @@ public:
     void empilha_chamada();
     void desempilha_chamada();
     StatusExec::StatusExec statusExec;
+    void proximo();
+    void entrar();
+    void continuar();
 
     /*
      * Com essa variavel eu guardarei as informação da pilha de execução, partir do momento que for acionado passar por cima
@@ -81,8 +84,7 @@ signals:
     void mudou_instrucao(int linha);
     void comecar_execucao();
     void terminou_execucao(bool sucesso);
-    void entrou_chamada_funcao();
-    void saiu_chamada_funcao();
+    void desabilitar_botoes_debug();
 
 public slots:
 

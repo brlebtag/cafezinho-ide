@@ -11,6 +11,7 @@ IDE::IDE(QWidget *parent) :
     executando_processo(false),
     doc_exec_atual(NULL),
     linha_atual(-1),
+    cancelando(false),
     configuracoes(QSettings::IniFormat, QSettings::UserScope, "UFG", "CafezinhoIDE")
 {
     ui->setupUi(this);
@@ -1325,14 +1326,15 @@ void IDE::output(QString msg)
 
 void IDE::terminou_processo()
 {
-
+    executando_processo = false;
+    cancelando = false;
+    botoesModoCompilar();
 }
 
 void IDE::modoEntrada()
 {
     terminal.setFocus();
     terminal.modoEntrada();
-
 }
 
 void IDE::terminouEntradaDados(QString dado)
@@ -1348,76 +1350,99 @@ void IDE::limpar_terminal()
 
 void IDE::parar_execucao()
 {
-    if(terminal.isModoEntrada())
-        terminal.desligarModoEntrada();
+    if(executando_processo&&(!cancelando))
+    {
 
-    CompInfo::inst()->pararExecucao();
-    CompInfo::inst()->setDebug(false);
+        cancelando = true;
 
-    terminouEntradaDados("");
+        if(terminal.isModoEntrada())
+            terminal.desligarModoEntrada();
 
-    botoesModoCompilar();
+        CompInfo::inst()->pararExecucao();
+        CompInfo::inst()->setDebug(false);
+
+        terminouEntradaDados("");
+
+        //Se tiver alguem dormindo acorda....
+        CompInfo::inst()->waitIO.wakeAll();
+        CompInfo::inst()->waitSincPasso.wakeAll();
+    }
 }
 
 void IDE::compilar()
 {
-    Documento * doc = getDocumentoAtual();
-
-    if(doc!=NULL)
+    if(!executando_processo)
     {
-        if(!doc->isAberto()||doc->isSujo())
+        Documento * doc = getDocumentoAtual();
+
+        if(doc!=NULL)
         {
-            msgErro("[CAFEZINHO] Nao foi possivel executar esta operação", "Nenhum arquivo foi selecionado como alvo da operação\nPor favor salve o documento atual ou abra algum documento.");
-            return;
-        }
+            if(!doc->isAberto()||doc->isSujo())
+            {
+                msgErro("[CAFEZINHO] Nao foi possivel executar esta operação", "Nenhum arquivo foi selecionado como alvo da operação\nPor favor salve o documento atual ou abra algum documento.");
+                return;
+            }
 
-        //Seta o documento que está sendo executando atualmente
-        doc_exec_atual = doc;
+            //Seta o documento que está sendo executando atualmente
+            doc_exec_atual = doc;
 
-        //Marca como executando
-        executando_processo = true;
+            //Marca como executando
+            executando_processo = true;
 
-        //Passar o caminho do arquivo
-        CompInfo::inst()->arquivo = doc->getCaminhoCompleto();
+            //Passar o caminho do arquivo
+            CompInfo::inst()->arquivo = doc->getCaminhoCompleto();
 
-        //Configurar o panel de execução e limpar o terminal
-        configExecPanelETerminal();
+            //Configurar o panel de execução e limpar o terminal
+            configExecPanelETerminal();
 
-        //Criar a thread que irá compilar e executar
-        CompThread *compilar = criarCompThread();
+            //Criar a thread que irá compilar e executar
+            CompThread *compilar = criarCompThread();
 
-        //Trava o editor para não ser possivel editar
-        doc->getEditor()->setReadOnly(true);
+            //Trava o editor para não ser possivel editar
+            doc->getEditor()->setReadOnly(true);
 
-        //Configura os estado
-        MaquinaVirtual *vm = compilar->getVM();
+            //Configura os estado
+            MaquinaVirtual *vm = compilar->getVM();
 
-        //Quando for começar a executar (ou seja o codigo já foi gerado) então
-        //atualiza os breakpoints
-        connect(vm, SIGNAL(comecar_execucao()), SLOT(atualiza_breakpoints()));
+            //Quando for começar a executar (ou seja o codigo já foi gerado) então
+            //atualiza os breakpoints
+            connect(vm, SIGNAL(comecar_execucao()), SLOT(atualiza_breakpoints()));
 
-        if(!doc->getBreakPoints().isEmpty())
-        {
+            if(!doc->getBreakPoints().isEmpty())
+            {
 
-            //Se não tiver empty ou seja tem breakpoints então poem no modo debug
-            CompInfo::inst()->setDebug(true);
+                //Se não tiver empty ou seja tem breakpoints então poem no modo debug
+                CompInfo::inst()->setDebug(true);
 
-            //Conecta agora para receber o break...
-            connect(vm, SIGNAL(mudou_instrucao(int)),this, SLOT(mudou_instrucao(int)));
+                //Conecta agora para receber o break...
+                connect(vm, SIGNAL(mudou_instrucao(int)),this, SLOT(mudou_instrucao(int)));
 
-        }
-        else
-        {
+                //desabilitar botao quando passar por cima de uma função
+                connect(vm, SIGNAL(desabilitar_botoes_debug()), this, SLOT(botaoPararApenas()));
 
-            //seta debug como false
-            CompInfo::inst()->setDebug(false);
+            }
+            else
+            {
+
+                //seta debug como false
+                CompInfo::inst()->setDebug(false);
+            }
+
             //Habilita apenas o botão parar...
             botaoPararApenas();
 
+            //executa-lá
+            compilar->start();
         }
+    }
+}
 
-        //executa-lá
-        compilar->start();
+void IDE::continuar()
+{
+    if(executando_processo)
+    {
+        CompInfo::inst()->waitSincPasso.wakeAll();
+        CompInfo::getVM()->continuar();
     }
 }
 
@@ -1426,6 +1451,7 @@ void IDE::entrar_instrucao()
     if(executando_processo)
     {
         CompInfo::inst()->waitSincPasso.wakeAll();
+        CompInfo::getVM()->entrar();
     }
     else
     {
@@ -1470,12 +1496,72 @@ void IDE::entrar_instrucao()
 
         //Conecta agora para receber o break...
         connect(vm, SIGNAL(mudou_instrucao(int)),this, SLOT(mudou_instrucao(int)));
+
+        //desabilitar botao quando passar por cima de uma função
+        connect(vm, SIGNAL(desabilitar_botoes_debug()), this, SLOT(botaoPararApenas()));
+
+        //executa-lá
+        compilar->start();
     }
 }
 
 void IDE::prox_instrucao()
 {
+    if(executando_processo)
+    {
+        CompInfo::inst()->waitSincPasso.wakeAll();
+        CompInfo::getVM()->proximo();
+    }
+    else
+    {
+        Documento * doc = getDocumentoAtual();
 
+        if(doc!=NULL)
+        {
+            if(!doc->isAberto()||doc->isSujo())
+            {
+                msgErro("[CAFEZINHO] Nao foi possivel executar esta operação", "Nenhum arquivo foi selecionado como alvo da operação\nPor favor salve o documento atual ou abra algum documento.");
+                return;
+            }
+        }
+
+        //Seta o documento que está sendo executando atualmente
+        doc_exec_atual = doc;
+
+        //Marca como executando
+        executando_processo = true;
+
+        //Passar o caminho do arquivo
+        CompInfo::inst()->arquivo = doc->getCaminhoCompleto();
+
+        //Configurar o panel de execução e limpar o terminal
+        configExecPanelETerminal();
+
+        //Criar a thread que irá compilar e executar
+        CompThread *compilar = criarCompThread();
+
+        //Trava o editor para não ser possivel editar
+        doc->getEditor()->setReadOnly(true);
+
+        //Configura os estado
+        MaquinaVirtual *vm = compilar->getVM();
+
+        //Quando for começar a executar (ou seja o codigo já foi gerado) então
+        //atualiza os breakpoints
+        connect(vm, SIGNAL(comecar_execucao()), SLOT(atualiza_breakpoints()));
+
+        //Se não tiver empty ou seja tem breakpoints então poem no modo debug
+        CompInfo::inst()->setDebug(true);
+
+        //Conecta agora para receber o break...
+        connect(vm, SIGNAL(mudou_instrucao(int)),this, SLOT(mudou_instrucao(int)));
+
+        //desabilitar botao quando passar por cima de uma função
+        connect(vm, SIGNAL(desabilitar_botoes_debug()), this, SLOT(botaoPararApenas()));
+
+        //executa-lá
+        compilar->start();
+    }
 }
 
 CompThread *IDE::criarCompThread()
@@ -1521,7 +1607,7 @@ void IDE::botoesModoCompilar()
     this->ui->actionExecutar->setEnabled(true);
     this->ui->actionEntrar->setEnabled(true);
     this->ui->actionProximo->setEnabled(true);
-    this->ui->actionContinuar->setEnabled(true);
+    this->ui->actionContinuar->setEnabled(false);
     this->ui->actionParar->setEnabled(false);
 }
 

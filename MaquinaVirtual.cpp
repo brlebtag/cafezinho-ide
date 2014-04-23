@@ -177,25 +177,43 @@ void MaquinaVirtual::sistema(Sistema::Comando comando)
 
 void MaquinaVirtual::empilha_chamada()
 {
-    if(sinc_passo)
+    if(statusExec == StatusExec::PROXIMA)
     {
         ++qtdChamadasFuncao;
         sinc_passo = false;
         if(qtdChamadasFuncao>0)
-            emit entrou_chamada_funcao();
+            emit desabilitar_botoes_debug();
     }
 }
 
 void MaquinaVirtual::desempilha_chamada()
 {
-    if(!sinc_passo)
+    if(statusExec == StatusExec::PROXIMA)
     {
-        if(--qtdChamadasFuncao<0)
+        if(--qtdChamadasFuncao<=0)
         {
             sinc_passo = true;
-            emit saiu_chamada_funcao();
         }
     }
+}
+
+void MaquinaVirtual::proximo()
+{
+    statusExec = StatusExec::PROXIMA;
+    qtdChamadasFuncao = 0;
+    sinc_passo = true;
+}
+
+void MaquinaVirtual::entrar()
+{
+    statusExec = StatusExec::ENTRAR;
+    sinc_passo = true;
+}
+
+void MaquinaVirtual::continuar()
+{
+    statusExec = StatusExec::CONTINUAR;
+    sinc_passo = false;
 }
 
 void MaquinaVirtual::sincronizar_passo(int linha)
