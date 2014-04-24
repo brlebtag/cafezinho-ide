@@ -10,9 +10,9 @@ class GenVar
 public:
     GenVar();
     virtual ~GenVar();
-    virtual void inserir(MaquinaVirtual &vm, No *no, int inicio_variavel, QTreeWidget* widget)  = 0;
+    virtual void inserir(MaquinaVirtual &vm, QTreeWidget* widget)  = 0;
     virtual void remover(MaquinaVirtual &vm, No *no, QTreeWidget* widget)  = 0;
-    virtual void atualizar(MaquinaVirtual &vm, QTreeWidget* widget) = 0;
+    virtual void atualizar(MaquinaVirtual &vm, QTreeWidget *widget) = 0;
     static QString tipoParaString(TipoVariavel::TipoVariavel variavel);
     static QString memParaStr(MaquinaVirtual &vm, int posicao, TipoVariavel::TipoVariavel variavel);
 };

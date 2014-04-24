@@ -1,11 +1,21 @@
 #include "GenVarVetorial.h"
 
-GenVarVetorial::GenVarVetorial()
+GenVarVetorial::GenVarVetorial(No *no, int inicio_variavel)
 {
+    this->inicio_variavel = inicio_variavel;
+    tipoVar = GenVar::tipoParaString(this->no->tipo);
+    this->no = dynamic_cast<NDeclVarVetorial*>(no);
+    QStringList coluna;
+    coluna<<gerar_nome_vetor()<<tipoVar<<"";
+    QTreeWidgetItem* item = new QTreeWidgetItem(coluna);
+    itens.push_back(item);
+    int posicao = inicio_variavel;
+    gerar_nos(vm, item, 0, dynamic_cast<NInteiro*>(this->no->dimensoes->at(0))->valor, this->no->dimensoes->size(), posicao);
 }
 
 GenVarVetorial::~GenVarVetorial()
 {
+    //testar ... pode ser q precisa só remover o primeiro ...
     foreach(QTreeWidgetItem* item, itens)
     {
         delete item;
@@ -14,17 +24,10 @@ GenVarVetorial::~GenVarVetorial()
     itens.clear();
 }
 
-void GenVarVetorial::inserir(MaquinaVirtual &vm, No *no, int inicio_variavel, QTreeWidget *widget)
+void GenVarVetorial::inserir(MaquinaVirtual &vm, QTreeWidget *widget)
 {
-    this->inicio_variavel = inicio_variavel;
-    tipoVar = GenVar::tipoParaString(this->no->tipo);
-    this->no = dynamic_cast<NDeclVarVetorial*>(no);
-    QStringList coluna;
-    coluna<<gerar_nome_vetor()<<tipoVar<<"";
-    QTreeWidgetItem* item = new QTreeWidgetItem(widget, coluna);
-    int posicao = inicio_variavel;
-    gerar_nos(vm, item, 0, dynamic_cast<NInteiro*>(this->no->dimensoes->at(0))->valor, this->no->dimensoes->size(), posicao);
-    widget->addTopLevelItem(item);
+    widget->addTopLevelItem(itens[0]);
+    atualizar(vm, wiget);
 }
 
 void GenVarVetorial::remover(MaquinaVirtual &vm, No *no, QTreeWidget *widget)
@@ -33,12 +36,6 @@ void GenVarVetorial::remover(MaquinaVirtual &vm, No *no, QTreeWidget *widget)
     widget->removeItemWidget(itens[0], 0); //remove apenas o primeiro item...
     widget->removeItemWidget(itens[0], 1);
     widget->removeItemWidget(itens[0], 2);
-}
-
-void GenVarVetorial::adicionar(MaquinaVirtual &vm, QTreeWidget *widget)
-{
-    widget->addTopLevelItem(itens[0]);
-    atualizar(vm, wiget);
 }
 
 void GenVarVetorial::atualizar(MaquinaVirtual &vm, QTreeWidget *widget)
