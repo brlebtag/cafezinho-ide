@@ -14,7 +14,7 @@ void GenVarEscalar::inserir(MaquinaVirtual &vm, No *no, int inicio_variavel, QTr
     this->inicio_variavel = inicio_variavel;
     this->no = dynamic_cast<NDeclVarEscalar*>(no);
     QStringList coluna;
-    coluna<<*this->no->nome<<GenVar::tipoParaString(this->no->tipo)<<vm.memoria[inicio_variavel];
+    coluna<<(*this->no->nome)<<GenVar::tipoParaString(this->no->tipo)<<GenVar::memParaStr(vm, inicio_variavel, this->no->tipo);
     item = new QTreeWidgetItem(widget, coluna);
     widget->addTopLevelItem(item);
 }
@@ -28,22 +28,11 @@ void GenVarEscalar::remover(MaquinaVirtual &vm, No *no, QTreeWidget *widget)
 
 void GenVarEscalar::atualizar(MaquinaVirtual &vm, QTreeWidget *widget)
 {
-    switch(no->tipo)
-    {
-        case TipoVariavel::TIPO_CAR:
-        {
-            item->setText(2, QString(vm.memoria[inicio_variavel].toChar()));
-        }
-        break;
-        case TipoVariavel::TIPO_INT:
-        {
-            item->setText(2, QString::number(vm.memoria[inicio_variavel].toInt()));
-        }
-        break;
-        case TipoVariavel::TIPO_REAL:
-        {
-            item->setText(2, QString::number(vm.memoria[inicio_variavel].toDouble()));
-        }
-        break;
-    }
+    item->setText(2, GenVar::tipoParaString(no->tipo));
+}
+
+void GenVarEscalar::adicionar(MaquinaVirtual &vm, QTreeWidget *widget)
+{
+    widget->addTopLevelItem(item);
+    atualizar(vm, widget);
 }
