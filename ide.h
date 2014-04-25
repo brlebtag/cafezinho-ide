@@ -39,6 +39,7 @@
 #include <QTextEdit>
 #include <QColor>
 #include "MaquinaVirtual.h"
+#include "GerenciadorVariaveis.h"
 
 //Ajustar o clipboard posteriormente...
 
@@ -78,6 +79,8 @@ private:
     Documento* doc_exec_atual;
     int linha_atual;
     bool cancelando; //para gerenciar qnd o processo é cancelado mais a thread não foi destruida...
+    GerenciadorVariaveis *genVar;
+
 
     struct Info_Func
     {
@@ -254,6 +257,10 @@ private slots:
     void botoesModoCompilar();
     void botoesModoDebug();
     void botaoPararApenas();
+
+    //Para gerenciar as variaveis
+    void empilha_variavel_debug(No *no, int offset, int profundidade, bool parametro, bool vetor);
+    void desempilha_variavel(No *no, int offset, int profundidade, bool parametro, bool vetor);
 
     //Reforçar a seleção caso esteja executando
     void reforcar_selecao();

@@ -5,7 +5,16 @@ GerenciadorVariaveis::GerenciadorVariaveis(QTreeWidget *widget, QObject *parent)
 {
 }
 
-void GerenciadorVariaveis::adicionar(MaquinaVirtual &vm, No *no, int inicio_variavel)
+GerenciadorVariaveis::~GerenciadorVariaveis()
+{
+    foreach(GenVar *var, variaveis)
+    {
+        var->remover(vm, widget);
+        delete var;
+    }
+}
+
+void GerenciadorVariaveis::adicionar(MaquinaVirtual &vm, NDeclaracaoVariavel *no, int inicio_variavel)
 {
     GenVar *var;
 
@@ -13,32 +22,64 @@ void GerenciadorVariaveis::adicionar(MaquinaVirtual &vm, No *no, int inicio_vari
     {
         case TipoNo::DECLARACAO_VARIAVEL_ESCALAR:
         {
-            var = new GenVarEscalar();
+            var = new GenVarEscalar(no, inicio_variavel);
         }
         break;
         case TipoNo::DECLARACAO_VARIAVEL_VETORIAL:
         {
-            var = new GenVarVetorial();
+            var = new GenVarVetorial(no, inicio_variavel);
         }
         break;
     }
 
-    var->inserir(vm, no, inicio_variavel, widget);
-    variaveis.insert(no, var);
+    //Inseri na Hash
+    if(variaveis.contains(no->*nome))
+    {
+        QStack<GenVar*> p;
+        p.push(var);
+        variaveis.insert(*no->nome, p);
+    }
+    else
+    {
+        //Pego a pilha..
+        QStack<GenVar*> &p = variaveis[*no->nome];
+
+        //Esconde agora o que estava no topo...
+        p.top()->remover(vm, widget);
+
+        //inseri ele na pilha...
+        p.push(var);
+    }
+
+    //já insere ele na ide...
+    var->inserir(vm, widget);
 }
 
-void GerenciadorVariaveis::remover(MaquinaVirtual &vm, No *no)
+void GerenciadorVariaveis::remover(MaquinaVirtual &vm, NDeclaracaoVariavel *no, int inicio_variavel)
 {
-    GenVar* var = variaveis.value(no);
-    var->remover(vm, no, widget);
-    variaveis.remove(no);
+    //Não preciso verificar se já contem pq isso já foi feito na analise semantica!!!
+    QStack<GenVar*> &p = variaveis[*no->nome];
+
+    //Remove o elemento do topo
+    GenVar* var = p.pop();
+
+    //Já remove da IDE...
+    var->remover(vm, widget);
+
+    //Se a pilha ficou vazia então remove a pilha...
+    if(p.isEmpty())
+    {
+        variaveis.remove(*no->nome);
+    }
+
+    //deleto
     delete var;
 }
 
 void GerenciadorVariaveis::atualizar(MaquinaVirtual &vm)
 {
-    foreach(GenVar* var, variaveis)
+    for(QHash< QString, QStack<GenVar*> >::iterator it = variaveis.begin(); it!= variaveis.end(); ++it)
     {
-        var->atualizar(vm, widget);
+        it.value().top()->atualizar(vm);
     }
 }

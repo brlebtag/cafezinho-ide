@@ -216,6 +216,20 @@ void MaquinaVirtual::continuar()
     sinc_passo = false;
 }
 
+void MaquinaVirtual::empilha_variavel(No *no, int offset, int profundidade, bool parametro, bool vetor)
+{
+    //Não posso tratar aki diretamente tem que ser via IDE por que no Qt não da para alterar a interface grafica
+    //em outra thread!!!!
+    emit empilha_variavel_debug(no, offset,profundidade, parametro, vetor);
+}
+
+void MaquinaVirtual::desempilha_variavel(No *no, int offset, int profundidade, bool parametro, bool vetor)
+{
+    //Não posso tratar aki diretamente tem que ser via IDE por que no Qt não da para alterar a interface grafica
+    //em outra thread!!!!
+    emit desempilha_variavel_debug(no, offset,profundidade, parametro, vetor)
+}
+
 void MaquinaVirtual::sincronizar_passo(int linha)
 {
     bool contem = CompInfo::isBreakPoint(linha);

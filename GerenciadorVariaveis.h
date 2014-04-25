@@ -9,17 +9,20 @@
 #include <QTreeWidget>
 #include <QHash>
 #include "MaquinaVirtual.h"
+#include <QStack>
 
 class GerenciadorVariaveis : public QObject
 {
     Q_OBJECT
 public:
+    GerenciadorVariaveis(QTreeWidget *widget, QObject *parent);
+    ~GerenciadorVariaveis();
     explicit GerenciadorVariaveis(QTreeWidget* widget, QObject *parent = 0);
-    void adicionar(MaquinaVirtual &vm, No* no, int inicio_variavel);
-    void remover(MaquinaVirtual &vm, No *no);
+    void adicionar(MaquinaVirtual &vm, NDeclaracaoVariavel* no, int inicio_variavel);
+    void remover(MaquinaVirtual &vm, NDeclaracaoVariavel* no, int inicio_variavel);
 
 private:
-    QHash<No*, GenVar*> variaveis;
+    QHash< QString, QStack<GenVar*> > variaveis;
     QTreeWidget* widget;
 
 signals:

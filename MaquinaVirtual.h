@@ -9,6 +9,7 @@
 #include "CompThread.h"
 #include "CompInfo.h"
 #include <QSet>
+#include "arvore_abstrata.h"
 
 /*
  * Este enum é utilizado para fazer o controle se está executando normal
@@ -66,6 +67,8 @@ public:
     void proximo();
     void entrar();
     void continuar();
+    void empilha_variavel(No *no, int offset, int profundidade, bool parametro, bool vetor);
+    void desempilha_variavel(No *no, int offset, int profundidade, bool parametro, bool vetor);
 
     /*
      * Com essa variavel eu guardarei as informação da pilha de execução, partir do momento que for acionado passar por cima
@@ -85,6 +88,8 @@ signals:
     void comecar_execucao();
     void terminou_execucao(bool sucesso);
     void desabilitar_botoes_debug();
+    void empilha_variavel_debug(No *no, int offset, int profundidade, bool parametro, bool vetor);
+    void desempilha_variavel_debug(No *no, int offset, int profundidade, bool parametro, bool vetor);
 
 public slots:
 

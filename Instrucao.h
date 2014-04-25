@@ -87,7 +87,9 @@ namespace TipoInstrucao
         SISTEMA,
         DEBUG_PASSO,
         DEBUG_EMPILHA,
-        DEBUG_DESEMPILHA
+        DEBUG_DESEMPILHA,
+        DEBUG_VAR_EMPILHA,
+        DEBUG_VAR_DESEMPILHA
     };
 };
 
@@ -817,6 +819,33 @@ public:
     IDebugDesempilhaExec();
     void execute(MaquinaVirtual &vm);
     TipoInstrucao::TipoInstrucao tipoInstucao();
+};
+
+class IDebugVariavelEmpilha : public Instrucao
+{
+public:
+    IDebugVariavelEmpilha(No* no, int offset, int profundidade, bool parametro, bool vetor);
+    void execute(MaquinaVirtual &vm);
+    TipoInstrucao::TipoInstrucao tipoInstucao();
+    No* no;
+    int offset;
+    int profundidade;
+    bool parametro;
+    bool vetor;
+};
+
+
+class IDebugVariavelDesempilha : public Instrucao
+{
+public:
+    IDebugVariavelDesempilha(No* no, int offset, int profundidade, bool parametro, bool vetor);
+    void execute(MaquinaVirtual &vm);
+    TipoInstrucao::TipoInstrucao tipoInstucao();
+    No* no;
+    int offset;
+    int profundidade;
+    bool parametro;
+    bool vetor;
 };
 
 #endif // INSTRUCAO_H

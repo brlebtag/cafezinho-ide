@@ -12,7 +12,7 @@ public:
     ~GenVarEscalar();
     void inserir(MaquinaVirtual &vm, QTreeWidget* widget);
     void remover(MaquinaVirtual &vm, QTreeWidget* widget);
-    void atualizar(MaquinaVirtual &vm, QTreeWidget *widget);
+    void atualizar(MaquinaVirtual &vm);
 private:
     int inicio_variavel;
     NDeclVarEscalar *no;

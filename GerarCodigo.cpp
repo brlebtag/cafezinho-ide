@@ -107,6 +107,9 @@ void gerar_codigo(MaquinaVirtual &vm, TabelaRef &tabela, No *no, int profundidad
             for(IteradorRemoverRef it = remover.begin(); it!= remover.end(); ++it)
             {
                 IteradorTabelaRef var = (*it);
+                Referencia &ref = var.value().top();
+
+                vm.codigo.push_back(new IDebugVariavelDesempilha(ref.origem, ref.offset, ref.profundidade, ref.parametro, ref.vetor));
 
                 var.value().pop();
 

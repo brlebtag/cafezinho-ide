@@ -10,7 +10,7 @@ GenVarVetorial::GenVarVetorial(No *no, int inicio_variavel)
     QTreeWidgetItem* item = new QTreeWidgetItem(coluna);
     itens.push_back(item);
     int posicao = inicio_variavel;
-    gerar_nos(vm, item, 0, dynamic_cast<NInteiro*>(this->no->dimensoes->at(0))->valor, this->no->dimensoes->size(), posicao);
+    gerar_nos(item, 0, dynamic_cast<NInteiro*>(this->no->dimensoes->at(0))->valor, this->no->dimensoes->size(), posicao);
 }
 
 GenVarVetorial::~GenVarVetorial()
@@ -27,10 +27,10 @@ GenVarVetorial::~GenVarVetorial()
 void GenVarVetorial::inserir(MaquinaVirtual &vm, QTreeWidget *widget)
 {
     widget->addTopLevelItem(itens[0]);
-    atualizar(vm, wiget);
+    atualizar(vm, widget);
 }
 
-void GenVarVetorial::remover(MaquinaVirtual &vm, No *no, QTreeWidget *widget)
+void GenVarVetorial::remover(MaquinaVirtual &vm, QTreeWidget *widget)
 {
     //testar...
     widget->removeItemWidget(itens[0], 0); //remove apenas o primeiro item...
@@ -38,13 +38,13 @@ void GenVarVetorial::remover(MaquinaVirtual &vm, No *no, QTreeWidget *widget)
     widget->removeItemWidget(itens[0], 2);
 }
 
-void GenVarVetorial::atualizar(MaquinaVirtual &vm, QTreeWidget *widget)
+void GenVarVetorial::atualizar(MaquinaVirtual &vm)
 {
     int posicao = inicio_variavel;
     atualizar_nos(vm, itens[0], 0, dynamic_cast<NInteiro*>(no->dimensoes->at(0))->valor, no->dimensoes->size(), posicao);
 }
 
-void GenVarVetorial::gerar_nos(MaquinaVirtual &vm, QTreeWidgetItem *pai, int indice, int dim, int tam, int &pos)
+void GenVarVetorial::gerar_nos(QTreeWidgetItem *pai, int indice, int dim, int tam, int &pos)
 {
     QTreeWidgetItem* item;
     QStringList coluna;
@@ -59,7 +59,7 @@ void GenVarVetorial::gerar_nos(MaquinaVirtual &vm, QTreeWidgetItem *pai, int ind
             item = new QTreeWidgetItem(pai, coluna);
             itens.push_back(item);
             pai->addChild(item);
-            gerar_nos(vm, item, indice + 1, dynamic_cast<NInteiro*>(this->no->dimensoes->at(indice+1))->valor, tam-1, pos);
+            gerar_nos(item, indice + 1, dynamic_cast<NInteiro*>(this->no->dimensoes->at(indice+1))->valor, tam-1, pos);
         }
     }
     else
@@ -71,7 +71,7 @@ void GenVarVetorial::gerar_nos(MaquinaVirtual &vm, QTreeWidgetItem *pai, int ind
             item = new QTreeWidgetItem(pai, coluna);
             itens.push_back(item);
             pai->addChild(item);
-            coluna<<nome<<tipoVar<<GenVar::memParaStr(vm, pos, no->tipo);
+            coluna<<nome<<tipoVar<<"";
             ++pos;
         }
     }
@@ -83,7 +83,7 @@ void GenVarVetorial::atualizar_nos(MaquinaVirtual &vm, QTreeWidgetItem *pai, int
     {
         for(int i=0; i<dim; ++i)
         {
-            gerar_nos(vm, pai->child(i), indice + 1, dynamic_cast<NInteiro*>(this->no->dimensoes->at(indice+1))->valor, tam-1, pos);
+            atualizar_nos(vm, pai->child(i), indice + 1, dynamic_cast<NInteiro*>(this->no->dimensoes->at(indice+1))->valor, tam-1, pos);
         }
     }
     else
