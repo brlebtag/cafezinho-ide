@@ -32,6 +32,8 @@ void GerenciadorVariaveis::adicionar(MaquinaVirtual &vm, NDeclaracaoVariavel *no
         break;
     }
 
+    memoria[inicio_variavel] = var;
+
     //Inseri na Hash
     if(variaveis.contains(no->*nome))
     {
@@ -55,7 +57,7 @@ void GerenciadorVariaveis::adicionar(MaquinaVirtual &vm, NDeclaracaoVariavel *no
     var->inserir(vm, widget);
 }
 
-void GerenciadorVariaveis::remover(MaquinaVirtual &vm, NDeclaracaoVariavel *no, int inicio_variavel)
+void GerenciadorVariaveis::remover(MaquinaVirtual &vm, NDeclaracaoVariavel *no)
 {
     //Não preciso verificar se já contem pq isso já foi feito na analise semantica!!!
     QStack<GenVar*> &p = variaveis[*no->nome];
@@ -71,6 +73,8 @@ void GerenciadorVariaveis::remover(MaquinaVirtual &vm, NDeclaracaoVariavel *no, 
     {
         variaveis.remove(*no->nome);
     }
+
+    memoria.remove(var->inicio_variavel);
 
     //deleto
     delete var;

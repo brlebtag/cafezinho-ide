@@ -259,8 +259,8 @@ private slots:
     void botaoPararApenas();
 
     //Para gerenciar as variaveis
-    void empilha_variavel_debug(No *no, int offset, int profundidade, bool parametro, bool vetor);
-    void desempilha_variavel(No *no, int offset, int profundidade, bool parametro, bool vetor);
+    void empilha_variavel_debug(No *no, int offset, bool vetor);
+    void desempilha_variavel(No *no);
 
     //Reforçar a seleção caso esteja executando
     void reforcar_selecao();

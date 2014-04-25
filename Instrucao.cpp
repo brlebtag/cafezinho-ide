@@ -1268,12 +1268,12 @@ TipoInstrucao::TipoInstrucao IDebugDesempilhaExec::tipoInstucao()
 }
 
 
-IDebugVariavelEmpilha::IDebugVariavelEmpilha(No *no, int offset, int profundidade, bool parametro, bool vetor)
-    : no(no),offset(offset), profundidade(profundidade), parametro(parametro), vetor(vetor) { }
+IDebugVariavelEmpilha::IDebugVariavelEmpilha(No *no, int offset, bool vetor)
+    : no(no), offset(offset), vetor(vetor) { }
 
 void IDebugVariavelEmpilha::execute(MaquinaVirtual &vm)
 {
-    vm.empilha_variavel(no, offset, profundidade, parametro);
+    vm.empilha_variavel(no, offset, vetor);
     ++vm.pc;
 }
 
@@ -1283,12 +1283,12 @@ TipoInstrucao::TipoInstrucao IDebugVariavelEmpilha::tipoInstucao()
 }
 
 
-IDebugVariavelDesempilha::IDebugVariavelDesempilha(No* no, int offset, int profundidade, bool parametro, bool vetor)
-    : no(no),offset(offset), profundidade(profundidade), parametro(parametro), vetor(vetor) { }
+IDebugVariavelDesempilha::IDebugVariavelDesempilha(No* no)
+    : no(no) { }
 
 void IDebugVariavelDesempilha::execute(MaquinaVirtual &vm)
 {
-    vm.desempilha_variavel(no, offset, profundidade, parametro);
+    vm.desempilha_variavel(no);
     ++vm.pc;
 }
 

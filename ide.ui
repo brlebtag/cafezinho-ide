@@ -107,41 +107,15 @@
          </sizepolicy>
         </property>
         <property name="currentIndex">
-         <number>1</number>
+         <number>0</number>
         </property>
         <widget class="QWidget" name="tab_3">
          <attribute name="title">
-          <string>Local</string>
+          <string>Variaveis</string>
          </attribute>
          <layout class="QGridLayout" name="gridLayout_5">
           <item row="0" column="0">
            <widget class="QTreeWidget" name="treeWidget_2">
-            <column>
-             <property name="text">
-              <string>Nome</string>
-             </property>
-            </column>
-            <column>
-             <property name="text">
-              <string>Tipo</string>
-             </property>
-            </column>
-            <column>
-             <property name="text">
-              <string>Valor</string>
-             </property>
-            </column>
-           </widget>
-          </item>
-         </layout>
-        </widget>
-        <widget class="QWidget" name="tab_2">
-         <attribute name="title">
-          <string>Vigiados</string>
-         </attribute>
-         <layout class="QGridLayout" name="gridLayout_4">
-          <item row="0" column="0">
-           <widget class="QTreeWidget" name="varWidget">
             <column>
              <property name="text">
               <string>Nome</string>

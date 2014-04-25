@@ -1629,14 +1629,14 @@ void IDE::botaoPararApenas()
     this->ui->actionParar->setEnabled(true);
 }
 
-void IDE::empilha_variavel_debug(No *no, int offset, int profundidade, bool parametro, bool vetor)
+void IDE::empilha_variavel_debug(No *no, int offset, bool vetor)
 {
     MaquinaVirtual *vm = CompInfo::getVM();
     int inicio_variavel;
     genVar->adicionar(vm, no, inicio_variavel);
 }
 
-void IDE::desempilha_variavel(No *no, int offset, int profundidade, bool parametro, bool vetor)
+void IDE::desempilha_variavel(No *no)
 {
     MaquinaVirtual *vm = CompInfo::getVM();
     genVar->remover(vm, no);

@@ -13,7 +13,6 @@ public:
     void remover(MaquinaVirtual &vm, QTreeWidget* widget);
     void atualizar(MaquinaVirtual &vm);
 private:
-    int inicio_variavel;
     NDeclVarVetorial *no;
     void gerar_nos(QTreeWidgetItem *pai, int indice, int dim, int tam, int &pos);
     void atualizar_nos(MaquinaVirtual &vm, QTreeWidgetItem *pai, int indice, int dim, int tam, int &pos);

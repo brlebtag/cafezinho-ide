@@ -1,6 +1,6 @@
 #include "GenVar.h"
 
-GenVar::GenVar()
+GenVar::GenVar(int inicio_variavel) : inicio_variavel(inicio_variavel)
 {
 }
 

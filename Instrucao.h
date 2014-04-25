@@ -824,13 +824,11 @@ public:
 class IDebugVariavelEmpilha : public Instrucao
 {
 public:
-    IDebugVariavelEmpilha(No* no, int offset, int profundidade, bool parametro, bool vetor);
+    IDebugVariavelEmpilha(No* no, int offset, bool vetor);
     void execute(MaquinaVirtual &vm);
     TipoInstrucao::TipoInstrucao tipoInstucao();
     No* no;
     int offset;
-    int profundidade;
-    bool parametro;
     bool vetor;
 };
 
@@ -838,14 +836,10 @@ public:
 class IDebugVariavelDesempilha : public Instrucao
 {
 public:
-    IDebugVariavelDesempilha(No* no, int offset, int profundidade, bool parametro, bool vetor);
+    IDebugVariavelDesempilha(No* no);
     void execute(MaquinaVirtual &vm);
     TipoInstrucao::TipoInstrucao tipoInstucao();
     No* no;
-    int offset;
-    int profundidade;
-    bool parametro;
-    bool vetor;
 };
 
 #endif // INSTRUCAO_H

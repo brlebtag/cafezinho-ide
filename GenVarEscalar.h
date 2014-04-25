@@ -14,7 +14,6 @@ public:
     void remover(MaquinaVirtual &vm, QTreeWidget* widget);
     void atualizar(MaquinaVirtual &vm);
 private:
-    int inicio_variavel;
     NDeclVarEscalar *no;
     QTreeWidgetItem* item;
 };

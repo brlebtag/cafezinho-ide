@@ -2,17 +2,18 @@
 
 void gerar_codigo(MaquinaVirtual &vm, TabelaRef &tabela, No *no, int profundidade, int offset, No *funcao)
 {
-    int linha_decl_var_atual = -1; //contém a linha da ultima declaração
-    /*
-     * Eu irei da break apenas na primeira instrucao de declaração de variavel (na arvore
-     * para cada declaracao de variavel possui um nó porém eu só vou dar break para a primeira
-     * ocorrencia naquela linha) esta variavel de controle gerencia isto!
-     */
 
     switch(no->tipoNo())
     {
         case TipoNo::BLOCO:
         {
+            /*
+             * Eu irei da break apenas na primeira instrucao de declaração de variavel (na arvore
+             * para cada declaracao de variavel possui um nó porém eu só vou dar break para a primeira
+             * ocorrencia naquela linha) esta variavel de controle gerencia isto!
+             */
+            int linha_decl_var_atual = -1; //contém a linha da ultima declaração
+
             NBloco *bloco = dynamic_cast<NBloco*>(no);
             RemoverRef remover;
             int i = 1;
@@ -109,7 +110,7 @@ void gerar_codigo(MaquinaVirtual &vm, TabelaRef &tabela, No *no, int profundidad
                 IteradorTabelaRef var = (*it);
                 Referencia &ref = var.value().top();
 
-                vm.codigo.push_back(new IDebugVariavelDesempilha(ref.origem, ref.offset, ref.profundidade, ref.parametro, ref.vetor));
+                vm.codigo.push_back(new IDebugVariavelDesempilha(ref.origem));
 
                 var.value().pop();
 
@@ -186,6 +187,9 @@ void gerar_codigo(MaquinaVirtual &vm, TabelaRef &tabela, No *no, int profundidad
             for(IteradorRemoverRef it = remover.begin(); it!= remover.end(); ++it)
             {
                 IteradorTabelaRef var = (*it);
+                Referencia &ref = var.value().top();
+
+                vm.codigo.push_back(new IDebugVariavelDesempilha(ref.origem));
 
                 var.value().pop();
 

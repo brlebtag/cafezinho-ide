@@ -1,8 +1,7 @@
 #include "GenVarEscalar.h"
 
-GenVarEscalar::GenVarEscalar(No *no, int inicio_variavel)
+GenVarEscalar::GenVarEscalar(No *no, int inicio_variavel) : GenVar(inicio_variavel)
 {
-    this->inicio_variavel = inicio_variavel;
     this->no = dynamic_cast<NDeclVarEscalar*>(no);
     QStringList coluna;
     coluna<<(*this->no->nome)<<GenVar::tipoParaString(this->no->tipo)<<"";

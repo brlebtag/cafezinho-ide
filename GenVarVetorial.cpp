@@ -1,8 +1,7 @@
 #include "GenVarVetorial.h"
 
-GenVarVetorial::GenVarVetorial(No *no, int inicio_variavel)
+GenVarVetorial::GenVarVetorial(No *no, int inicio_variavel) : GenVar(inicio_variavel)
 {
-    this->inicio_variavel = inicio_variavel;
     tipoVar = GenVar::tipoParaString(this->no->tipo);
     this->no = dynamic_cast<NDeclVarVetorial*>(no);
     QStringList coluna;

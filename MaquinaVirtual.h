@@ -67,8 +67,8 @@ public:
     void proximo();
     void entrar();
     void continuar();
-    void empilha_variavel(No *no, int offset, int profundidade, bool parametro, bool vetor);
-    void desempilha_variavel(No *no, int offset, int profundidade, bool parametro, bool vetor);
+    void empilha_variavel(No *no, int offset, bool vetor);
+    void desempilha_variavel(No *no);
 
     /*
      * Com essa variavel eu guardarei as informação da pilha de execução, partir do momento que for acionado passar por cima

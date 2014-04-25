@@ -19,10 +19,11 @@ public:
     ~GerenciadorVariaveis();
     explicit GerenciadorVariaveis(QTreeWidget* widget, QObject *parent = 0);
     void adicionar(MaquinaVirtual &vm, NDeclaracaoVariavel* no, int inicio_variavel);
-    void remover(MaquinaVirtual &vm, NDeclaracaoVariavel* no, int inicio_variavel);
+    void remover(MaquinaVirtual &vm, NDeclaracaoVariavel* no);
 
 private:
     QHash< QString, QStack<GenVar*> > variaveis;
+    QHash< int , GenVar*> memoria; // para localizar os ponteiros...
     QTreeWidget* widget;
 
 signals:
