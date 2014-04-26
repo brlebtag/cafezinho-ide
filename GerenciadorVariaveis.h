@@ -15,9 +15,8 @@ class GerenciadorVariaveis : public QObject
 {
     Q_OBJECT
 public:
-    GerenciadorVariaveis(QTreeWidget *widget, QObject *parent);
-    ~GerenciadorVariaveis();
     explicit GerenciadorVariaveis(QTreeWidget* widget, QObject *parent = 0);
+    ~GerenciadorVariaveis();
     void adicionar(MaquinaVirtual &vm, NDeclaracaoVariavel* no, int inicio_variavel);
     void remover(MaquinaVirtual &vm, NDeclaracaoVariavel* no);
 

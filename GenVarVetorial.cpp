@@ -26,7 +26,7 @@ GenVarVetorial::~GenVarVetorial()
 void GenVarVetorial::inserir(MaquinaVirtual &vm, QTreeWidget *widget)
 {
     widget->addTopLevelItem(itens[0]);
-    atualizar(vm, widget);
+    atualizar(vm);
 }
 
 void GenVarVetorial::remover(MaquinaVirtual &vm, QTreeWidget *widget)

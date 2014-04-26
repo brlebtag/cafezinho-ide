@@ -227,7 +227,7 @@ void MaquinaVirtual::desempilha_variavel(No *no)
 {
     //Não posso tratar aki diretamente tem que ser via IDE por que no Qt não da para alterar a interface grafica
     //em outra thread!!!!
-    emit desempilha_variavel_debug(no)
+    emit desempilha_variavel_debug(no);
 }
 
 void MaquinaVirtual::sincronizar_passo(int linha)

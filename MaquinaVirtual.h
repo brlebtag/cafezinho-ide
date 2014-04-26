@@ -88,8 +88,8 @@ signals:
     void comecar_execucao();
     void terminou_execucao(bool sucesso);
     void desabilitar_botoes_debug();
-    void empilha_variavel_debug(No *no, int offset, int profundidade, bool parametro, bool vetor);
-    void desempilha_variavel_debug(No *no, int offset, int profundidade, bool parametro, bool vetor);
+    void empilha_variavel_debug(No *no, int offset, bool vetor);
+    void desempilha_variavel_debug(No *no);
 
 public slots:
 

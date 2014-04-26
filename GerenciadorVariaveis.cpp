@@ -7,11 +7,7 @@ GerenciadorVariaveis::GerenciadorVariaveis(QTreeWidget *widget, QObject *parent)
 
 GerenciadorVariaveis::~GerenciadorVariaveis()
 {
-    foreach(GenVar *var, variaveis)
-    {
-        var->remover(vm, widget);
-        delete var;
-    }
+
 }
 
 void GerenciadorVariaveis::adicionar(MaquinaVirtual &vm, NDeclaracaoVariavel *no, int inicio_variavel)
@@ -35,7 +31,7 @@ void GerenciadorVariaveis::adicionar(MaquinaVirtual &vm, NDeclaracaoVariavel *no
     memoria[inicio_variavel] = var;
 
     //Inseri na Hash
-    if(variaveis.contains(no->*nome))
+    if(variaveis.contains(*no->nome))
     {
         QStack<GenVar*> p;
         p.push(var);
