@@ -1420,6 +1420,9 @@ void IDE::compilar()
                 //desabilitar botao quando passar por cima de uma função
                 connect(vm, SIGNAL(desabilitar_botoes_debug()), this, SLOT(botaoPararApenas()));
 
+                //Executar até encontrar um breakpoint.
+                vm->continuar();
+
             }
             else
             {
