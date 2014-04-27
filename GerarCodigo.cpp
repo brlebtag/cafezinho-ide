@@ -222,9 +222,6 @@ void gerar_codigo(MaquinaVirtual &vm, TabelaRef &tabela, No *no, int profundidad
             //Pegar a referencia para a função chamadora...
             IteradorTabelaRef it = tabela.find(*cham->nome);
 
-            //Pega a função
-            NDeclaracaoFuncao func = dynamic_cast<NDeclaracaoFuncao*>(it.value().top().origem);
-
             //empilho o ponteiro da base da pilha(que funciona como o ponteiro que aponta para o inicio do frame...)
             empilha(vm, vm.bp);
 
@@ -233,28 +230,21 @@ void gerar_codigo(MaquinaVirtual &vm, TabelaRef &tabela, No *no, int profundidad
             for(int i = cham->argumentos->size() -1; i>=0; --i)
             {
                 NExpressao *exp = cham->argumentos->at(i);
-
-                //se nao for NIdentificadorEscalar dynamic_cast retorna NULL...
-                NIdentificadorEscalar *ident = dynamic_cast<NIdentificadorEscalar*>(exp);
-
-                bool ponteiro;
-
-                //Manda gerar o parametro it e salva ele em eax...
-                if(ident != NULL && ident->ponteiro!=NULL)
+                if(CompInfo::isDebug())
                 {
-                    ponteiro = true;
+                    /* Na pilha esta inserido da seguinte forma
+                     *   ___________ ____ ____________
+                     *  | Parametro | PP | Var. Local |
+                     *  |___________|____|____________|
+                     *
+                     *  Além disso o parametros são inserido de trás para frente: assim o 1ª param é pp-1, o 2ª é pp-2, em diante...
+                     *  por tanto eu irei passar -i.
+                     */
+                    vm.codigo.push_back(new IDebugVariavelEmpilha(exp, (-i), dynamic_cast<NIdentificadorEscalar*>(exp)->ponteiro));
                 }
-                else
-                {
-                    ponteiro = false;
-                }
-
-                vm.codigo.push_back(new IDebugVariavelEmpilha(exp, i, ponteiro, ident->ponteiro));
                 gerar_codigo(vm, tabela, ultimo_elemento(vm,tabela, exp, profundidade, offset, funcao), profundidade, offset, funcao);
                 empilha(vm, vm.eax);
             }
-
-
 
             invoca(vm, (*vm.rotulo[it.value().top().offset]));
             desempilha_exec(vm);
@@ -264,6 +254,28 @@ void gerar_codigo(MaquinaVirtual &vm, TabelaRef &tabela, No *no, int profundidad
         {
             NRetorne *retorno = dynamic_cast<NRetorne*>(no);
             gerar_codigo(vm, tabela, ultimo_elemento(vm,tabela, retorno->expressao, profundidade, offset, funcao), profundidade, offset, funcao);
+            if(CompInfo::isDebug())
+            {
+                //remove as variaveis que foram adicionadas no painel
+                /*
+                 * Quando existe uma chamada do tipo retorno é preciso desempilhar todas as variaveis que foram
+                 * Criadas para poder ficar tudo certinho...
+                 * Por tanto eu preciso pegar todos os elementos em tabela ou seja pilhas de variaveis ou funções (com o
+                 * mesmo nome) dai percorrer toda a pilha procurando por variavei(pq pode existir função) e que possuem
+                 * profundidade > 0 já que na pilha atualmente só vai existir variaveis com aquela profundidade ou inferior
+                 */
+                foreach(PilhaRef ref, tabela)
+                {
+                    for(int i=ref.size()-1; i>=0; --i)
+                    {
+                        if(ref.at(i).variavel&&ref.at(i).profundidade>0)
+                        {
+                            vm.codigo.push_back(new IDebugVariavelDesempilha(ref.at(i).origem));
+                        }
+                    }
+                }
+
+            }
             move(vm, vm.pp, vm.bp);
             carrega(vm, vm.er, vm.pp);
             int qtd = dynamic_cast<NDeclaracaoFuncao*>(funcao)->parametros->size();

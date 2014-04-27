@@ -216,11 +216,11 @@ void MaquinaVirtual::continuar()
     sinc_passo = false;
 }
 
-void MaquinaVirtual::empilha_variavel(No *no, int offset, bool ponteiro, No *npont)
+void MaquinaVirtual::empilha_variavel(No *no, int offset, No *pno)
 {
     //Não posso tratar aki diretamente tem que ser via IDE por que no Qt não da para alterar a interface grafica
     //em outra thread!!!!
-    emit empilha_variavel_debug(no, offset, ponteiro, npont);
+    emit empilha_variavel_debug(no, offset, pno);
 }
 
 void MaquinaVirtual::desempilha_variavel(No *no)

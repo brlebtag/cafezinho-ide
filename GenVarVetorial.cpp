@@ -5,7 +5,7 @@ GenVarVetorial::GenVarVetorial(No *no, int inicio_variavel) : GenVar(inicio_vari
     tipoVar = GenVar::tipoParaString(this->no->tipo);
     this->no = dynamic_cast<NDeclVarVetorial*>(no);
     QStringList coluna;
-    coluna<<gerar_nome_vetor()<<tipoVar<<"";
+    coluna<<gerar_nome_vetor(this->no)<<tipoVar<<"";
     QTreeWidgetItem* item = new QTreeWidgetItem(coluna);
     itens.push_back(item);
     int posicao = inicio_variavel;
@@ -95,7 +95,7 @@ void GenVarVetorial::atualizar_nos(MaquinaVirtual &vm, QTreeWidgetItem *pai, int
     }
 }
 
-QString GenVarVetorial::gerar_nome_vetor()
+QString GenVarVetorial::gerar_nome_vetor(NDeclVarVetorial *no)
 {
     QString nome = (*no->nome) + "[";
 

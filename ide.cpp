@@ -1632,10 +1632,12 @@ void IDE::botaoPararApenas()
     this->ui->actionParar->setEnabled(true);
 }
 
-void IDE::empilha_variavel_debug(No *no, int offset, bool ponteiro, No *npont)
+void IDE::empilha_variavel_debug(No *no, int offset, No *pno)
 {
     MaquinaVirtual *vm = CompInfo::getVM();
-    int inicio_variavel;
+    //pega o valor q pp está agora + o deslocamento da variavel na pilha...
+    int inicio_variavel = vm->pp.toInt() + offset;
+    genVar->adicionar(*vm, dynamic_cast<NDeclaracaoVariavel*>(no), inicio_variavel, dynamic_cast<NDeclaracaoVariavel*>(pno));
 }
 
 void IDE::desempilha_variavel(No *no)

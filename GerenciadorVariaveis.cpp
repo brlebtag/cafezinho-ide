@@ -10,15 +10,18 @@ GerenciadorVariaveis::~GerenciadorVariaveis()
 
 }
 
-void GerenciadorVariaveis::adicionar(MaquinaVirtual &vm, NDeclaracaoVariavel *no, int inicio_variavel)
+void GerenciadorVariaveis::adicionar(MaquinaVirtual &vm, NDeclaracaoVariavel *no, int inicio_variavel, NDeclaracaoVariavel *pno)
 {
     GenVar *var;
 
-    switch(no->tipoNo())
+    switch(pno->tipoNo())
     {
         case TipoNo::DECLARACAO_VARIAVEL_ESCALAR:
         {
-            var = new GenVarEscalar(no, inicio_variavel);
+            if(pno==NULL)
+                var = new GenVarEscalar(no, inicio_variavel);
+            else
+                var = new GenVarVetPonteiro(no, inicio_variavel, pno);
         }
         break;
         case TipoNo::DECLARACAO_VARIAVEL_VETORIAL:
@@ -28,25 +31,29 @@ void GerenciadorVariaveis::adicionar(MaquinaVirtual &vm, NDeclaracaoVariavel *no
         break;
     }
 
-    memoria[inicio_variavel] = var;
-
     //Inseri na Hash
-    if(variaveis.contains(*no->nome))
-    {
-        QStack<GenVar*> p;
-        p.push(var);
-        variaveis.insert(*no->nome, p);
-    }
-    else
+    if(variaveis.contains(*pno->nome))
     {
         //Pego a pilha..
-        QStack<GenVar*> &p = variaveis[*no->nome];
+        QStack<GenVar*> &p = variaveis[*pno->nome];
 
         //Esconde agora o que estava no topo...
         p.top()->remover(vm, widget);
 
         //inseri ele na pilha...
         p.push(var);
+
+    }
+    else
+    {
+        //Crio um novo stack
+        QStack<GenVar*> p;
+
+        //empilho var
+        p.push(var);
+
+        //insero a pilha
+        variaveis.insert(*pno->nome, p);
     }
 
     //já insere ele na ide...
@@ -69,8 +76,11 @@ void GerenciadorVariaveis::remover(MaquinaVirtual &vm, NDeclaracaoVariavel *no)
     {
         variaveis.remove(*no->nome);
     }
-
-    memoria.remove(var->inicio_variavel);
+    else
+    {
+        //restaura o antigo elemento que estava no topo..
+        p.top()->inserir(vm, widget);
+    }
 
     //deleto
     delete var;

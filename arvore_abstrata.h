@@ -7,6 +7,7 @@
 class NInstrucao;
 class NExpressao;
 class NDeclaracaoVariavel;
+class NDeclVarVetorial;
 
 #ifndef __LISTA__
 #define __LISTA__
@@ -190,15 +191,6 @@ public:
     virtual ~NIdentificador();
 };
 
-class NIdentificadorEscalar : public NIdentificador
-{
-public:
-    NIdentificadorEscalar(QString *nome = 0, int linha = 0);
-    virtual TipoNo::TipoNo tipoNo();
-    virtual ~NIdentificadorEscalar();
-    NDeclVarVetorial *ponteiro; // Na analise semantica esta informação é adicionada. No debug esta informação é util!
-};
-
 class NIdentificadorVetorial : public NIdentificador
 {
 public:
@@ -206,6 +198,15 @@ public:
     NIdentificadorVetorial(QString *nome = 0, ListaExpressao *indice = 0, int linha = 0);
     virtual TipoNo::TipoNo tipoNo();
     virtual ~NIdentificadorVetorial ();
+};
+
+class NIdentificadorEscalar : public NIdentificador
+{
+public:
+    NIdentificadorEscalar(QString *nome = 0, int linha = 0);
+    virtual TipoNo::TipoNo tipoNo();
+    virtual ~NIdentificadorEscalar();
+    NDeclVarVetorial *ponteiro; // Na analise semantica esta informação é adicionada. No debug esta informação é util!
 };
 
 class NDeclaracaoVariavel : public NInstrucao

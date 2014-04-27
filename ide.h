@@ -259,7 +259,7 @@ private slots:
     void botaoPararApenas();
 
     //Para gerenciar as variaveis
-    void empilha_variavel_debug(No *no, int offset, bool ponteiro, No *npont);
+    void empilha_variavel_debug(No *no, int offset, No *pno);
     void desempilha_variavel(No *no);
 
     //Reforçar a seleção caso esteja executando

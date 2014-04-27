@@ -6,6 +6,7 @@
 #include "GenVar.h"
 #include "GenVarEscalar.h"
 #include "GenVarVetorial.h"
+#include "GenVarVetPonteiro.h"
 #include <QTreeWidget>
 #include <QHash>
 #include "MaquinaVirtual.h"
@@ -17,12 +18,11 @@ class GerenciadorVariaveis : public QObject
 public:
     explicit GerenciadorVariaveis(QTreeWidget* widget, QObject *parent = 0);
     ~GerenciadorVariaveis();
-    void adicionar(MaquinaVirtual &vm, NDeclaracaoVariavel* no, int inicio_variavel);
+    void adicionar(MaquinaVirtual &vm, NDeclaracaoVariavel* no, int inicio_variavel, NDeclaracaoVariavel *pno = NULL);
     void remover(MaquinaVirtual &vm, NDeclaracaoVariavel* no);
 
 private:
     QHash< QString, QStack<GenVar*> > variaveis;
-    QHash< int , GenVar*> memoria; // para localizar os ponteiros...
     QTreeWidget* widget;
 
 signals:
