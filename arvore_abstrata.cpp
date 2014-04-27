@@ -89,7 +89,7 @@ NIdentificador::~NIdentificador()
 
 /******************* Identificador Escalar ***************/
 NIdentificadorEscalar::NIdentificadorEscalar(QString *nome, int linha)
-    : NIdentificador(nome, linha) {}
+    : NIdentificador(nome, linha), ponteiro(NULL) {}
 
 TipoNo::TipoNo NIdentificadorEscalar::tipoNo()
 {

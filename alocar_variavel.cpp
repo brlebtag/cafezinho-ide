@@ -24,7 +24,10 @@ Alocado alocar_variavel(MaquinaVirtual &vm, TabelaRef &tabela, No *no, int profu
             it.value().push(Referencia(no, profundidade, offset, parametro));
         }
 
-        vm.codigo.push_back(new IDebugVariavelEmpilha(no, offset, false));
+        if(!parametro)
+        {
+            vm.codigo.push_back(new IDebugVariavelEmpilha(no, offset, false));
+        }
 
         return qMakePair(1, it);
     }
@@ -56,7 +59,10 @@ Alocado alocar_variavel(MaquinaVirtual &vm, TabelaRef &tabela, No *no, int profu
             it.value().push(Referencia(no, profundidade, offset, parametro, true));
         }
 
-       vm.codigo.push_back(new IDebugVariavelEmpilha(no, offset, true));
+        if(!parametro)
+        {
+            vm.codigo.push_back(new IDebugVariavelEmpilha(no, offset, true));
+        }
 
         return qMakePair(dimensao, it);
     }

@@ -1632,11 +1632,10 @@ void IDE::botaoPararApenas()
     this->ui->actionParar->setEnabled(true);
 }
 
-void IDE::empilha_variavel_debug(No *no, int offset, bool vetor)
+void IDE::empilha_variavel_debug(No *no, int offset, bool ponteiro, No *npont)
 {
     MaquinaVirtual *vm = CompInfo::getVM();
     int inicio_variavel;
-    genVar->adicionar(*vm, dynamic_cast<NDeclaracaoVariavel*>(no), inicio_variavel);
 }
 
 void IDE::desempilha_variavel(No *no)

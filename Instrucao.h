@@ -824,12 +824,13 @@ public:
 class IDebugVariavelEmpilha : public Instrucao
 {
 public:
-    IDebugVariavelEmpilha(No* no, int offset, bool vetor);
+    IDebugVariavelEmpilha(No* no, int offset, bool ponteiro, No* npont = NULL);
     void execute(MaquinaVirtual &vm);
     TipoInstrucao::TipoInstrucao tipoInstucao();
-    No* no;
+    No* no; //Nó que guarda a declaracao da variavel (pode ser local ou parametro)
+    No* npont; //Declaracao da variavel vetorial que o parametro aponta...
     int offset;
-    bool vetor;
+    bool ponteiro;
 };
 
 

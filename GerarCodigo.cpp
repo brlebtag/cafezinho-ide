@@ -218,18 +218,44 @@ void gerar_codigo(MaquinaVirtual &vm, TabelaRef &tabela, No *no, int profundidad
         case TipoNo::CHAMADA_FUNCAO:
         {
             NChamadaFuncao *cham = dynamic_cast<NChamadaFuncao*>(no);
+
+            //Pegar a referencia para a função chamadora...
+            IteradorTabelaRef it = tabela.find(*cham->nome);
+
+            //Pega a função
+            NDeclaracaoFuncao func = dynamic_cast<NDeclaracaoFuncao*>(it.value().top().origem);
+
             //empilho o ponteiro da base da pilha(que funciona como o ponteiro que aponta para o inicio do frame...)
             empilha(vm, vm.bp);
 
+            empilha_exec(vm);
+
             for(int i = cham->argumentos->size() -1; i>=0; --i)
             {
+                NExpressao *exp = cham->argumentos->at(i);
+
+                //se nao for NIdentificadorEscalar dynamic_cast retorna NULL...
+                NIdentificadorEscalar *ident = dynamic_cast<NIdentificadorEscalar*>(exp);
+
+                bool ponteiro;
+
                 //Manda gerar o parametro it e salva ele em eax...
-                gerar_codigo(vm, tabela, ultimo_elemento(vm,tabela, cham->argumentos->at(i), profundidade, offset, funcao), profundidade, offset, funcao);
+                if(ident != NULL && ident->ponteiro!=NULL)
+                {
+                    ponteiro = true;
+                }
+                else
+                {
+                    ponteiro = false;
+                }
+
+                vm.codigo.push_back(new IDebugVariavelEmpilha(exp, i, ponteiro, ident->ponteiro));
+                gerar_codigo(vm, tabela, ultimo_elemento(vm,tabela, exp, profundidade, offset, funcao), profundidade, offset, funcao);
                 empilha(vm, vm.eax);
             }
 
-            IteradorTabelaRef it = tabela.find(*cham->nome);
-            empilha_exec(vm);
+
+
             invoca(vm, (*vm.rotulo[it.value().top().offset]));
             desempilha_exec(vm);
         }

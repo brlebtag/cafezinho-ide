@@ -1268,12 +1268,12 @@ TipoInstrucao::TipoInstrucao IDebugDesempilhaExec::tipoInstucao()
 }
 
 
-IDebugVariavelEmpilha::IDebugVariavelEmpilha(No *no, int offset, bool vetor)
-    : no(no), offset(offset), vetor(vetor) { }
+IDebugVariavelEmpilha::IDebugVariavelEmpilha(No *no, int offset, bool ponteiro, No *npont)
+    : no(no), offset(offset), ponteiro(ponteiro), npont(npont) { }
 
 void IDebugVariavelEmpilha::execute(MaquinaVirtual &vm)
 {
-    vm.empilha_variavel(no, offset, vetor);
+    vm.empilha_variavel(no, offset, ponteiro, npont);
     ++vm.pc;
 }
 

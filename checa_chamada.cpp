@@ -107,6 +107,9 @@ bool checar_chamada(TabelaSimbolo &tabela, No* parametro, No* argumento)
                        return false;
                    }
 
+                   //salva para qual vetor este identificador aponta!!!
+                   ident->ponteiro = arg;
+
                    return true;
                }
            }

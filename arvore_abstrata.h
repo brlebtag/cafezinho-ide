@@ -196,6 +196,7 @@ public:
     NIdentificadorEscalar(QString *nome = 0, int linha = 0);
     virtual TipoNo::TipoNo tipoNo();
     virtual ~NIdentificadorEscalar();
+    NDeclVarVetorial *ponteiro; // Na analise semantica esta informação é adicionada. No debug esta informação é util!
 };
 
 class NIdentificadorVetorial : public NIdentificador

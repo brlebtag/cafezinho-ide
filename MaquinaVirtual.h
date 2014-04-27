@@ -67,7 +67,7 @@ public:
     void proximo();
     void entrar();
     void continuar();
-    void empilha_variavel(No *no, int offset, bool vetor);
+    void empilha_variavel(No *no, int offset, bool ponteiro, No *npont);
     void desempilha_variavel(No *no);
 
     /*
@@ -88,7 +88,7 @@ signals:
     void comecar_execucao();
     void terminou_execucao(bool sucesso);
     void desabilitar_botoes_debug();
-    void empilha_variavel_debug(No *no, int offset, bool vetor);
+    void empilha_variavel_debug(No *no, int offset, bool ponteiro, No *npont);
     void desempilha_variavel_debug(No *no);
 
 public slots:
