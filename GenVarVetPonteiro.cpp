@@ -24,11 +24,9 @@ void GenVarVetPonteiro::inserir(MaquinaVirtual &vm, QTreeWidget *widget)
     GenVarVetorial::atualizar(vm);
 }
 
-void GenVarVetPonteiro::remover(MaquinaVirtual &vm, QTreeWidget *widget)
+void GenVarVetPonteiro::remover(QTreeWidget *widget)
 {
-    widget->removeItemWidget(item, 0); //remove apenas o primeiro item...
-    widget->removeItemWidget(item, 1);
-    widget->removeItemWidget(item, 2);
+    widget->takeTopLevelItem(widget->indexOfTopLevelItem(item));
 }
 
 void GenVarVetPonteiro::atualizar(MaquinaVirtual &vm)

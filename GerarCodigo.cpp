@@ -250,7 +250,10 @@ void gerar_codigo(MaquinaVirtual &vm, TabelaRef &tabela, No *no, int profundidad
             //empilho o ponteiro da base da pilha(que funciona como o ponteiro que aponta para o inicio do frame...)
             empilha(vm, vm.bp);
 
-            empilha_exec(vm);
+            if(CompInfo::isDebug())
+            {
+                empilha_exec(vm);
+            }
 
             for(int i = cham->argumentos->size() -1, j=0; i>=0; --i, ++j)
             {
@@ -276,7 +279,11 @@ void gerar_codigo(MaquinaVirtual &vm, TabelaRef &tabela, No *no, int profundidad
             }
 
             invoca(vm, (*vm.rotulo[it.value().top().offset]));
-            desempilha_exec(vm);
+
+            if(CompInfo::isDebug())
+            {
+                desempilha_exec(vm);
+            }
         }
         break;
         case TipoNo::RETORNE:

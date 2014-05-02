@@ -92,6 +92,8 @@ signals:
     void empilha_variavel_debug(No *no, int offset, No *pno);
     void desempilha_variavel_debug(No *no);
     void atualizar_variavel();
+    void empilha_quadro_debug();
+    void desempilha_quadro_debug();
 
 public slots:
 

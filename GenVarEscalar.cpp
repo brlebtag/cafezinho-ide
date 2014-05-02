@@ -19,11 +19,9 @@ void GenVarEscalar::inserir(MaquinaVirtual &vm, QTreeWidget *widget)
     atualizar(vm);
 }
 
-void GenVarEscalar::remover(MaquinaVirtual &vm, QTreeWidget *widget)
+void GenVarEscalar::remover(QTreeWidget *widget)
 {
-    widget->removeItemWidget(item, 0);
-    widget->removeItemWidget(item, 1);
-    widget->removeItemWidget(item, 2);
+    widget->takeTopLevelItem(widget->indexOfTopLevelItem(item));
 }
 
 void GenVarEscalar::atualizar(MaquinaVirtual &vm)

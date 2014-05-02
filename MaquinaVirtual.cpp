@@ -177,17 +177,40 @@ void MaquinaVirtual::sistema(Sistema::Comando comando)
 
 void MaquinaVirtual::empilha_chamada()
 {
+    //indiferente se tiver continuar/proximo/entrar
+    //eu devo criar e remover variaveis porém esse processo fica invisivel ao usuario...
+    //com genVar->setVisibilidade(false); - Eu crio as variaveis mas não insiro na GUI.
+    emit empilha_quadro_debug();
+
+    //Eu preciso sincronizar está parte...
+    CompInfo::inst()->mutexSincPasso.lock();
+    CompInfo::inst()->waitSincPasso.wait(&CompInfo::inst()->mutexSincPasso);
+    CompInfo::inst()->mutexSincPasso.unlock();
+
     if(statusExec == StatusExec::PROXIMA)
     {
         ++qtdChamadasFuncao;
         sinc_passo = false;
-        if(qtdChamadasFuncao>0)
+        if(qtdChamadasFuncao>=1)
+        {
             emit desabilitar_botoes_debug();
+        }
     }
 }
 
 void MaquinaVirtual::desempilha_chamada()
 {
+
+    //indiferente se tiver continuar/proximo/entrar
+    //eu devo criar e remover variaveis porém esse processo fica invisivel ao usuario...
+    //com genVar->setVisibilidade(false); - Eu crio as variaveis mas não insiro na GUI.
+    emit desempilha_quadro_debug();
+
+    //Eu preciso sincronizar está parte...
+    CompInfo::inst()->mutexSincPasso.lock();
+    CompInfo::inst()->waitSincPasso.wait(&CompInfo::inst()->mutexSincPasso);
+    CompInfo::inst()->mutexSincPasso.unlock();
+
     if(statusExec == StatusExec::PROXIMA)
     {
         if(--qtdChamadasFuncao<=0)
@@ -218,6 +241,10 @@ void MaquinaVirtual::continuar()
 
 void MaquinaVirtual::empilha_variavel(No *no, int offset, int profundidade, No *pno)
 {
+    //indiferente se tiver continuar/proximo/entrar
+    //eu devo criar e remover variaveis porém esse processo fica invisivel ao usuario...
+    //com genVar->setVisibilidade(false); - Eu crio as variaveis mas não insiro na GUI.
+
     //Não posso tratar aki diretamente tem que ser via IDE por que no Qt não da para alterar a interface grafica
     //em outra thread!!!!
 
@@ -242,6 +269,10 @@ void MaquinaVirtual::empilha_variavel(No *no, int offset, int profundidade, No *
 
 void MaquinaVirtual::desempilha_variavel(No *no)
 {
+    //indiferente se tiver continuar/proximo/entrar
+    //eu devo criar e remover variaveis porém esse processo fica invisivel ao usuario...
+    //com genVar->setVisibilidade(false); - Eu crio as variaveis mas não insiro na GUI.
+
     //Não posso tratar aki diretamente tem que ser via IDE por que no Qt não da para alterar a interface grafica
     //em outra thread!!!!
     emit desempilha_variavel_debug(no);
@@ -254,7 +285,18 @@ void MaquinaVirtual::desempilha_variavel(No *no)
 
 void MaquinaVirtual::atualizarVariaveis()
 {
-    emit atualizar_variavel();
+    // é preciso que continua empilhado/desempilhando variavel se não tiver no sinc_passo mas não precisa ficar atualizando
+    // senão pode sobrecarregar...
+
+    if(sinc_passo)
+    {
+        emit atualizar_variavel();
+
+        //Eu preciso sincronizar está parte...
+        CompInfo::inst()->mutexSincPasso.lock();
+        CompInfo::inst()->waitSincPasso.wait(&CompInfo::inst()->mutexSincPasso);
+        CompInfo::inst()->mutexSincPasso.unlock();
+    }
 }
 
 void MaquinaVirtual::sincronizar_passo(int linha)

@@ -12,7 +12,7 @@ public:
     GenVarVetorial(No *no, int inicio_variavel);
     virtual ~GenVarVetorial();
     virtual void inserir(MaquinaVirtual &vm, QTreeWidget* widget);
-    virtual void remover(MaquinaVirtual &vm, QTreeWidget* widget);
+    virtual void remover(QTreeWidget* widget);
     virtual void atualizar(MaquinaVirtual &vm);
 protected:
     NDeclVarVetorial *no;

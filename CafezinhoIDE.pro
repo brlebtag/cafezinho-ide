@@ -50,7 +50,8 @@ SOURCES += main.cpp\
     GenVarEscalar.cpp \
     GenVarVetorial.cpp \
     GenVar.cpp \
-    GenVarVetPonteiro.cpp
+    GenVarVetPonteiro.cpp \
+    GenQuadro.cpp
 
 HEADERS  += ide.h \
     GerenciadorDocumento.h \
@@ -81,7 +82,8 @@ HEADERS  += ide.h \
     GenVarEscalar.h \
     GenVarVetorial.h \
     GenVar.h \
-    GenVarVetPonteiro.h
+    GenVarVetPonteiro.h \
+    GenQuadro.h
 
 FORMS    += ide.ui \
     fontedialog.ui \

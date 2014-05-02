@@ -10,9 +10,9 @@
 #include <QTreeWidget>
 #include <QString>
 #include <QStack>
-#include <QHash>
 #include "MaquinaVirtual.h"
-
+#include "GenQuadro.h"
+#include "CompInfo.h"
 
 
 class GerenciadorVariaveis : public QObject
@@ -21,13 +21,17 @@ class GerenciadorVariaveis : public QObject
 public:
     explicit GerenciadorVariaveis(QTreeWidget* widget, QObject *parent = 0);
     virtual ~GerenciadorVariaveis();
-    void adicionar(MaquinaVirtual &vm, NDeclaracaoVariavel* no, int inicio_variavel, NDeclaracaoVariavel *pno = NULL);
-    void remover(MaquinaVirtual &vm, NDeclaracaoVariavel* no);
-    void atualizar(MaquinaVirtual &vm);
+    void empilha_quadro();
+    void desempilha_quadro();
+    void adicionar(NDeclaracaoVariavel* no, int inicio_variavel, NDeclaracaoVariavel *pno = NULL);
+    void remover(NDeclaracaoVariavel* no);
+    void atualizar();
+    void setVisibilidade(bool visivel);
 
 private:
     QTreeWidget* widget;
-    QHash< QString, QStack< GenVar* > > variaveis;
+    QStack< GenQuadro* > variaveis;
+    bool visivel;
 
 signals:
 

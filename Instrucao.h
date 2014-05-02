@@ -90,7 +90,7 @@ namespace TipoInstrucao
         DEBUG_EMPILHA,
         DEBUG_DESEMPILHA,
         DEBUG_VAR_EMPILHA,
-        DEBUG_VAR_DESEMPILHA
+        DEBUG_VAR_DESEMPILHA,
     };
 };
 
@@ -843,5 +843,6 @@ public:
     TipoInstrucao::TipoInstrucao tipoInstucao();
     No* no;
 };
+
 
 #endif // INSTRUCAO_H

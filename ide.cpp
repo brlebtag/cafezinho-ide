@@ -127,15 +127,6 @@ IDE::IDE(QWidget *parent) :
     ultimoCaminho = genReabrir.getUltimoCaminho();
 
     botoesModoCompilar();
-
-    /*QStringList nome1,nome2;
-    nome1<<"var1[10]"<<"int"<<"";
-    nome2<<"var1[0]"<<"int"<<"0";
-    QTreeWidgetItem *item1 = new QTreeWidgetItem(ui->varWidget, nome1);
-    QTreeWidgetItem *item2 = new QTreeWidgetItem(item1, nome2);
-    item1->addChild(item2);
-    ui->varWidget->addTopLevelItem(item1);
-    ui->varWidget->topLevelItem(0)->child(0)->setText(2, "10");*/
 }
 
 void IDE::restaurarConfiguracoesFonte()
@@ -1312,6 +1303,7 @@ void IDE::localizarAnteriroClicado()
         genProc.localizarAnterior();
 }
 
+
 void IDE::mensagem(QString msg)
 {
     QTextCursor cursor = terminal.textCursor();
@@ -1377,6 +1369,28 @@ void IDE::parar_execucao()
     }
 }
 
+void IDE::configurarModoDebug(MaquinaVirtual *vm)
+{
+    //Se não tiver empty ou seja tem breakpoints então poem no modo debug
+    CompInfo::inst()->setDebug(true);
+
+    //Conecta agora para receber o break...
+    connect(vm, SIGNAL(mudou_instrucao(int)),this, SLOT(mudou_instrucao(int)));
+
+    //desabilitar botao quando passar por cima de uma função
+    connect(vm, SIGNAL(desabilitar_botoes_debug()), this, SLOT(desabilitarBotoesDebug()));
+
+    //Para gerenciar a criação de quadros de chamada de função
+    connect(vm, SIGNAL(empilha_quadro_debug()), this, SLOT(empilha_quadro()));
+    connect(vm, SIGNAL(desempilha_quadro_debug()), this, SLOT(desempilha_quadro()));
+
+    //Cria o gerenciador de variaveis e liga os signal/slots...
+    genVar = new GerenciadorVariaveis(this->ui->treeVariaveis);
+    connect(vm, SIGNAL(empilha_variavel_debug(No*,int,No*)), this, SLOT(empilha_variavel_debug(No*,int,No*)));
+    connect(vm, SIGNAL(desempilha_variavel_debug(No*)), this, SLOT(desempilha_variavel_debug(No*)));
+    connect(vm, SIGNAL(atualizar_variavel()), this, SLOT(atualizarVariavel()));
+}
+
 void IDE::compilar()
 {
     if(!executando_processo)
@@ -1419,19 +1433,8 @@ void IDE::compilar()
             if(!doc->getBreakPoints().isEmpty())
             {
 
-                //Se não tiver empty ou seja tem breakpoints então poem no modo debug
-                CompInfo::inst()->setDebug(true);
-
-                //Conecta agora para receber o break...
-                connect(vm, SIGNAL(mudou_instrucao(int)),this, SLOT(mudou_instrucao(int)));
-
-                //desabilitar botao quando passar por cima de uma função
-                connect(vm, SIGNAL(desabilitar_botoes_debug()), this, SLOT(botaoPararApenas()));
-                //Cria o gerenciador de variaveis e liga os signal/slots...
-                genVar = new GerenciadorVariaveis(this->ui->treeVariaveis);
-                connect(vm, SIGNAL(empilha_variavel_debug(No*,int,No*)), this, SLOT(empilha_variavel_debug(No*,int,No*)));
-                connect(vm, SIGNAL(desempilha_variavel_debug(No*)), this, SLOT(desempilha_variavel_debug(No*)));
-                connect(vm, SIGNAL(atualizar_variavel()), this, SLOT(atualizarVariavel()));
+                //Inicializar os sinais/slots e aloca genVar...
+                configurarModoDebug(vm);
 
                 //Executar até encontrar um breakpoint.
                 vm->continuar();
@@ -1508,19 +1511,11 @@ void IDE::entrar_instrucao()
         //atualiza os breakpoints
         connect(vm, SIGNAL(comecar_execucao()), SLOT(atualiza_breakpoints()));
 
-        //Se não tiver empty ou seja tem breakpoints então poem no modo debug
-        CompInfo::inst()->setDebug(true);
+        //Inicializar os sinais/slots e aloca genVar...
+        configurarModoDebug(vm);
 
-        //Conecta agora para receber o break...
-        connect(vm, SIGNAL(mudou_instrucao(int)),this, SLOT(mudou_instrucao(int)));
-
-        //desabilitar botao quando passar por cima de uma função
-        connect(vm, SIGNAL(desabilitar_botoes_debug()), this, SLOT(botaoPararApenas()));
-        //Cria o gerenciador de variaveis e liga os signal/slots...
-        genVar = new GerenciadorVariaveis(this->ui->treeVariaveis);
-        connect(vm, SIGNAL(empilha_variavel_debug(No*,int,No*)), this, SLOT(empilha_variavel_debug(No*,int,No*)));
-        connect(vm, SIGNAL(desempilha_variavel_debug(No*)), this, SLOT(desempilha_variavel_debug(No*)));
-        connect(vm, SIGNAL(atualizar_variavel()), this, SLOT(atualizarVariavel()));
+        //Seta como entrar
+        vm->entrar();
 
         //executa-lá
         compilar->start();
@@ -1573,19 +1568,11 @@ void IDE::prox_instrucao()
         //atualiza os breakpoints
         connect(vm, SIGNAL(comecar_execucao()), SLOT(atualiza_breakpoints()));
 
-        //Se não tiver empty ou seja tem breakpoints então poem no modo debug
-        CompInfo::inst()->setDebug(true);
+        //Inicializar os sinais/slots e aloca genVar...
+        configurarModoDebug(vm);
 
-        //Conecta agora para receber o break...
-        connect(vm, SIGNAL(mudou_instrucao(int)),this, SLOT(mudou_instrucao(int)));
-
-        //desabilitar botao quando passar por cima de uma função
-        connect(vm, SIGNAL(desabilitar_botoes_debug()), this, SLOT(botaoPararApenas()));
-        //Cria o gerenciador de variaveis e liga os signal/slots...
-        genVar = new GerenciadorVariaveis(this->ui->treeVariaveis);
-        connect(vm, SIGNAL(empilha_variavel_debug(No*,int,No*)), this, SLOT(empilha_variavel_debug(No*,int,No*)));
-        connect(vm, SIGNAL(desempilha_variavel_debug(No*)), this, SLOT(desempilha_variavel_debug(No*)));
-        connect(vm, SIGNAL(atualizar_variavel()), this, SLOT(atualizarVariavel()));
+        //seta como proximo
+        vm->proximo();
 
         //executa-lá
         compilar->start();
@@ -1659,31 +1646,54 @@ void IDE::botaoPararApenas()
 
 void IDE::atualizarVariavel()
 {
-    MaquinaVirtual *vm = CompInfo::getVM();
-    genVar->atualizar(*vm);
+    genVar->atualizar();
+    CompInfo::inst()->waitSincPasso.wakeAll();
+}
+
+void IDE::desabilitarBotoesDebug()
+{
+    botaoPararApenas();
+    //Entrei numa função então visibilidade é false...
+    if(genVar!=NULL)
+    {
+        genVar->setVisibilidade(false);
+    }
 }
 
 void IDE::empilha_variavel_debug(No *no, int offset, No *pno)
 {
+    //Para proteger de errors... eu ponho botoes modo para e depois botoes modo debug
     botaoPararApenas();
-    MaquinaVirtual *vm = CompInfo::getVM();
-    genVar->adicionar(*vm, dynamic_cast<NDeclaracaoVariavel*>(no), offset, dynamic_cast<NDeclaracaoVariavel*>(pno));
+    genVar->adicionar(dynamic_cast<NDeclaracaoVariavel*>(no), offset, dynamic_cast<NDeclaracaoVariavel*>(pno));
     botoesModoDebug();
     CompInfo::inst()->waitSincPasso.wakeAll();
 }
 
 void IDE::desempilha_variavel_debug(No *no)
 {
+     //Para proteger de errors... eu ponho botoes modo para e depois botoes modo debug
     botaoPararApenas();
-    MaquinaVirtual *vm = CompInfo::getVM();
-    genVar->remover(*vm, dynamic_cast<NDeclaracaoVariavel*>(no));
+    genVar->remover(dynamic_cast<NDeclaracaoVariavel*>(no));
     botoesModoDebug();
+    CompInfo::inst()->waitSincPasso.wakeAll();
+}
+
+void IDE::empilha_quadro()
+{
+    genVar->empilha_quadro();
+    CompInfo::inst()->waitSincPasso.wakeAll();
+}
+
+void IDE::desempilha_quadro()
+{
+    genVar->desempilha_quadro();
     CompInfo::inst()->waitSincPasso.wakeAll();
 }
 
 
 void IDE::mudou_instrucao(int linha)
 {
+    genVar->setVisibilidade(true);
     botoesModoDebug();
     linha_atual = linha;
     setAbaAtual(doc_exec_atual->getWidget());
@@ -1712,7 +1722,8 @@ linha_atual
 
             //linha+nome+tipo
     mudouSelecao        QString chave = lista.join("");
-
+            if(CompInfo::isDebug())
+            {
             if(decl_func.contains(chave))
             {
                 decl_func[chave]->ref = true;
