@@ -2,6 +2,7 @@
 #define GENVARVETPONTEIRO_H
 
 #include "GenVarVetorial.h"
+#include <QString>
 
 class GenVarVetPonteiro : public GenVarVetorial
 {

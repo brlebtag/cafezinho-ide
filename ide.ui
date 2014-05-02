@@ -115,7 +115,7 @@
          </attribute>
          <layout class="QGridLayout" name="gridLayout_5">
           <item row="0" column="0">
-           <widget class="QTreeWidget" name="treeWidget_2">
+           <widget class="QTreeWidget" name="treeVariaveis">
             <column>
              <property name="text">
               <string>Nome</string>

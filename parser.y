@@ -110,6 +110,7 @@ bool checa_vetor(ListaExpressao *dimensao, ListaExpressao *lista, int indice, in
 %token<ival> '('
 %token<ival> '{'
 %token<ival> '['
+%token<ival> '}'
 %token<ival> INC_OP
 %token<ival> DEC_OP
 %token<ival> TERMINAR
@@ -227,12 +228,12 @@ lista_ponteiro_vetor
         ;
 
 instrucao_composta
-        : '{' '}' { $$ = new NBloco($1); $$->instrucoes = new ListaInstrucao(); }
-        | '{' lista_instrucao'}' { $$ = new NBloco($1); $$->instrucoes = $2; }
-        | '{' lista_declaracao '}' { $$ = new NBloco($1); $$->instrucoes = $2; }
+        : '{' '}' { $$ = new NBloco($1, $2); $$->instrucoes = new ListaInstrucao(); }
+        | '{' lista_instrucao'}' { $$ = new NBloco($1, $3); $$->instrucoes = $2; }
+        | '{' lista_declaracao '}' { $$ = new NBloco($1, $3); $$->instrucoes = $2; }
         | '{' lista_declaracao lista_instrucao '}'
         {
-                $$ = new NBloco($1);
+                $$ = new NBloco($1, $4);
                 $$->instrucoes = $2;
 
                 for(ListaInstrucao::iterator it = $3->begin(); it!=$3->end(); ++it)
@@ -373,7 +374,7 @@ inicio_declarador
                         $$ = new ListaInstrucao();
 
                         NIdentificadorEscalar *ident = new NIdentificadorEscalar(new QString(*decEsc->nome), decEsc->linha);
-
+                        ident->ponteiro = NULL;
                         NAtribuicao* atrib = new NAtribuicao(ident, Operador::ATRIBUICAO_OP, $3->at(0), decEsc->linha);
                         atrib->inicializa_variavel = true;
 
@@ -539,7 +540,7 @@ expressao_posfix
         ;
 
 expressao_primaria
-        : IDENTIFICADOR { $$ = new NIdentificadorEscalar($1, yylineno); }
+        : IDENTIFICADOR { NIdentificadorEscalar *id = new NIdentificadorEscalar($1, yylineno); id->ponteiro = NULL; $$ = id;}
         | IDENTIFICADOR lista_expr_vetor { $$ = new NIdentificadorVetorial($1, $2, yylineno); }
         | IDENTIFICADOR '(' lista_expressao ')' { $$ = new NChamadaFuncao($1, $3, yylineno ); }
         | IDENTIFICADOR '(' ')' { $$ = new NChamadaFuncao($1, new ListaExpressao(), yylineno); }

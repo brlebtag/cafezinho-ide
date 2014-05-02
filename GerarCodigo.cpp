@@ -105,12 +105,29 @@ void gerar_codigo(MaquinaVirtual &vm, TabelaRef &tabela, No *no, int profundidad
                 }
             }
 
+            if(CompInfo::isDebug())
+            {
+                //Como a raiz de um programa é um bloco então vai adicionar uma parada na linha 0 sem necessidade...
+                //por isso eu verifico se é diferente de zero...
+                NBloco * bloco = dynamic_cast<NBloco*>(no);
+                if(bloco->linha_fim_bloco!=0)
+                {
+                    CompInfo::inserirParada(bloco->linha_fim_bloco);
+                    vm.codigo.push_back(new IDebugPasso(bloco->linha_fim_bloco));
+                }
+            }
+
             for(IteradorRemoverRef it = remover.begin(); it!= remover.end(); ++it)
             {
                 IteradorTabelaRef var = (*it);
-                Referencia &ref = var.value().top();
 
-                vm.codigo.push_back(new IDebugVariavelDesempilha(ref.origem));
+                if(CompInfo::isDebug())
+                {
+                    Referencia &ref = var.value().top();
+
+                    if(ref.variavel)
+                        vm.codigo.push_back(new IDebugVariavelDesempilha(ref.origem));
+                }
 
                 var.value().pop();
 
@@ -187,9 +204,14 @@ void gerar_codigo(MaquinaVirtual &vm, TabelaRef &tabela, No *no, int profundidad
             for(IteradorRemoverRef it = remover.begin(); it!= remover.end(); ++it)
             {
                 IteradorTabelaRef var = (*it);
-                Referencia &ref = var.value().top();
 
-                vm.codigo.push_back(new IDebugVariavelDesempilha(ref.origem));
+                if(CompInfo::isDebug())
+                {
+                    Referencia &ref = var.value().top();
+
+                    //ser for uma variavel adiciona a referencia...
+                    vm.codigo.push_back(new IDebugVariavelDesempilha(ref.origem));
+                }
 
                 var.value().pop();
 
@@ -222,25 +244,32 @@ void gerar_codigo(MaquinaVirtual &vm, TabelaRef &tabela, No *no, int profundidad
             //Pegar a referencia para a função chamadora...
             IteradorTabelaRef it = tabela.find(*cham->nome);
 
+            //O topo é a função que eu desejo chamar pq isso já foi verificado na analise semantica
+            NDeclaracaoFuncao *func = dynamic_cast<NDeclaracaoFuncao*>(it.value().top().origem);
+
             //empilho o ponteiro da base da pilha(que funciona como o ponteiro que aponta para o inicio do frame...)
             empilha(vm, vm.bp);
 
             empilha_exec(vm);
 
-            for(int i = cham->argumentos->size() -1; i>=0; --i)
+            for(int i = cham->argumentos->size() -1, j=0; i>=0; --i, ++j)
             {
                 NExpressao *exp = cham->argumentos->at(i);
                 if(CompInfo::isDebug())
                 {
                     /* Na pilha esta inserido da seguinte forma
                      *   ___________ ____ ____________
-                     *  | Parametro | PP | Var. Local |
+                     *  | Parametro | BP | Var. Local |
                      *  |___________|____|____________|
                      *
-                     *  Além disso o parametros são inserido de trás para frente: assim o 1ª param é pp-1, o 2ª é pp-2, em diante...
-                     *  por tanto eu irei passar -i.
+                     *  Além disso o parametros são inserido de trás para frente: assim o 1ª param é bp-1, o 2ª é bp-2, em diante...
+                     *  Porém eu insiro elas antes de entrar na função assim eu não posso usar o bp-1, bp-2, ...
+                     *  Eu vou usar a posicao dessas variaveis dentro dessa função que fica: bp_atual + offset + j (crescendo)
                      */
-                    vm.codigo.push_back(new IDebugVariavelEmpilha(exp, (-i), dynamic_cast<NIdentificadorEscalar*>(exp)->ponteiro));
+                    if(exp->tipoNo()==TipoNo::IDENTIFICADOR_ESCALAR)
+                        vm.codigo.push_back(new IDebugVariavelEmpilha(func->parametros->at(i), offset+j, profundidade, dynamic_cast<NIdentificadorEscalar*>(exp)->ponteiro));
+                    else
+                        vm.codigo.push_back(new IDebugVariavelEmpilha(func->parametros->at(i), offset+j, profundidade));
                 }
                 gerar_codigo(vm, tabela, ultimo_elemento(vm,tabela, exp, profundidade, offset, funcao), profundidade, offset, funcao);
                 empilha(vm, vm.eax);

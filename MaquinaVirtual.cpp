@@ -216,11 +216,28 @@ void MaquinaVirtual::continuar()
     sinc_passo = false;
 }
 
-void MaquinaVirtual::empilha_variavel(No *no, int offset, No *pno)
+void MaquinaVirtual::empilha_variavel(No *no, int offset, int profundidade, No *pno)
 {
     //Não posso tratar aki diretamente tem que ser via IDE por que no Qt não da para alterar a interface grafica
     //em outra thread!!!!
+
+    //Pega o endereço corredo da variavel...
+
+    if(profundidade>0)
+        offset = bp.toInt() + offset; //Se não for variavel global: Base Pilha + Offset
+    else
+        offset = pg.toInt() + offset;// Se for global: Ponteiro Global + Offset
+
+    //Se foi ponteiro então offset contem o endereço do ponteiro e o ponteiro contem o endereço do vetor...
+    if(pno!=NULL)
+        offset = this->memoria[offset].toInt(); //carrego o endereço que o ponteiro possui...
+
     emit empilha_variavel_debug(no, offset, pno);
+
+    //Eu preciso sincronizar está parte...
+    CompInfo::inst()->mutexSincPasso.lock();
+    CompInfo::inst()->waitSincPasso.wait(&CompInfo::inst()->mutexSincPasso);
+    CompInfo::inst()->mutexSincPasso.unlock();
 }
 
 void MaquinaVirtual::desempilha_variavel(No *no)
@@ -228,6 +245,16 @@ void MaquinaVirtual::desempilha_variavel(No *no)
     //Não posso tratar aki diretamente tem que ser via IDE por que no Qt não da para alterar a interface grafica
     //em outra thread!!!!
     emit desempilha_variavel_debug(no);
+
+    //Eu preciso sincronizar está parte...
+    CompInfo::inst()->mutexSincPasso.lock();
+    CompInfo::inst()->waitSincPasso.wait(&CompInfo::inst()->mutexSincPasso);
+    CompInfo::inst()->mutexSincPasso.unlock();
+}
+
+void MaquinaVirtual::atualizarVariaveis()
+{
+    emit atualizar_variavel();
 }
 
 void MaquinaVirtual::sincronizar_passo(int linha)

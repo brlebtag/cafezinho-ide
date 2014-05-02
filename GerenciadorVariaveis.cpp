@@ -7,14 +7,22 @@ GerenciadorVariaveis::GerenciadorVariaveis(QTreeWidget *widget, QObject *parent)
 
 GerenciadorVariaveis::~GerenciadorVariaveis()
 {
+    for(QHash< QString, QStack< GenVar* > >::iterator it = variaveis.begin(); it != variaveis.end(); ++it)
+    {
+        QStack<GenVar*> &p = it.value();
 
+        while(!p.isEmpty())
+        {
+            delete p.pop();
+        }
+    }
 }
 
 void GerenciadorVariaveis::adicionar(MaquinaVirtual &vm, NDeclaracaoVariavel *no, int inicio_variavel, NDeclaracaoVariavel *pno)
 {
     GenVar *var;
 
-    switch(pno->tipoNo())
+    switch(no->tipoNo())
     {
         case TipoNo::DECLARACAO_VARIAVEL_ESCALAR:
         {
@@ -32,10 +40,10 @@ void GerenciadorVariaveis::adicionar(MaquinaVirtual &vm, NDeclaracaoVariavel *no
     }
 
     //Inseri na Hash
-    if(variaveis.contains(*pno->nome))
+    if(variaveis.contains(*no->nome))
     {
         //Pego a pilha..
-        QStack<GenVar*> &p = variaveis[*pno->nome];
+        QStack<GenVar*> &p = variaveis[*no->nome];
 
         //Esconde agora o que estava no topo...
         p.top()->remover(vm, widget);
@@ -53,7 +61,7 @@ void GerenciadorVariaveis::adicionar(MaquinaVirtual &vm, NDeclaracaoVariavel *no
         p.push(var);
 
         //insero a pilha
-        variaveis.insert(*pno->nome, p);
+        variaveis.insert(*no->nome, p);
     }
 
     //já insere ele na ide...

@@ -12,6 +12,9 @@ GenVarVetPonteiro::GenVarVetPonteiro(No *no, int inicio_variavel, No *pno)
 
 GenVarVetPonteiro::~GenVarVetPonteiro()
 {
+    //remove o primeiro pq vai ser chamado o descontrutor do pai ~GenVarVetorial() e ele vai remover itens[0]
+    // e itens[0] vai remover os outros (funcionalidade do Qt)...
+    item->removeChild(itens[0]);
     delete item;
 }
 

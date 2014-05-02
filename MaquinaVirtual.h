@@ -67,8 +67,9 @@ public:
     void proximo();
     void entrar();
     void continuar();
-    void empilha_variavel(No *no, int offset, No *pno);
+    void empilha_variavel(No *no, int offset, int profundidade, No *pno);
     void desempilha_variavel(No *no);
+    void atualizarVariaveis();
 
     /*
      * Com essa variavel eu guardarei as informação da pilha de execução, partir do momento que for acionado passar por cima
@@ -90,6 +91,7 @@ signals:
     void desabilitar_botoes_debug();
     void empilha_variavel_debug(No *no, int offset, No *pno);
     void desempilha_variavel_debug(No *no);
+    void atualizar_variavel();
 
 public slots:
 

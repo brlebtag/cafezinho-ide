@@ -2,6 +2,7 @@
 #define GENVAR_H
 
 #include "arvore_abstrata.h"
+#include <QString>
 #include <QTreeWidget>
 #include "MaquinaVirtual.h"
 

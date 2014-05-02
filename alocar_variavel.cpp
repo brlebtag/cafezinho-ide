@@ -12,7 +12,7 @@ Alocado alocar_variavel(MaquinaVirtual &vm, TabelaRef &tabela, No *no, int profu
             if(CompInfo::isDebug())
             {
                 //Também não poem o debug pq ele vai ser colocado na chamada da função
-                vm.codigo.push_back(new IDebugVariavelEmpilha(no, offset, false));
+                vm.codigo.push_back(new IDebugVariavelEmpilha(no, offset, profundidade));
             }
             //Aloca variavel
             inc_pp(vm, 1);
@@ -51,7 +51,7 @@ Alocado alocar_variavel(MaquinaVirtual &vm, TabelaRef &tabela, No *no, int profu
             if(CompInfo::isDebug())
             {
                 //Também não poem o debug pq ele vai ser colocado na chamada da função
-                vm.codigo.push_back(new IDebugVariavelEmpilha(no, offset));
+                vm.codigo.push_back(new IDebugVariavelEmpilha(no, offset, profundidade));
             }
 
             //Aloca vetor...

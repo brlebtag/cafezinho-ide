@@ -465,6 +465,11 @@ void ISalva::execute(MaquinaVirtual &vm)
         vm.msgErro("ACESSO INDEVIDO DE MEMORIA: ERRO DE SEGMENTACAO\nENDERECO MEMORIA: "+QString::number(acessa.toInt())+"\n");
     }
     ++vm.pc;
+
+    if(CompInfo::isDebug())
+    {
+        vm.atualizarVariaveis();
+    }
 }
 
 TipoInstrucao::TipoInstrucao ISalva::tipoInstucao()
@@ -1268,12 +1273,12 @@ TipoInstrucao::TipoInstrucao IDebugDesempilhaExec::tipoInstucao()
 }
 
 
-IDebugVariavelEmpilha::IDebugVariavelEmpilha(No *no, int offset, No *pno)
-    : no(no), offset(offset), pno(pno) { }
+IDebugVariavelEmpilha::IDebugVariavelEmpilha(No *no, int offset, int profundidade, No *pno)
+    : no(no), offset(offset), profundidade(profundidade), pno(pno) { }
 
 void IDebugVariavelEmpilha::execute(MaquinaVirtual &vm)
 {
-    vm.empilha_variavel(no, offset, pno);
+    vm.empilha_variavel(no, offset, profundidade, pno);
     ++vm.pc;
 }
 

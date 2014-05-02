@@ -12,6 +12,7 @@ IDE::IDE(QWidget *parent) :
     doc_exec_atual(NULL),
     linha_atual(-1),
     cancelando(false),
+    genVar(NULL),
     configuracoes(QSettings::IniFormat, QSettings::UserScope, "UFG", "CafezinhoIDE")
 {
     ui->setupUi(this);
@@ -786,7 +787,7 @@ bool IDE::salvarEFecharAbas(bool salvar_alteracoes, bool fechar)
         //Perqunta se pode fechar assim mesmo
         int result = QMessageBox::warning(
                                             this,tr("CafezinhoIDE"),
-                                            tr("Deseja salvar as alterações?"),
+                                            tr("Deseja realmente fechar o programa?"),
                                             QMessageBox::Ok |  QMessageBox::Cancel,
                                             QMessageBox::Ok
                                          );
@@ -1328,7 +1329,13 @@ void IDE::terminou_processo()
 {
     executando_processo = false;
     cancelando = false;
+    doc_exec_atual->getEditor()->setReadOnly(false);
     botoesModoCompilar();
+    if(genVar!=NULL)
+    {
+        delete genVar;
+        genVar = NULL;
+    }
 }
 
 void IDE::modoEntrada()
@@ -1341,6 +1348,7 @@ void IDE::terminouEntradaDados(QString dado)
 {
     CompInfo::inst()->entrada = dado;
     CompInfo::inst()->waitIO.wakeAll();
+    MaquinaVirtual *vm = CompInfo::getVM();
 }
 
 void IDE::limpar_terminal()
@@ -1419,6 +1427,11 @@ void IDE::compilar()
 
                 //desabilitar botao quando passar por cima de uma função
                 connect(vm, SIGNAL(desabilitar_botoes_debug()), this, SLOT(botaoPararApenas()));
+                //Cria o gerenciador de variaveis e liga os signal/slots...
+                genVar = new GerenciadorVariaveis(this->ui->treeVariaveis);
+                connect(vm, SIGNAL(empilha_variavel_debug(No*,int,No*)), this, SLOT(empilha_variavel_debug(No*,int,No*)));
+                connect(vm, SIGNAL(desempilha_variavel_debug(No*)), this, SLOT(desempilha_variavel_debug(No*)));
+                connect(vm, SIGNAL(atualizar_variavel()), this, SLOT(atualizarVariavel()));
 
                 //Executar até encontrar um breakpoint.
                 vm->continuar();
@@ -1453,8 +1466,9 @@ void IDE::entrar_instrucao()
 {
     if(executando_processo)
     {
+        MaquinaVirtual *vm = CompInfo::getVM();
+        vm->entrar();
         CompInfo::inst()->waitSincPasso.wakeAll();
-        CompInfo::getVM()->entrar();
     }
     else
     {
@@ -1485,7 +1499,7 @@ void IDE::entrar_instrucao()
         CompThread *compilar = criarCompThread();
 
         //Trava o editor para não ser possivel editar
-        doc->getEditor()->setReadOnly(true);
+        doc_exec_atual->getEditor()->setReadOnly(true);
 
         //Configura os estado
         MaquinaVirtual *vm = compilar->getVM();
@@ -1502,6 +1516,11 @@ void IDE::entrar_instrucao()
 
         //desabilitar botao quando passar por cima de uma função
         connect(vm, SIGNAL(desabilitar_botoes_debug()), this, SLOT(botaoPararApenas()));
+        //Cria o gerenciador de variaveis e liga os signal/slots...
+        genVar = new GerenciadorVariaveis(this->ui->treeVariaveis);
+        connect(vm, SIGNAL(empilha_variavel_debug(No*,int,No*)), this, SLOT(empilha_variavel_debug(No*,int,No*)));
+        connect(vm, SIGNAL(desempilha_variavel_debug(No*)), this, SLOT(desempilha_variavel_debug(No*)));
+        connect(vm, SIGNAL(atualizar_variavel()), this, SLOT(atualizarVariavel()));
 
         //executa-lá
         compilar->start();
@@ -1512,8 +1531,9 @@ void IDE::prox_instrucao()
 {
     if(executando_processo)
     {
+        MaquinaVirtual *vm = CompInfo::getVM();
+        vm->proximo();
         CompInfo::inst()->waitSincPasso.wakeAll();
-        CompInfo::getVM()->proximo();
     }
     else
     {
@@ -1544,7 +1564,7 @@ void IDE::prox_instrucao()
         CompThread *compilar = criarCompThread();
 
         //Trava o editor para não ser possivel editar
-        doc->getEditor()->setReadOnly(true);
+        doc_exec_atual->getEditor()->setReadOnly(true);
 
         //Configura os estado
         MaquinaVirtual *vm = compilar->getVM();
@@ -1561,6 +1581,11 @@ void IDE::prox_instrucao()
 
         //desabilitar botao quando passar por cima de uma função
         connect(vm, SIGNAL(desabilitar_botoes_debug()), this, SLOT(botaoPararApenas()));
+        //Cria o gerenciador de variaveis e liga os signal/slots...
+        genVar = new GerenciadorVariaveis(this->ui->treeVariaveis);
+        connect(vm, SIGNAL(empilha_variavel_debug(No*,int,No*)), this, SLOT(empilha_variavel_debug(No*,int,No*)));
+        connect(vm, SIGNAL(desempilha_variavel_debug(No*)), this, SLOT(desempilha_variavel_debug(No*)));
+        connect(vm, SIGNAL(atualizar_variavel()), this, SLOT(atualizarVariavel()));
 
         //executa-lá
         compilar->start();
@@ -1632,18 +1657,28 @@ void IDE::botaoPararApenas()
     this->ui->actionParar->setEnabled(true);
 }
 
-void IDE::empilha_variavel_debug(No *no, int offset, No *pno)
+void IDE::atualizarVariavel()
 {
     MaquinaVirtual *vm = CompInfo::getVM();
-    //pega o valor q pp está agora + o deslocamento da variavel na pilha...
-    int inicio_variavel = vm->pp.toInt() + offset;
-    genVar->adicionar(*vm, dynamic_cast<NDeclaracaoVariavel*>(no), inicio_variavel, dynamic_cast<NDeclaracaoVariavel*>(pno));
+    genVar->atualizar(*vm);
 }
 
-void IDE::desempilha_variavel(No *no)
+void IDE::empilha_variavel_debug(No *no, int offset, No *pno)
 {
+    botaoPararApenas();
+    MaquinaVirtual *vm = CompInfo::getVM();
+    genVar->adicionar(*vm, dynamic_cast<NDeclaracaoVariavel*>(no), offset, dynamic_cast<NDeclaracaoVariavel*>(pno));
+    botoesModoDebug();
+    CompInfo::inst()->waitSincPasso.wakeAll();
+}
+
+void IDE::desempilha_variavel_debug(No *no)
+{
+    botaoPararApenas();
     MaquinaVirtual *vm = CompInfo::getVM();
     genVar->remover(*vm, dynamic_cast<NDeclaracaoVariavel*>(no));
+    botoesModoDebug();
+    CompInfo::inst()->waitSincPasso.wakeAll();
 }
 
 

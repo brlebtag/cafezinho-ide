@@ -436,12 +436,22 @@ void imprime_instrucao(MaquinaVirtual &vm, Instrucao * instrucao, int posicao)
         {
             IDebugVariavelEmpilha *inst = dynamic_cast<IDebugVariavelEmpilha*>(instrucao);
             qDebug()<<posicao<<": debug_var_empilha";
+            NDeclaracaoVariavel *var = dynamic_cast<NDeclaracaoVariavel*>(inst->no);
+            qDebug()<<" "<<*var->nome<<":"<<nome_tipo_cast(var->tipo)<<", offset: "<<inst->offset<<", Profundidade: "<<inst->profundidade;
+
+            if(inst->pno!=NULL)
+            {
+                NDeclaracaoVariavel *pt = dynamic_cast<NDeclaracaoVariavel*>(inst->pno);
+                qDebug()<<" "<<*pt->nome<<":"<<nome_tipo_cast(pt->tipo);
+            }
         }
         break;
         case DEBUG_VAR_DESEMPILHA:
         {
             IDebugVariavelDesempilha *inst = dynamic_cast<IDebugVariavelDesempilha*>(instrucao);
             qDebug()<<posicao<<": debug_var_desempilha";
+            NDeclaracaoVariavel *var = dynamic_cast<NDeclaracaoVariavel*>(inst->no);
+            qDebug()<<" "<<*var->nome<<":"<<nome_tipo_cast(var->tipo);
         }
         break;
     }

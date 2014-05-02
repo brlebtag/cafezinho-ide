@@ -246,7 +246,8 @@ class NBloco : public NInstrucao
 {
 public:
     ListaInstrucao* instrucoes;
-    NBloco(int linha = 0);
+    int linha_fim_bloco;
+    NBloco(int linha = 0, int linha_fim_bloco = 0);
     virtual TipoNo::TipoNo tipoNo();
     virtual ~NBloco();
 };

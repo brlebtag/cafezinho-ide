@@ -279,6 +279,7 @@ OC 			[0-7]
             }
 
 "}"			{
+                yylval.ival = yylineno;
                 ultimo_token = "}";
                 return '}';
             }

@@ -4,6 +4,7 @@
 #include <QString>
 #include "CelulaMemoria.h"
 #include "arvore_abstrata.h"
+#include "CompInfo.h"
 
 namespace Sistema
 {
@@ -824,12 +825,13 @@ public:
 class IDebugVariavelEmpilha : public Instrucao
 {
 public:
-    IDebugVariavelEmpilha(No* no, int offset, No* pno = NULL);
+    IDebugVariavelEmpilha(No* no, int offset, int profundidade, No* pno = NULL);
     void execute(MaquinaVirtual &vm);
     TipoInstrucao::TipoInstrucao tipoInstucao();
     No* no; //Nó que guarda a declaracao da variavel (pode ser local ou parametro)
     No* pno; //Declaracao da variavel vetorial que o parametro aponta...
     int offset;
+    int profundidade;
 };
 
 

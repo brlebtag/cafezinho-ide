@@ -2,8 +2,8 @@
 
 GenVarVetorial::GenVarVetorial(No *no, int inicio_variavel) : GenVar(inicio_variavel)
 {
-    tipoVar = GenVar::tipoParaString(this->no->tipo);
     this->no = dynamic_cast<NDeclVarVetorial*>(no);
+    tipoVar = GenVar::tipoParaString(this->no->tipo);
     QStringList coluna;
     coluna<<gerar_nome_vetor(this->no)<<tipoVar<<"";
     QTreeWidgetItem* item = new QTreeWidgetItem(coluna);
@@ -14,12 +14,8 @@ GenVarVetorial::GenVarVetorial(No *no, int inicio_variavel) : GenVar(inicio_vari
 
 GenVarVetorial::~GenVarVetorial()
 {
-    //testar ... pode ser q precisa só remover o primeiro ...
-    foreach(QTreeWidgetItem* item, itens)
-    {
-        delete item;
-    }
-
+    //removendo apenas o primeiro que ele se encarrega de remover os outros (funcionalidade do Qt)
+    delete itens[0];
     itens.clear();
 }
 
@@ -46,13 +42,13 @@ void GenVarVetorial::atualizar(MaquinaVirtual &vm)
 void GenVarVetorial::gerar_nos(QTreeWidgetItem *pai, int indice, int dim, int tam, int &pos)
 {
     QTreeWidgetItem* item;
-    QStringList coluna;
 
     if(tam>1)
     {
         for(int i=0; i<dim; ++i)
         {
             QString nome = (*this->no->nome);
+            QStringList coluna;
             nome +="["+QString::number(i)+"]";
             coluna<<nome<<tipoVar<<"";
             item = new QTreeWidgetItem(pai, coluna);
@@ -66,11 +62,12 @@ void GenVarVetorial::gerar_nos(QTreeWidgetItem *pai, int indice, int dim, int ta
         for(int i=0; i<dim; ++i)
         {
             QString nome = (*this->no->nome);
-            nome +="["+QString::number(i)+"]";
+            QStringList coluna;
+            nome += "["+QString::number(i)+"]";
+            coluna<<nome<<tipoVar<<"";
             item = new QTreeWidgetItem(pai, coluna);
             itens.push_back(item);
             pai->addChild(item);
-            coluna<<nome<<tipoVar<<"";
             ++pos;
         }
     }
@@ -97,12 +94,12 @@ void GenVarVetorial::atualizar_nos(MaquinaVirtual &vm, QTreeWidgetItem *pai, int
 
 QString GenVarVetorial::gerar_nome_vetor(NDeclVarVetorial *no)
 {
-    QString nome = (*no->nome) + "[";
+    QString nome = (*no->nome);
 
     for(int i=0; i<no->dimensoes->size(); ++i)
     {
-        nome+=QString::number(dynamic_cast<NInteiro*>(no->dimensoes->at(i))->valor)+"][";
+        nome+= "["+ QString::number(dynamic_cast<NInteiro*>(no->dimensoes->at(i))->valor)+"]";
     }
 
-    return (nome + "]");
+    return nome;
 }

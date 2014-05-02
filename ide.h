@@ -82,7 +82,7 @@ private:
     GerenciadorVariaveis *genVar;
 
 
-    struct Info_Func
+    /*struct Info_Func
     {
         Info_Func(QTreeWidgetItem* item = NULL, bool ref = false) : item(item), ref(ref)
         {
@@ -92,7 +92,7 @@ private:
         bool ref;
     };
 
-    QHash<QString,Info_Func*> decl_func;
+    QHash<QString,Info_Func*> decl_func;*/
 
     int tamanho_fonte;
     QString familia_fonte;
@@ -257,10 +257,11 @@ private slots:
     void botoesModoCompilar();
     void botoesModoDebug();
     void botaoPararApenas();
+    void atualizarVariavel();
 
     //Para gerenciar as variaveis
     void empilha_variavel_debug(No *no, int offset, No *pno);
-    void desempilha_variavel(No *no);
+    void desempilha_variavel_debug(No *no);
 
     //Reforçar a seleção caso esteja executando
     void reforcar_selecao();

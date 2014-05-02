@@ -3,6 +3,8 @@
 
 #include "GenVar.h"
 #include <QList>
+#include <QString>
+#include <QDebug>
 
 class GenVarVetorial : public GenVar
 {

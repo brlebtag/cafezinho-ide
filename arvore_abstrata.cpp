@@ -89,7 +89,7 @@ NIdentificador::~NIdentificador()
 
 /******************* Identificador Escalar ***************/
 NIdentificadorEscalar::NIdentificadorEscalar(QString *nome, int linha)
-    : NIdentificador(nome, linha), ponteiro(NULL) {}
+    : NIdentificador(nome, linha){}
 
 TipoNo::TipoNo NIdentificadorEscalar::tipoNo()
 {
@@ -179,8 +179,8 @@ NDeclVarVetorial::~NDeclVarVetorial()
 }
 
 /*************** Bloco *****************/
-NBloco::NBloco(int linha)
-    :NInstrucao(linha), instrucoes(0) {}
+NBloco::NBloco(int linha, int linha_fim_bloco)
+    :NInstrucao(linha), instrucoes(0), linha_fim_bloco(linha_fim_bloco) {}
 
 TipoNo::TipoNo NBloco::tipoNo()
 {
