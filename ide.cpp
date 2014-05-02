@@ -127,6 +127,9 @@ IDE::IDE(QWidget *parent) :
     ultimoCaminho = genReabrir.getUltimoCaminho();
 
     botoesModoCompilar();
+
+    //desabilitar as funções que não implementar
+    desabilitarFuncoes();
 }
 
 void IDE::restaurarConfiguracoesFonte()
@@ -141,8 +144,8 @@ void IDE::restaurarConfiguracoesFonte()
 void IDE::restaurarConfiguracoesMenuVer()
 {
     //Funções...
-    ver_funcoes = configuracoes.value("ver_funcoes", true).toBool();
-    this->ui->actionFuncoes->setChecked(ver_funcoes);
+    //ver_funcoes = configuracoes.value("ver_funcoes", true).toBool();
+    //this->ui->actionFuncoes->setChecked(ver_funcoes);
 
     //Debug
     ver_debugger = configuracoes.value("ver_debugger", true).toBool();
@@ -1180,6 +1183,13 @@ void IDE::criarSelecao(int linha)
     selecao.cursor = doc_exec_atual->getEditor()->textCursor();
     selecao.cursor.clearSelection();
     doc_exec_atual->setSelecao(selecao);
+}
+
+void IDE::desabilitarFuncoes()
+{
+    ver_funcoes = false;
+    this->ui->groupFuncoes->hide();
+    this->ui->actionFuncoes->setVisible(false);
 }
 
 void IDE::reforcar_selecao()

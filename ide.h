@@ -176,6 +176,9 @@ private:
     //Criar Selecao
     void criarSelecao(int linha);
 
+    //temporario
+    void desabilitarFuncoes();
+
 protected:
     void closeEvent(QCloseEvent *event);
 
