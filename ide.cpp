@@ -1473,12 +1473,16 @@ void IDE::continuar()
         CompInfo::inst()->waitSincPasso.wakeAll();
         CompInfo::getVM()->continuar();
     }
+    //Para ficar invisivel quando precionar continue...
+    if(genVar!=NULL)
+        genVar->setVisibilidade(false);
 }
 
 void IDE::entrar_instrucao()
 {
     if(executando_processo)
     {
+        genVar->setVisibilidade(true);
         MaquinaVirtual *vm = CompInfo::getVM();
         vm->entrar();
         CompInfo::inst()->waitSincPasso.wakeAll();
@@ -1536,6 +1540,7 @@ void IDE::prox_instrucao()
 {
     if(executando_processo)
     {
+        genVar->setVisibilidade(false);
         MaquinaVirtual *vm = CompInfo::getVM();
         vm->proximo();
         CompInfo::inst()->waitSincPasso.wakeAll();
@@ -1663,11 +1668,6 @@ void IDE::atualizarVariavel()
 void IDE::desabilitarBotoesDebug()
 {
     botaoPararApenas();
-    //Entrei numa função então visibilidade é false...
-    if(genVar!=NULL)
-    {
-        genVar->setVisibilidade(false);
-    }
 }
 
 void IDE::empilha_variavel_debug(No *no, int offset, No *pno)

@@ -26,7 +26,9 @@ void GerenciadorVariaveis::desempilha_quadro()
     //Nunca vou ficar vazio
     MaquinaVirtual *vm = CompInfo::getVM();
     delete variaveis.pop();
-    variaveis.top()->mostrar(*vm, widget);
+    //Se tiver visivel então mostra o ue está agora no topo...
+    if(visivel)
+        variaveis.top()->mostrar(*vm, widget);
 }
 
 void GerenciadorVariaveis::adicionar(NDeclaracaoVariavel *no, int inicio_variavel, NDeclaracaoVariavel *pno)
