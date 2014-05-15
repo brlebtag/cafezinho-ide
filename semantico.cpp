@@ -167,10 +167,15 @@ IteradorTabelaSimbolo analise_semantica(TabelaSimbolo &tabela, No* no, int profu
 
         TipoVariavel::TipoVariavel tipo = checar_tipo(tabela, ((No*) ret->expressao));
 
-        if(tipo != func->tipo)
+        // Se expressao for uma expressão vazia e o tipo da função for nulo eu não caio na checagem tipo != func->tipo
+        // por que tipo está como TIPO_ERRO por que checa_tipo() não verifica expressão e por isso retornará TIPO_ERRO
+        if(ret->expressao->tipoNo()!=TipoNo::EXPRESSAO || func->tipo != TipoVariavel::TIPO_NULO)
         {
-            CompInfo::err()<<"[ERRO SEMANTICO] Esperado retorno do tipo "<<nome_tipo(func->tipo)<<" encontrado do tipo "<<nome_tipo(tipo)<<" próximo a "<<ret->linha<<"\n";
-            erro_compilador = true;
+            if(tipo != func->tipo)
+            {
+                CompInfo::err()<<"[ERRO SEMANTICO] Esperado retorno do tipo "<<nome_tipo(func->tipo)<<" encontrado do tipo "<<nome_tipo(tipo)<<" próximo a "<<ret->linha<<"\n";
+                erro_compilador = true;
+            }
         }
 
         func->possuiRetorno = true;
