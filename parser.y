@@ -171,6 +171,12 @@ declaracao_externa
         }
         | tipo_especificador inicio_lista_declaracao ';'
         {
+                if($2->size()>0&&$1 == TipoVariavel::TIPO_NULO)
+                {
+                        CompInfo::err()<<"[ERRO SINTATICO] Não é possivel declarar variavel do tipo NULO próximo a "<<$2->at(0)->linha<<"\n";
+                        erro_compilador = true;
+                        YYABORT;
+                }
                 for(ListaInstrucao::iterator it = $2->begin(); it!= $2->end(); ++it)
                 {
                         No* no = dynamic_cast<No*>(*it);
@@ -213,7 +219,17 @@ lista_parametro
         ;
 
 declaracao_parametro
-        : tipo_especificador declarador { $2->tipo = $1; $$ = $2;}
+        : tipo_especificador declarador
+        {
+            if($1 == TipoVariavel::TIPO_NULO)
+            {
+                    CompInfo::err()<<"[ERRO SINTATICO] Não é possivel declarar variavel do tipo NULO próximo a "<<$2->linha<<"\n";
+                    erro_compilador = true;
+                    YYABORT;
+            }
+            $2->tipo = $1;
+            $$ = $2;
+        }
         ;
 
 declarador
@@ -313,6 +329,13 @@ lista_declaracao
 declaracao
         : tipo_especificador inicio_lista_declaracao ';'
         {
+                if($2->size()>0 && $1 == TipoVariavel::TIPO_NULO)
+                {
+                        CompInfo::err()<<"[ERRO SINTATICO] Não é possivel declarar variavel do tipo NULO próximo a "<<$2->at(0)->linha<<"\n";
+                        erro_compilador = true;
+                        YYABORT;
+                }
+
                 for(ListaInstrucao::iterator it = $2->begin(); it!= $2->end(); ++it)
                 {
                         No* no = dynamic_cast<No*>(*it);
@@ -365,7 +388,7 @@ inicio_declarador
                         NDeclVarEscalar *decEsc = dynamic_cast<NDeclVarEscalar*>($1);
                         if((dynamic_cast<No*>($3->at(0)))->tipoNo()==TipoNo::LISTA_INICIALIZADOR)
                         {
-                                CompInfo::out()<<"[ERRO SEMANTICO] Inicializador não está no formato correto, esperado apenas 1 valor próximo a "<<yylineno<<"\n";
+                                CompInfo::err()<<"[ERRO SEMANTICO] Inicializador não está no formato correto, esperado apenas 1 valor próximo a "<<yylineno<<"\n";
                                 erro_compilador = true;
                                 YYABORT;
                         }
@@ -392,7 +415,7 @@ inicio_declarador
                         $$ = new ListaInstrucao();
                         if((dynamic_cast<No*>($3->at(0)))->tipoNo()!=TipoNo::LISTA_INICIALIZADOR)
                         {
-                                CompInfo::out()<<"[ERRO SEMANTICO] Inicializador não está no formato correto próximo a "<<yylineno<<"\n";
+                                CompInfo::err()<<"[ERRO SEMANTICO] Inicializador não está no formato correto próximo a "<<yylineno<<"\n";
                                 erro_compilador = true;
                                 YYABORT;
                         }
@@ -403,7 +426,7 @@ inicio_declarador
                                 {
                                         qtd_dimensao *= dynamic_cast<NInteiro*>(*it)->valor;
                                 }
-                                CompInfo::out()<<"[ERRO SEMANTICO] Inicializador não está no formato correto, esperado "<<qtd_dimensao<<" valores para ser inicializado próximo a "<<yylineno<<"\n";
+                                CompInfo::err()<<"[ERRO SEMANTICO] Inicializador não está no formato correto, esperado "<<qtd_dimensao<<" valores para ser inicializado próximo a "<<yylineno<<"\n";
                                 erro_compilador = true;
                                 YYABORT;
                         }

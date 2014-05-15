@@ -61,8 +61,8 @@ void CompThread::run()
         gerar_codigo(*vm,tabela, bloco, 0, 0, 0);
 
         //Para Debugar o codigo gerado
-        /*if(!erro_compilador)
-            debug_codigo(*vm);*/
+        if(!erro_compilador)
+            debug_codigo(*vm);
 
         if((*vm->rotulo[0])!=-1)
         {

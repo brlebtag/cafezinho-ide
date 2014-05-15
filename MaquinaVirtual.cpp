@@ -95,7 +95,7 @@ void MaquinaVirtual::passo()
         {
             codigo[pc]->execute(*this);
         }
-        catch(exception &e)
+        catch(...)
         {
              //Não reporta erro só reportar embaixo mesmo... para não aparecer a mensagem x2
         }

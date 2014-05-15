@@ -417,19 +417,25 @@ void ICarrega::execute(MaquinaVirtual &vm)
     Celula acessa = offset+desl;
     if(vm.memoria.capacity()<=acessa.toInt())
         vm.memoria.reserve(acessa.toInt()+100);
-    if(acessa.toInt()<0)
+
+    int pos = acessa.toInt();
+
+    if(pos<0)
     {
         vm.erf = true;
-        vm.msgErro("ACESSO INDEVIDO DE MEMORIA: ERRO DE SEGMENTACAO\nENDERECO MEMORIA: "+QString::number(acessa.toInt())+"\n");
+        vm.msgErro("ACESSO INDEVIDO DE MEMORIA: ERRO DE SEGMENTACAO\nENDERECO MEMORIA: "+QString::number(pos)+"\n");
     }
-    try
+    else
     {
-        registrador = vm.memoria[acessa.toInt()];
-    }
-    catch(exception &e)
-    {
-        vm.erf = true;
-        vm.msgErro("ACESSO INDEVIDO DE MEMORIA: ERRO DE SEGMENTACAO\nENDERECO MEMORIA: "+QString::number(acessa.toInt())+"\n");
+        try
+        {
+            registrador = vm.memoria[pos];
+        }
+        catch(...)
+        {
+            vm.erf = true;
+            vm.msgErro("ACESSO INDEVIDO DE MEMORIA: ERRO DE SEGMENTACAO\nENDERECO MEMORIA: "+QString::number(pos)+"\n");
+        }
     }
 
     ++vm.pc;
@@ -450,20 +456,27 @@ void ISalva::execute(MaquinaVirtual &vm)
     Celula acessa = offset+desl;
     if(vm.memoria.capacity()<=acessa.toInt())
         vm.memoria.reserve(acessa.toInt()+100);
-    if(acessa.toInt()<0)
+
+    int pos = acessa.toInt();
+
+    if(pos<0)
     {
         vm.erf = true;
-        vm.msgErro("ACESSO INDEVIDO DE MEMORIA: ERRO DE SEGMENTACAO\nENDERECO MEMORIA: "+QString::number(acessa.toInt())+"\n");
+        vm.msgErro("ACESSO INDEVIDO DE MEMORIA: ERRO DE SEGMENTACAO\nENDERECO MEMORIA: "+QString::number(pos)+"\n");
     }
-    try
+    else
     {
-        vm.memoria[acessa.toInt()] = registrador;
+        try
+        {
+            vm.memoria[pos] = registrador;
+        }
+        catch(...)
+        {
+            vm.erf = true;
+            vm.msgErro("ACESSO INDEVIDO DE MEMORIA: ERRO DE SEGMENTACAO\nENDERECO MEMORIA: "+QString::number(pos)+"\n");
+        }
     }
-    catch(exception &e)
-    {
-        vm.erf = true;
-        vm.msgErro("ACESSO INDEVIDO DE MEMORIA: ERRO DE SEGMENTACAO\nENDERECO MEMORIA: "+QString::number(acessa.toInt())+"\n");
-    }
+
     ++vm.pc;
 
     if(CompInfo::isDebug())
