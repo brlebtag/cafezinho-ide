@@ -1080,8 +1080,8 @@ void IDE::botaoMaisTabClicado()
 void IDE::reiniciarInterfaceClicado()
 {
     //Funções...
-    ver_funcoes = true;
-    this->ui->actionFuncoes->setChecked(ver_funcoes);
+    //ver_funcoes = true;
+    //this->ui->actionFuncoes->setChecked(ver_funcoes);
 
     //Debug
     ver_debugger = true;
@@ -1090,6 +1090,11 @@ void IDE::reiniciarInterfaceClicado()
     //executar programa
     ver_exec_prog = true;
     this->ui->actionExecProg->setChecked(ver_exec_prog);
+
+    //Reiniciar o realce
+    ver_realcar = true;
+    this->ui->actionRealceSintaxe->setChecked(ver_realcar);
+
 }
 
 void IDE::proximoDocumento()
