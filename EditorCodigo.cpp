@@ -120,6 +120,8 @@ void EditorCodigo::mudouPosicaoCursor()
 
     int posicao = textCursor().block().position();
 
+    if(dado==NULL) return;
+
     for(int i=0; i<dado->tamanho(); i++)
     {
         int atualPos = textCursor().position() - textCursor().block().position();

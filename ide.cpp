@@ -19,6 +19,10 @@ IDE::IDE(QWidget *parent) :
 
     //Configurando os sinais...
 
+    //Realcador
+    ver_realcar = configuracoes.value("ver_realcar", true).toBool();
+    this->ui->actionRealceSintaxe->setChecked(ver_realcar);
+
     //Menu Arquivo
     connect(this->ui->actionAbrir,SIGNAL(triggered()),this,SLOT(acaoAbrir()));
     connect(this->ui->actionNovo,SIGNAL(triggered()),this,SLOT(acaoNovo()));
@@ -35,6 +39,7 @@ IDE::IDE(QWidget *parent) :
     connect(this->ui->actionExecProg,SIGNAL(toggled(bool)),this,SLOT(acaoHabilitarExecProg(bool)));
     connect(this->ui->actionBarraFerramentas,SIGNAL(toggled(bool)),this,SLOT(acaoHabilitarBarraFerramentas(bool)));
     connect(this->ui->actionBarraStatus,SIGNAL(toggled(bool)),this,SLOT(acaoHabilitarBarraStatus(bool)));
+    connect(this->ui->actionRealceSintaxe, SIGNAL(toggled(bool)), this, SLOT(acaoHabilitarRealcador(bool)));
     connect(this->ui->actionReiniciar,SIGNAL(triggered()), this,SLOT(reiniciarInterfaceClicado()));
 
     //Menu Documento
@@ -162,6 +167,10 @@ void IDE::restaurarConfiguracoesMenuVer()
     //Barra de Status
     ver_barra_status = configuracoes.value("ver_barra_status", true).toBool();
     this->ui->actionBarraStatus->setChecked(ver_barra_status);
+
+    //Realcador
+    ver_realcar = configuracoes.value("ver_realcar", true).toBool();
+    this->ui->actionRealceSintaxe->setChecked(ver_realcar);
 }
 
 void IDE::closeEvent(QCloseEvent *event)
@@ -196,6 +205,8 @@ void IDE::gravarConfiguracoesMenuVer()
     configuracoes.setValue("ver_barra_ferramentas", ver_barra_ferramentas);
 
     configuracoes.setValue("ver_barra_status", ver_barra_status);
+
+    configuracoes.setValue("ver_realcar", ver_realcar);
 }
 
 void IDE::gravarConfiguracoesFonte()
@@ -335,7 +346,8 @@ Documento* IDE::criarDocumento(QString title, int *index)
     //Criar o EditorCodigo
     EditorCodigo* edit = criarEditor(aba);
 
-    Documento * doc = new Documento(aba, edit, botao);
+    Documento * doc = new Documento(aba, edit, botao, ver_realcar);
+
 
     //connect(doc,SIGNAL(textoMudou(QTextDocument*)), this, SLOT(texto_mudou(QTextDocument*)));
 
@@ -972,6 +984,18 @@ void IDE::acaoHabilitarBarraStatus(bool checked)
     ver_barra_status = checked;
 }
 
+void IDE::acaoHabilitarRealcador(bool checked)
+{
+    ver_realcar = checked;
+
+    Documento* doc = genDoc.procurar(getAbaAtual());
+
+    doc->sujou();
+    doc->setRealcar(checked);
+    doc->refazerRealce();
+    doc->limpou();
+}
+
 void IDE::breakpoint(int line, bool checked)
 {
     //qDebug()<<line<<", "<<checked;
@@ -992,6 +1016,14 @@ void IDE::mudouAbaAtual(int index)
         //Repintar o edit
         doc->repintarEditor();
         doc->setFonte(familia_fonte, tamanho_fonte);
+        //Tira o realçe quando trocar de aba...
+        if(doc->getRealcar()!=ver_realcar)
+        {
+            doc->sujou();
+            doc->setRealcar(ver_realcar);
+            doc->refazerRealce();
+            doc->limpou();
+        }
     }
 }
 

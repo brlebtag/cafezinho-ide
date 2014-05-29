@@ -4,8 +4,9 @@ const int Realcador::QTD_SIMBOLOS = 6;
 
 const char Realcador::simbolos [] = {'{', '}', '(',')', '[',']'};
 
+
 Realcador::Realcador(QTextDocument *documento)
-    : QSyntaxHighlighter(documento)
+    : QSyntaxHighlighter(documento), realcar(true)
 {
     RegrasRealce regra;
 
@@ -49,115 +50,128 @@ Realcador::Realcador(QTextDocument *documento)
     formatoComentario.setForeground(Qt::darkGreen);
 }
 
+void Realcador::setRealcar(bool realcar)
+{
+    this->realcar = realcar;
+}
+
+bool Realcador::getRealcar()
+{
+    return realcar;
+}
+
 
 void Realcador::highlightBlock(const QString &text)
 {
-    //Aplica as regras que estao em regrasRealce...
-    foreach (const RegrasRealce &regra, regrasRealce)
+    if(realcar)
     {
-        //Gera uma expressão apartir de padrao...
-        QRegExp expressao(regra.padrao);
-
-        //Pega o indice da primeira ocorrencia... ou -1 se não encontrou...
-        int indice = expressao.indexIn(text);
-
-        //Enquanto existir regra naquele bloco de texto...
-        while (indice >= 0)
+        //Aplica as regras que estao em regrasRealce...
+        foreach (const RegrasRealce &regra, regrasRealce)
         {
-            //Pega o tamanho da palavra que foi combinada
-            int tamanho = expressao.matchedLength();
+            //Gera uma expressão apartir de padrao...
+            QRegExp expressao(regra.padrao);
 
-            //Seta o formato naquela palavra encontrada...
-            setFormat(indice, tamanho, regra.formato);
+            //Pega o indice da primeira ocorrencia... ou -1 se não encontrou...
+            int indice = expressao.indexIn(text);
 
-            //procura por outras palavras que estão na mesma linha...
-            indice = expressao.indexIn(text, indice + tamanho);
-        }
-    }
-
-    //Salvar parenteses, colchetes e chaves...
-    bool comentario = false;
-    bool palavra = false;
-    bool charLit = false;
-
-    DadoBlocoTexto* dado = new DadoBlocoTexto();
-
-    int comecoPalavar = 0;
-
-    if(previousBlockState()==1)
-        comentario = true;
-
-    int i =0;
-
-    for(i=0; i<text.size(); ++i)
-    {
-        if(text[i]=='\"')
-        {
-            if(palavra)
+            //Enquanto existir regra naquele bloco de texto...
+            while (indice >= 0)
             {
-                setFormat(comecoPalavar, i - comecoPalavar+1, formatoPalavraLiteral);
-                palavra = false;
-                continue;
-            }
+                //Pega o tamanho da palavra que foi combinada
+                int tamanho = expressao.matchedLength();
 
-            if(!palavra)
-            {
-                comecoPalavar = i;
-                palavra = true;
-            }
+                //Seta o formato naquela palavra encontrada...
+                setFormat(indice, tamanho, regra.formato);
 
+                //procura por outras palavras que estão na mesma linha...
+                indice = expressao.indexIn(text, indice + tamanho);
+            }
         }
 
-        if(text[i]=='\'')
-        {
-            charLit = !charLit;
-        }
+        //Salvar parenteses, colchetes e chaves...
+        bool comentario = false;
+        bool palavra = false;
+        bool charLit = false;
 
-        if(text[i]=='/'&&(i+1)<text.size()&&text[i+1]=='*')
+        DadoBlocoTexto* dado = new DadoBlocoTexto();
+
+        int comecoPalavar = 0;
+
+        if(previousBlockState()==1)
             comentario = true;
 
-        if(text[i]=='*'&&(i+1)<text.size()&&text[i+1]=='\\')
-            comentario = false;
+        int i =0;
 
-        if((!comentario)&&(!palavra)&&(!charLit))
+        for(i=0; i<text.size(); ++i)
         {
-            for(int j=0; j<Realcador::QTD_SIMBOLOS; ++j)
+            if(text[i]=='\"')
             {
-                if(text[i]==Realcador::simbolos[j])
+                if(palavra)
                 {
-                    dado->inserir(Realcador::simbolos[j], i);
+                    setFormat(comecoPalavar, i - comecoPalavar+1, formatoPalavraLiteral);
+                    palavra = false;
+                    continue;
+                }
+
+                if(!palavra)
+                {
+                    comecoPalavar = i;
+                    palavra = true;
+                }
+
+            }
+
+            if(text[i]=='\'')
+            {
+                charLit = !charLit;
+            }
+
+            if(text[i]=='/'&&(i+1)<text.size()&&text[i+1]=='*')
+                comentario = true;
+
+            if(text[i]=='*'&&(i+1)<text.size()&&text[i+1]=='\\')
+                comentario = false;
+
+            if((!comentario)&&(!palavra)&&(!charLit))
+            {
+                for(int j=0; j<Realcador::QTD_SIMBOLOS; ++j)
+                {
+                    if(text[i]==Realcador::simbolos[j])
+                    {
+                        dado->inserir(Realcador::simbolos[j], i);
+                    }
                 }
             }
         }
-    }
 
-    if(palavra)
-        setFormat(comecoPalavar, i - comecoPalavar, formatoPalavraLiteral);
+        if(palavra)
+            setFormat(comecoPalavar, i - comecoPalavar, formatoPalavraLiteral);
 
-    setCurrentBlockUserData(dado);
+        setCurrentBlockUserData(dado);
 
-    setCurrentBlockState(0);
+        setCurrentBlockState(0);
 
-    int indiceComeco = 0;
+        int indiceComeco = 0;
 
-    if(previousBlockState()!=1)
-        indiceComeco = comecoComentario.indexIn(text);
+        if(previousBlockState()!=1)
+            indiceComeco = comecoComentario.indexIn(text);
 
-    while(indiceComeco>=0)
-    {
-        int indiceFinal = terminoComentario.indexIn(text, indiceComeco);
-        int tamanhoComentario;
-
-        if(indiceFinal == -1)
+        while(indiceComeco>=0)
         {
-            setCurrentBlockState(1);
-            tamanhoComentario = text.length() - indiceComeco;
+            int indiceFinal = terminoComentario.indexIn(text, indiceComeco);
+            int tamanhoComentario;
+
+            if(indiceFinal == -1)
+            {
+                setCurrentBlockState(1);
+                tamanhoComentario = text.length() - indiceComeco;
+            }
+            else
+            {
+                tamanhoComentario = indiceFinal - indiceComeco + terminoComentario.matchedLength();
+            }
+            setFormat(indiceComeco, tamanhoComentario, formatoComentario);
+            indiceComeco = comecoComentario.indexIn(text, indiceComeco + tamanhoComentario);
         }
-        else
-        {
-            tamanhoComentario = indiceFinal - indiceComeco + terminoComentario.matchedLength();
-        }
-        setFormat(indiceComeco, tamanhoComentario, formatoComentario);
-        indiceComeco = comecoComentario.indexIn(text, indiceComeco + tamanhoComentario);
     }
 }

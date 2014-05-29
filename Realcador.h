@@ -16,6 +16,8 @@ class Realcador : public QSyntaxHighlighter
     Q_OBJECT
 public:
     Realcador(QTextDocument *documento);
+    void setRealcar(bool realcar);
+    bool getRealcar();
 protected:
     void highlightBlock(const QString &text);
 private:
@@ -36,6 +38,7 @@ private:
     QTextCharFormat formatoPalavrasChaves;
     QTextCharFormat formatoCaracterLiteral;
     QTextCharFormat formatoPalavraLiteral;
+    bool realcar;
 };
 
 

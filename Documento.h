@@ -22,8 +22,8 @@ class Documento : public QObject
 {
     Q_OBJECT
 public:
-    explicit Documento(QWidget *widget, EditorCodigo *edit, QObject* botao, bool sujo = false);
-    explicit Documento(QWidget *widget, EditorCodigo *edit, bool sujo = false);
+    explicit Documento(QWidget *widget, EditorCodigo *edit, QObject* botao, bool realcar, bool sujo = false);
+    explicit Documento(QWidget *widget, EditorCodigo *edit,bool realcar, bool sujo = false);
     bool isVazio();
     bool isSujo();
     bool isAberto();
@@ -66,6 +66,9 @@ public:
     bool ligaDeslBreakPoint(int linha);
     int getCursorLinhaAtual();
     QSet<int>& getBreakPoints();
+    void setRealcar(bool realcar);
+    bool getRealcar();
+    void refazerRealce();
 private:
     const static int TAB_SPACE;
     bool primeiraChamada;
@@ -76,6 +79,7 @@ private:
     QString documentoId;
     QString caminhoCompleto;
     bool aberto;
+    Realcador *realcador;
 
 signals:
     void textoMudou(QTextDocument *documento);

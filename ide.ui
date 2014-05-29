@@ -407,7 +407,7 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Numero da Linha</string>
+    <string>Número da Linha</string>
    </property>
   </action>
   <action name="actionFuncoes">

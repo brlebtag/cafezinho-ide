@@ -73,6 +73,7 @@ private:
     bool ver_exec_prog;
     bool ver_barra_ferramentas;
     bool ver_barra_status;
+    bool ver_realcar;
     Terminal terminal;
     //Para gerenciar a execução do processo
     bool executando_processo;
@@ -211,6 +212,7 @@ private slots:
     void acaoHabilitarNumeroLinha(bool checked); //OK
     void acaoHabilitarBarraFerramentas(bool checked);
     void acaoHabilitarBarraStatus(bool checked);
+    void acaoHabilitarRealcador(bool checked);
     void reiniciarInterfaceClicado();
 
     //Menu Documento

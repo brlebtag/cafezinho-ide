@@ -2,14 +2,15 @@
 
 const int Documento::TAB_SPACE = 4;
 
-Documento::Documento(QWidget *widget, EditorCodigo *edit, QObject *botao, bool sujo) :
+Documento::Documento(QWidget *widget, EditorCodigo *edit, QObject *botao, bool realcar, bool sujo) :
     QObject(widget), widget(widget), edit(edit), botao(botao), sujo(sujo)
 {
     aberto = false;
     edit->setWordWrapMode(QTextOption::NoWrap);
     edit->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
     edit->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
-    Realcador *realcador = new Realcador(edit->document());
+    realcador = new Realcador(edit->document());
+    realcador->setRealcar(realcar);
     //O Realcador dispara textChanged() na primeira chamada...
     //assim o editor vai adicionar * pensando que mudou alguma coisa
     //Para corrigir isso eu adicionei essa flag primeiraChamada ela é de controle intero
@@ -20,14 +21,15 @@ Documento::Documento(QWidget *widget, EditorCodigo *edit, QObject *botao, bool s
     connect(edit,SIGNAL(cursorPositionChanged()),this,SLOT(texto_mudou()));
 }
 
-Documento::Documento(QWidget *widget, EditorCodigo *edit, bool sujo) :
+Documento::Documento(QWidget *widget, EditorCodigo *edit, bool realcar, bool sujo) :
     QObject(widget), widget(widget), edit(edit), sujo(sujo)
 {
     aberto = false;
     edit->setWordWrapMode(QTextOption::NoWrap);
     edit->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
     edit->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
-    Realcador *realcador = new Realcador(edit->document());
+    realcador = new Realcador(edit->document());
+    realcador->setRealcar(realcar);
     //O Realcador dispara textChanged() na primeira chamada...
     //assim o editor vai adicionar * pensando que mudou alguma coisa
     //Para corrigir isso eu adicionei essa flag primeiraChamada ela é de controle intero
@@ -293,6 +295,21 @@ int Documento::getCursorLinhaAtual()
 QSet<int> &Documento::getBreakPoints()
 {
     return this->edit->getBreakPoints();
+}
+
+void Documento::setRealcar(bool realcar)
+{
+    this->realcador->setRealcar(realcar);
+}
+
+bool Documento::getRealcar()
+{
+    return this->realcador->getRealcar();
+}
+
+void Documento::refazerRealce()
+{
+    this->realcador->rehighlight();
 }
 
 void Documento::texto_mudou()
