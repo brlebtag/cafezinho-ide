@@ -218,8 +218,6 @@
      <addaction name="actionContinuar"/>
      <addaction name="separator"/>
      <addaction name="actionLigDeslBreakPoint"/>
-     <addaction name="separator"/>
-     <addaction name="actionVigiar_Variavel"/>
     </widget>
     <addaction name="actionExecutar"/>
     <addaction name="actionParar"/>
