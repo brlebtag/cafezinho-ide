@@ -64,7 +64,8 @@ bool checar_chamada(TabelaSimbolo &tabela, No* parametro, No* argumento)
                    bool resultado = true;
                    QString dimArg, dimParam;
 
-                   if(param->dimensoes->at(0)->tipoNo() == TipoNo::INTEIRO)
+                   /* O primeiro parametro não é obrigatório a declaração */
+                   if(param->dimensoes->at(0)->tipoNo() == TipoNo::INTEIRO&&arg->dimensoes->at(0)->tipoNo() == TipoNo::INTEIRO)
                    {
                        if(dynamic_cast<NInteiro*>(param->dimensoes->at(0))->valor != dynamic_cast<NInteiro*>(arg->dimensoes->at(0))->valor)
                        {
@@ -78,19 +79,36 @@ bool checar_chamada(TabelaSimbolo &tabela, No* parametro, No* argumento)
                            dimParam = QString::number(dynamic_cast<NInteiro*>(param->dimensoes->at(0))->valor);
                        }
                    }
-                   else
+                   else if(arg->dimensoes->at(0)->tipoNo() == TipoNo::INTEIRO)
                    {
                        dimArg = QString::number(dynamic_cast<NInteiro*>(arg->dimensoes->at(0))->valor);
                        dimParam = QString::number(dynamic_cast<NInteiro*>(arg->dimensoes->at(0))->valor);
                    }
 
+                   /* Porém os outros são obrigátorio*/
                    for(int i=1; i<param->dimensoes->size(); ++i)
                    {
-                       resultado &= dynamic_cast<NInteiro*>(param->dimensoes->at(i))->valor == dynamic_cast<NInteiro*>(arg->dimensoes->at(i))->valor;
+                       try {
+                            resultado &= dynamic_cast<NInteiro*>(param->dimensoes->at(i))->valor == dynamic_cast<NInteiro*>(arg->dimensoes->at(i))->valor;
+                       }catch(...)
+                       {
+                       }
                        dimArg +="][";
-                       dimArg += QString::number(dynamic_cast<NInteiro*>(arg->dimensoes->at(i))->valor);
+                       try {
+                            dimArg += QString::number(dynamic_cast<NInteiro*>(arg->dimensoes->at(i))->valor);
+                       }
+                       catch(...)
+                       {
+                         dimArg+="";
+                       }
                        dimParam +="][";
-                       dimParam += QString::number(dynamic_cast<NInteiro*>(param->dimensoes->at(i))->valor);
+                       try{
+                            dimParam += QString::number(dynamic_cast<NInteiro*>(param->dimensoes->at(i))->valor);
+                       }
+                       catch(...)
+                       {
+                         dimParam+="";
+                       }
                    }
 
                    if(!resultado)
