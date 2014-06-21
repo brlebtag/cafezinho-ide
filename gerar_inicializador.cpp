@@ -11,7 +11,7 @@ void gerar_inicializador(MaquinaVirtual &vm, TabelaRef &tabela, NInicializadorVe
         inicializador.enqueue((NListaInicializador*)list->init->at(i));
     }
 
-    int indice = 1;
+    int indice = 0;
 
     while(!inicializador.isEmpty())
     {
@@ -29,11 +29,11 @@ void gerar_inicializador(MaquinaVirtual &vm, TabelaRef &tabela, NInicializadorVe
                 if(ref.profundidade == 0)
                 {
                     // ebx = pg + offset(inicial) + i
-                    vm.codigo.push_back(new ISalva(vm.eax, vm.pg, indice));
+                    vm.codigo.push_back(new ISalva(vm.eax, vm.pg, indice+ref.offset));
                 }
                 else
                 {
-                    vm.codigo.push_back(new ISalva(vm.eax, vm.bp, indice));
+                    vm.codigo.push_back(new ISalva(vm.eax, vm.bp, indice+ref.offset));
                 }
 
                 ++indice;
