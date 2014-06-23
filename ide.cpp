@@ -1361,6 +1361,9 @@ void IDE::mensagem(QString msg)
 
 void IDE::output(QString msg)
 {
+    QTextCursor cursor = terminal.textCursor();
+    cursor.movePosition(QTextCursor::End, QTextCursor::MoveAnchor);
+    terminal.setTextCursor(cursor);
     terminal.insertPlainText(msg);
 }
 
