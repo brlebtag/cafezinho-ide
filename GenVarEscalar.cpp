@@ -28,3 +28,8 @@ void GenVarEscalar::atualizar(MaquinaVirtual &vm)
 {
     item->setText(2, GenVar::memParaStr(vm, inicio_variavel, no->tipo));
 }
+
+int GenVarEscalar::tipoGenVar()
+{
+    return TipoGenVar::ESCALAR;
+}

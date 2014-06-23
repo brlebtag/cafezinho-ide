@@ -12,8 +12,9 @@ public:
     void inserir(MaquinaVirtual &vm, QTreeWidget* widget);
     void remover(QTreeWidget* widget);
     void atualizar(MaquinaVirtual &vm);
+    int tipoGenVar();
 private:
-    NDeclVarVetorial *pno;
+    NDeclVarVetorial *ponteiro;
     QTreeWidgetItem* item;
 
 };

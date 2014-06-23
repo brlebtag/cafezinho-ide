@@ -36,6 +36,16 @@ void GenVarVetorial::atualizar(MaquinaVirtual &vm)
     atualizar_nos(vm, itens[0], 0, dynamic_cast<NInteiro*>(no->dimensoes->at(0))->valor, no->dimensoes->size(), posicao);
 }
 
+int GenVarVetorial::tipoGenVar()
+{
+    return TipoGenVar::VETOR;
+}
+
+NDeclVarVetorial *GenVarVetorial::getVetor()
+{
+    return this->no;
+}
+
 void GenVarVetorial::gerar_nos(QTreeWidgetItem *pai, int indice, int dim, int tam, int &pos)
 {
     QTreeWidgetItem* item;
@@ -95,7 +105,10 @@ QString GenVarVetorial::gerar_nome_vetor(NDeclVarVetorial *no)
 
     for(int i=0; i<no->dimensoes->size(); ++i)
     {
-        nome+= "["+ QString::number(dynamic_cast<NInteiro*>(no->dimensoes->at(i))->valor)+"]";
+        if(no->tipoNo()==TipoNo::INTEIRO)
+            nome+= "["+ QString::number(dynamic_cast<NInteiro*>(no->dimensoes->at(i))->valor)+"]";
+        else
+            nome+="[]";
     }
 
     return nome;

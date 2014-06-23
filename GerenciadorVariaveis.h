@@ -27,7 +27,7 @@ public:
     void remover(NDeclaracaoVariavel* no);
     void atualizar();
     void setVisibilidade(bool visivel);
-
+    void desempilhar_tudo();
 private:
     QTreeWidget* widget;
     QStack< GenQuadro* > variaveis;

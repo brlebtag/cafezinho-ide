@@ -13,6 +13,7 @@ public:
     void inserir(MaquinaVirtual &vm, QTreeWidget* widget);
     void remover(QTreeWidget* widget);
     void atualizar(MaquinaVirtual &vm);
+    int tipoGenVar();
 private:
     NDeclVarEscalar *no;
     QTreeWidgetItem* item;

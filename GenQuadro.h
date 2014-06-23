@@ -1,4 +1,4 @@
-#ifndef GENQUADRO_H
+﻿#ifndef GENQUADRO_H
 #define GENQUADRO_H
 
 #include "arvore_abstrata.h"
@@ -22,6 +22,8 @@ public:
     void atualizar(MaquinaVirtual &vm);
     void esconder(QTreeWidget* widget);
     void mostrar(MaquinaVirtual &vm, QTreeWidget* widget);
+    void remover_todos(QTreeWidget* widget);
+    NDeclVarVetorial *buscar(NDeclaracaoVariavel *pno);
 private:
     QHash< QString, QStack< GenVar* > > variaveis;
 };

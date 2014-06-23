@@ -1405,6 +1405,8 @@ void IDE::parar_execucao()
 
         cancelando = true;
 
+        genVar->desempilhar_tudo();
+
         if(terminal.isModoEntrada())
             terminal.desligarModoEntrada();
 

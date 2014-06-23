@@ -26,15 +26,15 @@ void GenQuadro::adicionar(QTreeWidget *widget, MaquinaVirtual &vm, NDeclaracaoVa
     {
         case TipoNo::DECLARACAO_VARIAVEL_ESCALAR:
         {
-            if(pno==NULL)
-                var = new GenVarEscalar(no, inicio_variavel);
-            else
-                var = new GenVarVetPonteiro(no, inicio_variavel, pno);
+            var = new GenVarEscalar(no, inicio_variavel);
         }
         break;
         case TipoNo::DECLARACAO_VARIAVEL_VETORIAL:
         {
-            var = new GenVarVetorial(no, inicio_variavel);
+            if(pno==NULL)
+                var = new GenVarVetorial(no, inicio_variavel);
+            else
+                var = new GenVarVetPonteiro(no, inicio_variavel, pno);
         }
         break;
     }
@@ -123,4 +123,28 @@ void GenQuadro::mostrar(MaquinaVirtual &vm, QTreeWidget *widget)
         GenVar * var = it.value().top();
         var->inserir(vm, widget);
     }
+}
+
+void GenQuadro::remover_todos(QTreeWidget* widget)
+{
+    for(QHash< QString, QStack<GenVar*> >::iterator it = variaveis.begin(); it!= variaveis.end(); ++it)
+    {
+        while(!(*it).isEmpty())
+        {
+            GenVar* var = (*it).pop();
+            var->remover(widget);
+            delete var;
+        }
+    }
+}
+
+NDeclVarVetorial *GenQuadro::buscar(NDeclaracaoVariavel *pno)
+{
+    //Pego a pilha..
+    //Está pilha sempre vai existir pq o elemento apontando já foi inserido
+    //está verificação já é feita na análise semantica..
+    QStack<GenVar*> &p = variaveis[*pno->nome];
+
+    //Só pode ser o elemento do topo... por causa da análise semantica...
+    return dynamic_cast<GenVarVetorial*>(p.top())->getVetor();
 }

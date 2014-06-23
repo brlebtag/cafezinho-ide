@@ -1,11 +1,12 @@
 #include "GenVarVetPonteiro.h"
 
 GenVarVetPonteiro::GenVarVetPonteiro(No *no, int inicio_variavel, No *pno)
-    : GenVarVetorial(no, inicio_variavel)
+    : GenVarVetorial(pno, inicio_variavel)
 {
-    this->pno = dynamic_cast<NDeclVarVetorial*>(pno);
+    this->ponteiro = dynamic_cast<NDeclVarVetorial*>(no);
+    //guarda o nó que é o ponteiro (NDeclVarVetorial que é ponteiro para outro vetor)
     QStringList coluna;
-    coluna<<GenVarVetorial::gerar_nome_vetor(this->pno)<<tipoVar<<"";
+    coluna<<GenVarVetorial::gerar_nome_vetor(this->ponteiro)<<tipoVar<<"";
     item = new QTreeWidgetItem(coluna);
     item->addChild(itens[0]);
 }
@@ -32,4 +33,9 @@ void GenVarVetPonteiro::remover(QTreeWidget *widget)
 void GenVarVetPonteiro::atualizar(MaquinaVirtual &vm)
 {
     GenVarVetorial::atualizar(vm);
+}
+
+int GenVarVetPonteiro::tipoGenVar()
+{
+    return TipoGenVar::PONTEIRO;
 }

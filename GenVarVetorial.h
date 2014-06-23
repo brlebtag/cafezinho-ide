@@ -14,6 +14,8 @@ public:
     virtual void inserir(MaquinaVirtual &vm, QTreeWidget* widget);
     virtual void remover(QTreeWidget* widget);
     virtual void atualizar(MaquinaVirtual &vm);
+    virtual int tipoGenVar();
+    NDeclVarVetorial *getVetor();
 protected:
     NDeclVarVetorial *no;
     void gerar_nos(QTreeWidgetItem *pai, int indice, int dim, int tam, int &pos);
