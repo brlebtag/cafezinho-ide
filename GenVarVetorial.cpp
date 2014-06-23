@@ -105,7 +105,7 @@ QString GenVarVetorial::gerar_nome_vetor(NDeclVarVetorial *no)
 
     for(int i=0; i<no->dimensoes->size(); ++i)
     {
-        if(no->tipoNo()==TipoNo::INTEIRO)
+        if(no->dimensoes->at(i)->tipoNo()==TipoNo::INTEIRO)
             nome+= "["+ QString::number(dynamic_cast<NInteiro*>(no->dimensoes->at(i))->valor)+"]";
         else
             nome+="[]";

@@ -250,14 +250,23 @@ void MaquinaVirtual::empilha_variavel(No *no, int offset, int profundidade, No *
 
     //Pega o endereço corredo da variavel...
 
-    if(profundidade>0)
-        offset = bp.toInt() + offset; //Se não for variavel global: Base Pilha + Offset
-    else
-        offset = pg.toInt() + offset;// Se for global: Ponteiro Global + Offset
+    //qDebug()<<"pp: "<<pp.toInt();
 
-    //Se foi ponteiro então offset contem o endereço do ponteiro e o ponteiro contem o endereço do vetor...
-    if(pno!=NULL)
-        offset = this->memoria[offset].toInt(); //carrego o endereço que o ponteiro possui...
+    if(profundidade>0)
+    {
+        if(pno!=NULL)
+        {
+            offset = this->memoria[bp.toInt() + offset].toInt();
+        }
+        else
+        {
+            offset = bp.toInt() + offset;
+        }
+    }
+    else
+    {
+        offset = pg.toInt() + offset;
+    }
 
     emit empilha_variavel_debug(no, offset, pno);
 

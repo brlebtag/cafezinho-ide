@@ -138,7 +138,7 @@ void imprime_instrucao(MaquinaVirtual &vm, Instrucao * instrucao, int posicao)
         case CHAMADA:
         {
             IChamada *inst = dynamic_cast<IChamada*>(instrucao);
-            qDebug()<<posicao<<": inv "<<inst->offset;
+            qDebug()<<posicao<<": inv "<<inst->offset+1;
         }
         break;
         case LEITURA_INT:

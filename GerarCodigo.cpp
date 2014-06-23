@@ -254,10 +254,13 @@ void gerar_codigo(MaquinaVirtual &vm, TabelaRef &tabela, No *no, int profundidad
             {
                 empilha_exec(vm);
             }
-
-            for(int i = cham->argumentos->size() -1, j=0; i>=0; --i, ++j)
+            //qDebug()<<*cham->nome<<" "<<offset;
+            for(int i = (cham->argumentos->size()-1), j=1; i>=0; --i, ++j)
             {
                 NExpressao *exp = cham->argumentos->at(i);
+
+                gerar_codigo(vm, tabela, ultimo_elemento(vm,tabela, exp, profundidade, offset, funcao), profundidade, offset, funcao);
+                empilha(vm, vm.eax);
                 if(CompInfo::isDebug())
                 {
                     /* Na pilha esta inserido da seguinte forma
@@ -269,13 +272,12 @@ void gerar_codigo(MaquinaVirtual &vm, TabelaRef &tabela, No *no, int profundidad
                      *  Porém eu insiro elas antes de entrar na função assim eu não posso usar o bp-1, bp-2, ...
                      *  Eu vou usar a posicao dessas variaveis dentro dessa função que fica: bp_atual + offset + j (crescendo)
                      */
+                    //qDebug()<<"par: "<<*func->parametros->at(i)->nome<<" "<<offset+j+1;
                     if(exp->tipoNo()==TipoNo::IDENTIFICADOR_ESCALAR)
-                        vm.codigo.push_back(new IDebugVariavelEmpilha(func->parametros->at(i), offset+j, profundidade, dynamic_cast<NIdentificadorEscalar*>(exp)->ponteiro));
+                        vm.codigo.push_back(new IDebugVariavelEmpilha(func->parametros->at(i), offset+j+1, profundidade, dynamic_cast<NIdentificadorEscalar*>(exp)->ponteiro));
                     else
-                        vm.codigo.push_back(new IDebugVariavelEmpilha(func->parametros->at(i), offset+j, profundidade));
+                        vm.codigo.push_back(new IDebugVariavelEmpilha(func->parametros->at(i), offset+j+1, profundidade));
                 }
-                gerar_codigo(vm, tabela, ultimo_elemento(vm,tabela, exp, profundidade, offset, funcao), profundidade, offset, funcao);
-                empilha(vm, vm.eax);
             }
 
             invoca(vm, (*vm.rotulo[it.value().top().offset]));
@@ -455,7 +457,10 @@ void gerar_codigo(MaquinaVirtual &vm, TabelaRef &tabela, No *no, int profundidad
         case TipoNo::ENQUANTO:
         {
             NEnquanto *enq = dynamic_cast<NEnquanto*>(no);
-            vm.rotulo.push_back(new int(vm.codigo.size()));
+            if(CompInfo::isDebug())
+                vm.rotulo.push_back(new int(vm.codigo.size()-1));//Se for debug para uma antes onde está o debug_instrucao
+            else
+                vm.rotulo.push_back(new int(vm.codigo.size()));
             int &loop = (*vm.rotulo[vm.rotulo.size()-1]);
             gerar_codigo(vm, tabela, ultimo_elemento(vm,tabela, enq->expressao, profundidade, offset, funcao), profundidade, offset, funcao);
             vm.rotulo.push_back(new int(0));
