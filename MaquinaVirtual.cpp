@@ -177,6 +177,7 @@ void MaquinaVirtual::sistema(Sistema::Comando comando)
 
 void MaquinaVirtual::empilha_chamada()
 {
+
     //indiferente se tiver continuar/proximo/entrar
     //eu devo criar e remover variaveis porém esse processo fica invisivel ao usuario...
     //com genVar->setVisibilidade(false); - Eu crio as variaveis mas não insiro na GUI.
@@ -191,6 +192,7 @@ void MaquinaVirtual::empilha_chamada()
     {
         ++qtdChamadasFuncao;
         sinc_passo = false;
+        qDebug()<<qtdChamadasFuncao;
         if(qtdChamadasFuncao>=1)
         {
             emit desabilitar_botoes_debug();

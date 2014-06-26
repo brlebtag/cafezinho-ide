@@ -82,6 +82,16 @@ private:
     bool cancelando; //para gerenciar qnd o processo é cancelado mais a thread não foi destruida...
     GerenciadorVariaveis *genVar;
 
+    enum EstadoBotao
+    {
+        PARAR_APENAS, MODO_DEBUG, MODO_COMPILAR
+    };
+
+    EstadoBotao estadoBotao;
+
+    EstadoBotao getEstadoBotao();
+    void restauraEstado(EstadoBotao estado);
+
 
     /*struct Info_Func
     {

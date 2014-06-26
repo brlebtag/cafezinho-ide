@@ -533,6 +533,27 @@ Documento *IDE::getDocumentoAtual()
     return genDoc.procurar(getAbaAtual());
 }
 
+IDE::EstadoBotao IDE::getEstadoBotao()
+{
+    return estadoBotao;
+}
+
+void IDE::restauraEstado(IDE::EstadoBotao estado)
+{
+    switch(estado)
+    {
+        case PARAR_APENAS:
+            botaoPararApenas();
+        break;
+        case MODO_DEBUG:
+            botoesModoDebug();
+        break;
+        case MODO_COMPILAR:
+            botoesModoCompilar();
+        break;
+    }
+}
+
 void IDE::setDicaAba(int index, QString &tip)
 {
     this->ui->tabWidgetArquivos->setTabToolTip(index, tip);
@@ -1676,6 +1697,7 @@ void IDE::atualiza_breakpoints()
 
 void IDE::botoesModoCompilar()
 {
+    estadoBotao = MODO_COMPILAR;
     this->ui->actionExecutar->setEnabled(true);
     this->ui->actionEntrar->setEnabled(true);
     this->ui->actionProximo->setEnabled(true);
@@ -1685,6 +1707,7 @@ void IDE::botoesModoCompilar()
 
 void IDE::botoesModoDebug()
 {
+    estadoBotao = MODO_DEBUG;
     this->ui->actionExecutar->setEnabled(false);
     this->ui->actionEntrar->setEnabled(true);
     this->ui->actionProximo->setEnabled(true);
@@ -1694,6 +1717,7 @@ void IDE::botoesModoDebug()
 
 void IDE::botaoPararApenas()
 {
+    estadoBotao = PARAR_APENAS;
     this->ui->actionExecutar->setEnabled(false);
     this->ui->actionEntrar->setEnabled(false);
     this->ui->actionProximo->setEnabled(false);
@@ -1715,30 +1739,38 @@ void IDE::desabilitarBotoesDebug()
 void IDE::empilha_variavel_debug(No *no, int offset, No *pno)
 {
     //Para proteger de errors... eu ponho botoes modo para e depois botoes modo debug
+    EstadoBotao anterior = getEstadoBotao();
     botaoPararApenas();
     genVar->adicionar(dynamic_cast<NDeclaracaoVariavel*>(no), offset, dynamic_cast<NDeclaracaoVariavel*>(pno));
-    botoesModoDebug();
+    restauraEstado(anterior);
     CompInfo::inst()->waitSincPasso.wakeAll();
 }
 
 void IDE::desempilha_variavel_debug(No *no)
 {
      //Para proteger de errors... eu ponho botoes modo para e depois botoes modo debug
+    EstadoBotao anterior = getEstadoBotao();
     botaoPararApenas();
     genVar->remover(dynamic_cast<NDeclaracaoVariavel*>(no));
-    botoesModoDebug();
+    restauraEstado(anterior);
     CompInfo::inst()->waitSincPasso.wakeAll();
 }
 
 void IDE::empilha_quadro()
 {
+    EstadoBotao anterior = getEstadoBotao();
+    botaoPararApenas();
     genVar->empilha_quadro();
+    restauraEstado(anterior);
     CompInfo::inst()->waitSincPasso.wakeAll();
 }
 
 void IDE::desempilha_quadro()
 {
+    EstadoBotao anterior = getEstadoBotao();
+    botaoPararApenas();
     genVar->desempilha_quadro();
+    restauraEstado(anterior);
     CompInfo::inst()->waitSincPasso.wakeAll();
 }
 
