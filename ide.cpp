@@ -78,6 +78,9 @@ IDE::IDE(QWidget *parent) :
     connect(this->ui->actionLigDeslBreakPoint, SIGNAL(triggered()), this, SLOT(ligaDeslBreakPoint()));
     connect(this->ui->actionContinuar, SIGNAL(triggered()), this, SLOT(continuar()));
 
+    //Ajuda
+    connect(this->ui->actionSobre_CafezinhoIDE,SIGNAL(triggered()), this, SLOT(mostraAbout()));
+
     //marca o botão para como desabilitado por que não existe processo executando...
     this->ui->actionParar->setEnabled(false);
     //marca o botão Continuar como desabilitado por que não existe processo executando...
@@ -1857,4 +1860,11 @@ void IDE::itemAtualMudou(QTreeWidgetItem *atual, QTreeWidgetItem *anterior)
         doc->setPosicaoCursor(atual->text(0).toInt());
         doc->limpou();
     }*/
+}
+
+void IDE::mostraAbout()
+{
+    About *win = new About(this);
+    win->setFixedSize(win->size());
+    win->show();
 }

@@ -40,6 +40,7 @@
 #include <QColor>
 #include "MaquinaVirtual.h"
 #include "GerenciadorVariaveis.h"
+#include "about.h"
 
 //Ajustar o clipboard posteriormente...
 
@@ -289,6 +290,8 @@ private slots:
     void mudou_instrucao(int linha);
     void texto_mudou(QTextDocument *documento);
     void itemAtualMudou(QTreeWidgetItem *atual, QTreeWidgetItem *anterior);
+
+    void mostraAbout();
 };
 
 #endif // IDE_H

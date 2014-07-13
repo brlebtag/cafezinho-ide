@@ -51,7 +51,8 @@ SOURCES += main.cpp\
     GenVarVetorial.cpp \
     GenVar.cpp \
     GenVarVetPonteiro.cpp \
-    GenQuadro.cpp
+    GenQuadro.cpp \
+    about.cpp
 
 HEADERS  += ide.h \
     GerenciadorDocumento.h \
@@ -83,12 +84,14 @@ HEADERS  += ide.h \
     GenVarVetorial.h \
     GenVar.h \
     GenVarVetPonteiro.h \
-    GenQuadro.h
+    GenQuadro.h \
+    about.h
 
 FORMS    += ide.ui \
     fontedialog.ui \
     irpara.ui \
-    procurar.ui
+    procurar.ui \
+    about.ui
 
 RESOURCES += \
     resource.qrc
@@ -137,3 +140,5 @@ bisonheader.name = Bison Headers ${QMAKE_FILE_IN}
 bisonheader.CONFIG += target_predeps no_link
 
 QMAKE_EXTRA_COMPILERS += bisonheader
+
+ RC_FILE = myapp.rc

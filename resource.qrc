@@ -3,5 +3,12 @@
         <file>bolinha.png</file>
         <file>fechar.png</file>
         <file>mais.png</file>
+        <file>icon-16.ico</file>
+        <file>icon-32.ico</file>
+        <file>icon-48.ico</file>
+        <file>icon-128.ico</file>
+        <file>icon-256.ico</file>
+        <file>logo-final.png</file>
+        <file>icon-for-desktop.png</file>
     </qresource>
 </RCC>
