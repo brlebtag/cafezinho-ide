@@ -305,7 +305,7 @@ void imprime_instrucao(MaquinaVirtual &vm, Instrucao * instrucao, int posicao)
         break;
         case NADA:
         {
-            ICmp *inst = dynamic_cast<ICmp*>(instrucao);
+            INada *inst = dynamic_cast<INada*>(instrucao);
             qDebug()<<posicao<<": nada";
         }
         break;
