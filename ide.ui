@@ -111,7 +111,7 @@
         </property>
         <widget class="QWidget" name="tab_3">
          <attribute name="title">
-          <string>Variaveis</string>
+          <string>Variáveis</string>
          </attribute>
          <layout class="QGridLayout" name="gridLayout_5">
           <item row="0" column="0">
