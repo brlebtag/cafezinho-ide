@@ -14,8 +14,13 @@ CompInfo *CompInfo::inst()
 MaquinaVirtual *CompInfo::getVM()
 {
     if(CompInfo::inst()->thread!=NULL)
-        return CompInfo::inst()->thread->getVM();
+        return CompInfo::inst()->vm;
     return NULL;
+}
+
+void CompInfo::setVM(MaquinaVirtual *vm)
+{
+    CompInfo::inst()->vm = vm;
 }
 
 Output &CompInfo::out()

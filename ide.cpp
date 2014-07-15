@@ -1399,9 +1399,12 @@ void IDE::terminou_processo()
     botoesModoCompilar();
     if(genVar!=NULL)
     {
+        genVar->desempilhar_tudo();
         delete genVar;
         genVar = NULL;
     }
+    doc_exec_atual = NULL;
+    delete CompInfo::getVM();
 }
 
 void IDE::modoEntrada()
@@ -1428,8 +1431,6 @@ void IDE::parar_execucao()
     {
 
         cancelando = true;
-
-        genVar->desempilhar_tudo();
 
         if(terminal.isModoEntrada())
             terminal.desligarModoEntrada();
@@ -1511,6 +1512,9 @@ void IDE::compilar()
 
                 //Inicializar os sinais/slots e aloca genVar...
                 configurarModoDebug(vm);
+
+                //seta para ficar invisivel as variáveis
+                genVar->setVisibilidade(false);
 
                 //Executar até encontrar um breakpoint.
                 vm->continuar();

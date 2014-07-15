@@ -50,6 +50,7 @@ public:
     friend class Error;
     static CompInfo* inst();
     static MaquinaVirtual* getVM();
+    static void setVM(MaquinaVirtual* vm);
     QString arquivo;
     static Output &out();
     static Error &err();
@@ -68,7 +69,6 @@ public:
     static bool isBreakPoint(int linha);
     static void validarBreakPoint(QSet<int> &breakpoint);
     bool debug;
-
 private:
     explicit CompInfo(QObject *parent = 0);
     ~CompInfo();
@@ -78,6 +78,7 @@ private:
     CompThread * thread;
     ValidarBreakPoint validar;
     MaquinaVirtual *vm;
+
 
 public slots:
     void thread_terminou();

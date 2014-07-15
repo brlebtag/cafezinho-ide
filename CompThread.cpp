@@ -11,6 +11,7 @@ CompThread::CompThread(QObject *parent) :
     QThread(parent)
 {
     vm = new MaquinaVirtual(this);
+    CompInfo::setVM(vm);
     connect(this, SIGNAL(finished()),CompInfo::inst(),SLOT(thread_terminou()));
 }
 
@@ -81,6 +82,8 @@ void CompThread::run()
     delete bloco;
 
     fclose(file);
+
+    this->deleteLater();
 }
 
 void CompThread::limpar_tela()
