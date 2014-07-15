@@ -10,5 +10,8 @@
         <file>icon-256.ico</file>
         <file>logo-final.png</file>
         <file>icon-for-desktop.png</file>
+        <file>logo-final-min.png</file>
+        <file>ide-logo-final.png</file>
+        <file>ide-logo-final-min.png</file>
     </qresource>
 </RCC>
