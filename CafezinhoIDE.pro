@@ -141,4 +141,4 @@ bisonheader.CONFIG += target_predeps no_link
 
 QMAKE_EXTRA_COMPILERS += bisonheader
 
- RC_FILE = myapp.rc
+ RC_FILE = icon.rc
