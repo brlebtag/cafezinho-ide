@@ -1397,12 +1397,12 @@ void IDE::terminou_processo()
     cancelando = false;
     doc_exec_atual->getEditor()->setReadOnly(false);
     botoesModoCompilar();
-    //if(genVar!=NULL)
-    //{
-        //genVar->desempilhar_tudo();
-        //delete genVar;
-        //genVar = NULL;
-    //}
+    if(genVar!=NULL)
+    {
+        genVar->desempilhar_tudo();
+        delete genVar;
+        genVar = NULL;
+    }
     doc_exec_atual = NULL;
     delete CompInfo::getVM();
 }
@@ -1439,13 +1439,6 @@ void IDE::parar_execucao()
         CompInfo::inst()->setDebug(false);
 
         terminouEntradaDados("");
-
-        //Desempilha tudo
-        genVar->desempilhar_tudo();
-
-        delete genVar;
-
-        genVar = NULL;
 
         //Se tiver alguem dormindo acorda....
         CompInfo::inst()->waitIO.wakeAll();
@@ -1507,12 +1500,11 @@ void IDE::compilar()
             //Configura os estado
             MaquinaVirtual *vm = compilar->getVM();
 
-            //Quando for começar a executar (ou seja o codigo já foi gerado) então
-            //atualiza os breakpoints
-            connect(vm, SIGNAL(comecar_execucao()), SLOT(atualiza_breakpoints()));
-
             if(!doc->getBreakPoints().isEmpty())
             {
+                //Quando for começar a executar (ou seja o codigo já foi gerado) então
+                //atualiza os breakpoints
+                atualiza_breakpoints();
 
                 //Inicializar os sinais/slots e aloca genVar...
                 configurarModoDebug(vm);
@@ -1546,9 +1538,10 @@ void IDE::continuar()
     if(executando_processo)
     {
         //Habilita apenas o botão parar...
+        genVar->setVisibilidade(false);
         botaoPararApenas();
-        CompInfo::inst()->waitSincPasso.wakeAll();
         CompInfo::getVM()->continuar();
+        CompInfo::inst()->waitSincPasso.wakeAll();
     }
     //Para ficar invisivel quando precionar continue...
     //if(genVar!=NULL)
@@ -1602,7 +1595,7 @@ void IDE::entrar_instrucao()
 
         //Quando for começar a executar (ou seja o codigo já foi gerado) então
         //atualiza os breakpoints
-        connect(vm, SIGNAL(comecar_execucao()), SLOT(atualiza_breakpoints()));
+        atualiza_breakpoints();
 
         //Inicializar os sinais/slots e aloca genVar...
         configurarModoDebug(vm);
@@ -1668,7 +1661,7 @@ void IDE::prox_instrucao()
 
         //Quando for começar a executar (ou seja o codigo já foi gerado) então
         //atualiza os breakpoints
-        connect(vm, SIGNAL(comecar_execucao()), SLOT(atualiza_breakpoints()));
+        atualiza_breakpoints();
 
         //Inicializar os sinais/slots e aloca genVar...
         configurarModoDebug(vm);

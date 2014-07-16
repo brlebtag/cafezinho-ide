@@ -311,8 +311,6 @@ void MaquinaVirtual::sincronizar_passo(int linha)
 {
     bool contem = CompInfo::isBreakPoint(linha);
 
-    //qDebug()<<sinc_passo;
-
     if(sinc_passo || contem)
     {
         emit mudou_instrucao(linha);

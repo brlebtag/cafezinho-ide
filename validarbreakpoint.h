@@ -4,6 +4,7 @@
 #include <QtAlgorithms>
 #include <QMap>
 #include <QSet>
+#include <QDebug>
 
 /*
  * Dentro do código quando eu entro no modo debug eu crio varios pontos de paradas que são quando se deve chamar para o usuario
