@@ -1440,6 +1440,13 @@ void IDE::parar_execucao()
 
         terminouEntradaDados("");
 
+        //Desempilha tudo
+        genVar->desempilhar_tudo();
+
+        delete genVar;
+
+        genVar = NULL;
+
         //Se tiver alguem dormindo acorda....
         CompInfo::inst()->waitIO.wakeAll();
         CompInfo::inst()->waitSincPasso.wakeAll();
