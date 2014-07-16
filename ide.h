@@ -275,7 +275,6 @@ private slots:
     void botoesModoDebug();
     void botaoPararApenas();
     void atualizarVariavel();
-    void desabilitarBotoesDebug();
 
     //Para gerenciar as variaveis
     void empilha_variavel_debug(No *no, int offset, No *pno);

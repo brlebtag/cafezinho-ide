@@ -1397,12 +1397,12 @@ void IDE::terminou_processo()
     cancelando = false;
     doc_exec_atual->getEditor()->setReadOnly(false);
     botoesModoCompilar();
-    if(genVar!=NULL)
-    {
-        genVar->desempilhar_tudo();
-        delete genVar;
-        genVar = NULL;
-    }
+    //if(genVar!=NULL)
+    //{
+        //genVar->desempilhar_tudo();
+        //delete genVar;
+        //genVar = NULL;
+    //}
     doc_exec_atual = NULL;
     delete CompInfo::getVM();
 }
@@ -1453,9 +1453,6 @@ void IDE::configurarModoDebug(MaquinaVirtual *vm)
 
     //Conecta agora para receber o break...
     connect(vm, SIGNAL(mudou_instrucao(int)),this, SLOT(mudou_instrucao(int)));
-
-    //desabilitar botao quando passar por cima de uma função
-    connect(vm, SIGNAL(desabilitar_botoes_debug()), this, SLOT(desabilitarBotoesDebug()));
 
     //Para gerenciar a criação de quadros de chamada de função
     connect(vm, SIGNAL(empilha_quadro_debug()), this, SLOT(empilha_quadro()));
@@ -1524,6 +1521,7 @@ void IDE::compilar()
             {
 
                 //seta debug como false
+                vm->continuar();
                 CompInfo::inst()->setDebug(false);
             }
 
@@ -1540,12 +1538,14 @@ void IDE::continuar()
 {
     if(executando_processo)
     {
+        //Habilita apenas o botão parar...
+        botaoPararApenas();
         CompInfo::inst()->waitSincPasso.wakeAll();
         CompInfo::getVM()->continuar();
     }
     //Para ficar invisivel quando precionar continue...
-    if(genVar!=NULL)
-        genVar->setVisibilidade(false);
+    //if(genVar!=NULL)
+        //genVar->setVisibilidade(false);
 }
 
 void IDE::entrar_instrucao()
@@ -1555,6 +1555,8 @@ void IDE::entrar_instrucao()
         genVar->setVisibilidade(true);
         MaquinaVirtual *vm = CompInfo::getVM();
         vm->entrar();
+        //Habilita apenas o botão parar...
+        botaoPararApenas();
         CompInfo::inst()->waitSincPasso.wakeAll();
     }
     else
@@ -1598,8 +1600,14 @@ void IDE::entrar_instrucao()
         //Inicializar os sinais/slots e aloca genVar...
         configurarModoDebug(vm);
 
+        //seta genVar para visivel
+        genVar->setVisibilidade(true);
+
         //Seta como entrar
         vm->entrar();
+
+        //Habilita apenas o botão parar...
+        botaoPararApenas();
 
         //executa-lá
         compilar->start();
@@ -1613,6 +1621,8 @@ void IDE::prox_instrucao()
         genVar->setVisibilidade(false);
         MaquinaVirtual *vm = CompInfo::getVM();
         vm->proximo();
+        //Habilita apenas o botão parar...
+        botaoPararApenas();
         CompInfo::inst()->waitSincPasso.wakeAll();
     }
     else
@@ -1656,8 +1666,14 @@ void IDE::prox_instrucao()
         //Inicializar os sinais/slots e aloca genVar...
         configurarModoDebug(vm);
 
+        //seta genVar para visivel
+        genVar->setVisibilidade(true);
+
         //seta como proximo
         vm->proximo();
+
+        //Habilita apenas o botão parar...
+        botaoPararApenas();
 
         //executa-lá
         compilar->start();
@@ -1734,50 +1750,50 @@ void IDE::botaoPararApenas()
 
 void IDE::atualizarVariavel()
 {
+    //EstadoBotao anterior = getEstadoBotao();
+    //botaoPararApenas();
     genVar->atualizar();
+    //restauraEstado(anterior);
     CompInfo::inst()->waitSincPasso.wakeAll();
-}
-
-void IDE::desabilitarBotoesDebug()
-{
-    botaoPararApenas();
 }
 
 void IDE::empilha_variavel_debug(No *no, int offset, No *pno)
 {
     //Para proteger de errors... eu ponho botoes modo para e depois botoes modo debug
-    EstadoBotao anterior = getEstadoBotao();
-    botaoPararApenas();
+   // EstadoBotao anterior = getEstadoBotao();
+    //botaoPararApenas();
     genVar->adicionar(dynamic_cast<NDeclaracaoVariavel*>(no), offset, dynamic_cast<NDeclaracaoVariavel*>(pno));
-    restauraEstado(anterior);
+    //restauraEstado(anterior);
     CompInfo::inst()->waitSincPasso.wakeAll();
 }
 
 void IDE::desempilha_variavel_debug(No *no)
 {
      //Para proteger de errors... eu ponho botoes modo para e depois botoes modo debug
-    EstadoBotao anterior = getEstadoBotao();
-    botaoPararApenas();
+    //EstadoBotao anterior = getEstadoBotao();
+    //botaoPararApenas();
     genVar->remover(dynamic_cast<NDeclaracaoVariavel*>(no));
-    restauraEstado(anterior);
+    //restauraEstado(anterior);
     CompInfo::inst()->waitSincPasso.wakeAll();
 }
 
 void IDE::empilha_quadro()
 {
-    EstadoBotao anterior = getEstadoBotao();
-    botaoPararApenas();
+    //EstadoBotao anterior = getEstadoBotao();
+    //botaoPararApenas();
+    //genVar->empilha_quadro();
+    //restauraEstado(anterior);
     genVar->empilha_quadro();
-    restauraEstado(anterior);
     CompInfo::inst()->waitSincPasso.wakeAll();
 }
 
 void IDE::desempilha_quadro()
 {
-    EstadoBotao anterior = getEstadoBotao();
-    botaoPararApenas();
+    //EstadoBotao anterior = getEstadoBotao();
+    //botaoPararApenas();
+    //genVar->desempilha_quadro();
+    //restauraEstado(anterior);
     genVar->desempilha_quadro();
-    restauraEstado(anterior);
     CompInfo::inst()->waitSincPasso.wakeAll();
 }
 
@@ -1785,10 +1801,10 @@ void IDE::desempilha_quadro()
 void IDE::mudou_instrucao(int linha)
 {
     genVar->setVisibilidade(true);
-    botoesModoDebug();
     linha_atual = linha;
     setAbaAtual(doc_exec_atual->getWidget());
     criarSelecao(linha);
+    botoesModoDebug();
 }
 
 void IDE::texto_mudou(QTextDocument *documento)

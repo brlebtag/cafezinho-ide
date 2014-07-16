@@ -192,11 +192,6 @@ void MaquinaVirtual::empilha_chamada()
     {
         ++qtdChamadasFuncao;
         sinc_passo = false;
-        qDebug()<<qtdChamadasFuncao;
-        if(qtdChamadasFuncao>=1)
-        {
-            emit desabilitar_botoes_debug();
-        }
     }
 }
 
@@ -232,12 +227,14 @@ void MaquinaVirtual::proximo()
 void MaquinaVirtual::entrar()
 {
     statusExec = StatusExec::ENTRAR;
+    qtdChamadasFuncao = 0;
     sinc_passo = true;
 }
 
 void MaquinaVirtual::continuar()
 {
     statusExec = StatusExec::CONTINUAR;
+    qtdChamadasFuncao = 0;
     sinc_passo = false;
 }
 
@@ -313,6 +310,8 @@ void MaquinaVirtual::atualizarVariaveis()
 void MaquinaVirtual::sincronizar_passo(int linha)
 {
     bool contem = CompInfo::isBreakPoint(linha);
+
+    //qDebug()<<sinc_passo;
 
     if(sinc_passo || contem)
     {
