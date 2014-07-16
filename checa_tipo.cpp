@@ -14,7 +14,7 @@ TipoVariavel::TipoVariavel checar_tipo(TabelaSimbolo &tabela, No* no)
 
             if(itSim==tabela.end())
             {
-                CompInfo::err()<<"[ERRO SEMANTICO] Variavel "<<ident->nome<<" não foi previamente declarado próximo a "<<ident->linha<<"\n";
+                CompInfo::err()<<"[ERRO SEMANTICO] Variavel "<<ident->nome<<" não foi previamente declarado próximo a linha "<<ident->linha<<"\n";
                 erro_compilador = true;
                 ident->tipo = TIPO_ERRO;
             }
@@ -22,13 +22,13 @@ TipoVariavel::TipoVariavel checar_tipo(TabelaSimbolo &tabela, No* no)
             {
                 if(CHECA_NO(itSim.value()->top()->no, DECLARACAO_FUNCAO))
                 {
-                    CompInfo::err()<<"[ERRO SEMANTICO] Esperado variavel escalar encontrado função próximo a "<<ident->linha<<"\n";
+                    CompInfo::err()<<"[ERRO SEMANTICO] Esperado variavel escalar encontrado função próximo a linha "<<ident->linha<<"\n";
                     erro_compilador = true;
                     ident->tipo = TIPO_ERRO;
                 }
                 else if(CHECA_NO(itSim.value()->top()->no, DECLARACAO_VARIAVEL_VETORIAL))
                 {
-                    CompInfo::err()<<"[ERRO SEMANTICO] Esperado variavel escalar encontrado variavel vetorial próximo a "<<ident->linha<<"\n";
+                    CompInfo::err()<<"[ERRO SEMANTICO] Esperado variavel escalar encontrado variavel vetorial próximo a linha "<<ident->linha<<"\n";
                     erro_compilador = true;
                     ident->tipo = TIPO_ERRO;
                 }
@@ -49,7 +49,7 @@ TipoVariavel::TipoVariavel checar_tipo(TabelaSimbolo &tabela, No* no)
 
             if(itSim==tabela.end())
             {
-                CompInfo::err()<<"[ERRO SEMANTICO] Variavel "<<ident->nome<<" não foi previamente declarado próximo a "<<ident->linha<<"\n";
+                CompInfo::err()<<"[ERRO SEMANTICO] Variavel "<<ident->nome<<" não foi previamente declarado próximo a linha "<<ident->linha<<"\n";
                 erro_compilador = true;
                 ident->tipo = TIPO_ERRO;
             }
@@ -57,13 +57,13 @@ TipoVariavel::TipoVariavel checar_tipo(TabelaSimbolo &tabela, No* no)
             {
                 if(CHECA_NO(itSim.value()->top()->no, DECLARACAO_FUNCAO))
                 {
-                    CompInfo::err()<<"[ERRO SEMANTICO] Esperado variavel vetorial encontrado função próximo a "<<ident->linha<<"\n";
+                    CompInfo::err()<<"[ERRO SEMANTICO] Esperado variavel vetorial encontrado função próximo a linha "<<ident->linha<<"\n";
                     erro_compilador = true;
                     ident->tipo = TIPO_ERRO;
                 }
                 else if(CHECA_NO(itSim.value()->top()->no, DECLARACAO_VARIAVEL_ESCALAR))
                 {
-                    CompInfo::err()<<"[ERRO SEMANTICO] Esperado variavel vetorial encontrado variavel escalar próximo a "<<ident->linha<<"\n";
+                    CompInfo::err()<<"[ERRO SEMANTICO] Esperado variavel vetorial encontrado variavel escalar próximo a linha "<<ident->linha<<"\n";
                     erro_compilador = true;
                     ident->tipo = TIPO_ERRO;
                 }
@@ -75,7 +75,7 @@ TipoVariavel::TipoVariavel checar_tipo(TabelaSimbolo &tabela, No* no)
                     if(var->dimensoes->size()!=ident->indice->size())
                     {
                         //mensagem de erro...
-                        CompInfo::err()<<"[ERRO SEMANTICO] Variavel vetorial apresenta "<<var->dimensoes->size()<<" dimensões próximo a "<<var->linha<<" enquanto que o identificador vetorial contém "<<ident->indice->size()<<" dimensões próximo a "<<ident->linha<<"\n";
+                        CompInfo::err()<<"[ERRO SEMANTICO] Variavel vetorial apresenta "<<var->dimensoes->size()<<" dimensões próximo a "<<var->linha<<" enquanto que o identificador vetorial contém "<<ident->indice->size()<<" dimensões próximo a linha "<<ident->linha<<"\n";
                         erro_compilador = true;
                         ident->tipo = TIPO_ERRO;
                     }
@@ -95,7 +95,7 @@ TipoVariavel::TipoVariavel checar_tipo(TabelaSimbolo &tabela, No* no)
                     else
                     {
                         //mensagem de erro...
-                        CompInfo::err()<<"[ERRO SEMANTICO] Índice do vetor não é INT ou CAR próximo a "<<ident->linha<<"\n";
+                        CompInfo::err()<<"[ERRO SEMANTICO] Índice do vetor não é INT ou CAR próximo a linha "<<ident->linha<<"\n";
                         erro_compilador = true;
                         ident->tipo = TIPO_ERRO;
                     }
@@ -126,7 +126,7 @@ TipoVariavel::TipoVariavel checar_tipo(TabelaSimbolo &tabela, No* no)
 
             if(itSim==tabela.end())
             {
-                CompInfo::err()<<"[ERRO SEMANTICO] função "<<cham->nome<<" não foi preveamente declarado próximo a "<<cham->nome<<"\n";
+                CompInfo::err()<<"[ERRO SEMANTICO] função "<<cham->nome<<" não foi preveamente declarado próximo a linha "<<cham->nome<<"\n";
                 erro_compilador = true;
                 cham->tipo = TIPO_ERRO;
             }
@@ -134,13 +134,13 @@ TipoVariavel::TipoVariavel checar_tipo(TabelaSimbolo &tabela, No* no)
             {
                 if(CHECA_NO(itSim.value()->top()->no , DECLARACAO_VARIAVEL_ESCALAR))
                 {
-                    CompInfo::err()<<"[ERRO SEMANTICO] Esperado função encontrado variavel escalar próximo a "<<cham->linha<<"\n";
+                    CompInfo::err()<<"[ERRO SEMANTICO] Esperado função encontrado variavel escalar próximo a linha "<<cham->linha<<"\n";
                     erro_compilador = true;
                     cham->tipo = TIPO_ERRO;
                 }
                 else if(CHECA_NO(itSim.value()->top()->no , DECLARACAO_VARIAVEL_VETORIAL))
                 {
-                    CompInfo::err()<<"[ERRO SEMANTICO] Esperado função encontrado variavel vetorial próximo a "<<cham->linha<<"\n";
+                    CompInfo::err()<<"[ERRO SEMANTICO] Esperado função encontrado variavel vetorial próximo a linha "<<cham->linha<<"\n";
                     erro_compilador = true;
                     cham->tipo = TIPO_ERRO;
                 }
@@ -150,7 +150,7 @@ TipoVariavel::TipoVariavel checar_tipo(TabelaSimbolo &tabela, No* no)
 
                     if(func->parametros->size()!=cham->argumentos->size())
                     {
-                        CompInfo::err()<<"[ERRO SEMANTICO] Esperado "<<func->parametros->size()<<" parametros, porém foi encontrado "<<cham->argumentos->size()<<" argumentos na função "<<cham->nome<<" próximo a "<<cham->linha<<"\n";
+                        CompInfo::err()<<"[ERRO SEMANTICO] Esperado "<<func->parametros->size()<<" parametros, porém foi encontrado "<<cham->argumentos->size()<<" argumentos na função "<<cham->nome<<" próximo a linha "<<cham->linha<<"\n";
                         erro_compilador = true;
                         cham->tipo = TIPO_ERRO;
                     }
@@ -187,14 +187,14 @@ TipoVariavel::TipoVariavel checar_tipo(TabelaSimbolo &tabela, No* no)
 
             if(lhs==TIPO_ERRO||lhs==TIPO_PALAVRA||lhs==TIPO_NULO||lhs==TIPO_NOVALINHA)
             {
-                CompInfo::err()<<"[ERRO SEMANTICO] Não é possivel realizar está operação sobre o operador esquerdo do tipo "<<nome_tipo(lhs)<<" próximo a "<<atrib->linha<<"\n";
+                CompInfo::err()<<"[ERRO SEMANTICO] Não é possivel realizar está operação sobre o operador esquerdo do tipo "<<nome_tipo(lhs)<<" próximo a linha "<<atrib->linha<<"\n";
                 erro_compilador = true;
                 atrib->tipo = TIPO_ERRO;
             }
 
             if(rhs==TIPO_ERRO||rhs==TIPO_PALAVRA||rhs==TIPO_NULO||rhs==TIPO_NOVALINHA)
             {
-                CompInfo::err()<<"[ERRO SEMANTICO] Não é possivel realizar está operação sobre o operador direito do tipo "<<nome_tipo(rhs)<<" próximo a "<<atrib->linha<<"\n";
+                CompInfo::err()<<"[ERRO SEMANTICO] Não é possivel realizar está operação sobre o operador direito do tipo "<<nome_tipo(rhs)<<" próximo a linha "<<atrib->linha<<"\n";
                 erro_compilador = true;
                 atrib->tipo = TIPO_ERRO;
             }
@@ -265,14 +265,14 @@ TipoVariavel::TipoVariavel checar_tipo(TabelaSimbolo &tabela, No* no)
                 {
                     if(lhs==TIPO_INT&&rhs==TIPO_REAL)
                     {
-                        CompInfo::err()<<"[ERRO SEMANTICO] Não é possivel realizar está operação sobre o operador esquerdo do tipo INT enquanto que o operador direito é do tipo REAL próximo a "<<atrib->linha<<"\n";
+                        CompInfo::err()<<"[ERRO SEMANTICO] Não é possivel realizar está operação sobre o operador esquerdo do tipo INT enquanto que o operador direito é do tipo REAL próximo a linha "<<atrib->linha<<"\n";
                         atrib->tipo = TIPO_ERRO;
                         erro_compilador = true;
                     }
 
                     if(lhs==TIPO_CAR&&(rhs==TIPO_REAL||rhs==TIPO_INT))
                     {
-                        CompInfo::err()<<"[ERRO SEMANTICO] Não é possivel realizar está operação sobre o operador esquerdo do tipo "<<nome_tipo(lhs)<<" enquanto que o operador direito é do tipo "<<nome_tipo(rhs)<<" próximo a "<<atrib->linha<<"\n";
+                        CompInfo::err()<<"[ERRO SEMANTICO] Não é possivel realizar está operação sobre o operador esquerdo do tipo "<<nome_tipo(lhs)<<" enquanto que o operador direito é do tipo "<<nome_tipo(rhs)<<" próximo a linha "<<atrib->linha<<"\n";
                         atrib->tipo = TIPO_ERRO;
                         erro_compilador = true;
                     }
@@ -291,14 +291,14 @@ TipoVariavel::TipoVariavel checar_tipo(TabelaSimbolo &tabela, No* no)
 
             if(lhs==TIPO_ERRO||lhs==TIPO_PALAVRA||lhs==TIPO_NULO||lhs==TIPO_NOVALINHA)
             {
-                CompInfo::err()<<"[ERRO SEMANTICO] Não é possivel realizar está operação sobre o operador esquerdo do tipo "<<nome_tipo(lhs)<<" próximo a "<<bin->linha<<"\n";
+                CompInfo::err()<<"[ERRO SEMANTICO] Não é possivel realizar está operação sobre o operador esquerdo do tipo "<<nome_tipo(lhs)<<" próximo a linha "<<bin->linha<<"\n";
                 erro_compilador = true;
                 bin->tipo = TIPO_ERRO;
             }
 
             if(rhs==TIPO_ERRO||rhs==TIPO_PALAVRA||rhs==TIPO_NULO||rhs==TIPO_NOVALINHA)
             {
-                CompInfo::err()<<"[ERRO SEMANTICO] Não é possivel realizar está operação sobre o operador direito do tipo "<<nome_tipo(rhs)<<" próximo a "<<bin->linha<<"\n";
+                CompInfo::err()<<"[ERRO SEMANTICO] Não é possivel realizar está operação sobre o operador direito do tipo "<<nome_tipo(rhs)<<" próximo a linha "<<bin->linha<<"\n";
                 erro_compilador = true;
                 bin->tipo = TIPO_ERRO;
             }
@@ -359,14 +359,14 @@ TipoVariavel::TipoVariavel checar_tipo(TabelaSimbolo &tabela, No* no)
 
             if(rhs==TIPO_ERRO||rhs==TIPO_PALAVRA||rhs==TIPO_NULO||rhs==TIPO_NOVALINHA)
             {
-                CompInfo::err()<<"[ERRO SEMANTICO] Não é possivel realizar está operação sobre o valor do tipo "<<nome_tipo(rhs)<<" próximo a "<<uni->linha<<"\n";
+                CompInfo::err()<<"[ERRO SEMANTICO] Não é possivel realizar está operação sobre o valor do tipo "<<nome_tipo(rhs)<<" próximo a linha "<<uni->linha<<"\n";
                 erro_compilador = true;
                 uni->tipo = TIPO_ERRO;
             }
 
             if(rhs==TIPO_CAR&&(uni->op == Operador::NEG_OP||uni->op == Operador::MIN_OP))
             {
-                CompInfo::err()<<"[ERRO SEMANTICO] Não é possivel realizar a operação de NEGACAO(~ ou !) ou NEGATIVO(-) sobre valores do tipo CAR próximo a "<<uni->linha<<"\n";
+                CompInfo::err()<<"[ERRO SEMANTICO] Não é possivel realizar a operação de NEGACAO(~ ou !) ou NEGATIVO(-) sobre valores do tipo CAR próximo a linha "<<uni->linha<<"\n";
                 erro_compilador = true;
                 uni->tipo = TIPO_ERRO;
             }
@@ -377,7 +377,7 @@ TipoVariavel::TipoVariavel checar_tipo(TabelaSimbolo &tabela, No* no)
                 {
                     if(NCHECA_NO(uni->rhs, TipoNo::IDENTIFICADOR_ESCALAR) && NCHECA_NO(uni->rhs, TipoNo::IDENTIFICADOR_VETORIAL))
                     {
-                        CompInfo::err()<<"[ERRO SEMANTICO] Não é possivel realizar está operação sobre o operador direito do tipo não identificador próximo a "<<uni->linha<<"\n";
+                        CompInfo::err()<<"[ERRO SEMANTICO] Não é possivel realizar está operação sobre o operador direito do tipo não identificador próximo a linha "<<uni->linha<<"\n";
                         erro_compilador = true;
                         uni->tipo = TIPO_ERRO;
                     }
@@ -398,7 +398,7 @@ TipoVariavel::TipoVariavel checar_tipo(TabelaSimbolo &tabela, No* no)
             if(tipo==TIPO_ERRO||tipo==TIPO_PALAVRA||tipo==TIPO_NULO||tipo==TIPO_NOVALINHA)
             {
                 //error
-                CompInfo::err()<<"[ERRO SEMANTICO] Não é possivel avaliar a expressão próximo a "<<ter->linha<<"\n";
+                CompInfo::err()<<"[ERRO SEMANTICO] Não é possivel avaliar a expressão próximo a linha "<<ter->linha<<"\n";
                 erro_compilador = true;
                 ter->tipo = TIPO_ERRO;
             }
@@ -410,7 +410,7 @@ TipoVariavel::TipoVariavel checar_tipo(TabelaSimbolo &tabela, No* no)
             if(ifexpr==TIPO_ERRO||ifexpr==TIPO_PALAVRA||ifexpr==TIPO_NULO||tipo==TIPO_NOVALINHA)
             {
                 //error
-                CompInfo::err()<<"[ERRO SEMANTICO] Não é possivel avaliar a expressão próximo a "<<ter->ifExpr->linha<<"\n";
+                CompInfo::err()<<"[ERRO SEMANTICO] Não é possivel avaliar a expressão próximo a linha "<<ter->ifExpr->linha<<"\n";
                 erro_compilador = true;
                 ter->tipo = TIPO_ERRO;
             }
@@ -418,7 +418,7 @@ TipoVariavel::TipoVariavel checar_tipo(TabelaSimbolo &tabela, No* no)
             if(elsexpr==TIPO_ERRO||elsexpr==TIPO_PALAVRA||elsexpr==TIPO_NULO||tipo==TIPO_NOVALINHA)
             {
                 //error
-                CompInfo::err()<<"[ERRO SEMANTICO] Não é possivel avaliar a expressão próximo a "<<ter->elsExpr->linha<<"\n";
+                CompInfo::err()<<"[ERRO SEMANTICO] Não é possivel avaliar a expressão próximo a linha "<<ter->elsExpr->linha<<"\n";
                 erro_compilador = true;
                 ter->tipo = TIPO_ERRO;
             }

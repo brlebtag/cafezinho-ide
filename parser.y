@@ -621,11 +621,11 @@ void yyerror(NBloco * bloco, const char *s)
 
     if(!erro_lexico)
     {
-        CompInfo::err()<<"[ERRO SINTATICO] Erro junto ao token "<<ultimo_token<<" próximo a "<<yylineno<<"\n";
+        CompInfo::err()<<"[ERRO SINTATICO] Erro junto ao token "<<ultimo_token<<" próximo a linha "<<yylineno<<"\n";
     }
     else
     {
-        CompInfo::err()<<"[ERRO LEXICO] Erro junto ao token "<<ultimo_token<<" próximo a "<<yylineno<<"\n";
+        CompInfo::err()<<"[ERRO LEXICO] "<<s<<" junto ao token "<<ultimo_token<<" próximo a linha "<<yylineno<<"\n";
         erro_lexico = false;
     }
     erro_compilador = true;
