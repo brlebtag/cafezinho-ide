@@ -1396,13 +1396,12 @@ void IDE::terminou_processo()
     executando_processo = false;
     cancelando = false;
     doc_exec_atual->getEditor()->setReadOnly(false);
+
     botoesModoCompilar();
-    //if(genVar!=NULL)
-    //{
-        //genVar->desempilhar_tudo();
-        //delete genVar;
-        //genVar = NULL;
-    //}
+    //Desempilha tudo
+    genVar->desempilhar_tudo();
+    delete genVar;
+    genVar = NULL;
     doc_exec_atual = NULL;
     delete CompInfo::getVM();
 }
@@ -1439,13 +1438,6 @@ void IDE::parar_execucao()
         CompInfo::inst()->setDebug(false);
 
         terminouEntradaDados("");
-
-        //Desempilha tudo
-        genVar->desempilhar_tudo();
-
-        delete genVar;
-
-        genVar = NULL;
 
         //Se tiver alguem dormindo acorda....
         CompInfo::inst()->waitIO.wakeAll();
