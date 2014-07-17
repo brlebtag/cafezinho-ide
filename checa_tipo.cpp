@@ -185,6 +185,8 @@ TipoVariavel::TipoVariavel checar_tipo(TabelaSimbolo &tabela, No* no)
             TipoVariavel::TipoVariavel lhs = checar_tipo(tabela, (No*) atrib->lhs);
             TipoVariavel::TipoVariavel rhs = checar_tipo(tabela, (No*) atrib->rhs);
 
+            atrib->tipo = lhs;
+
             if(lhs==TIPO_ERRO||lhs==TIPO_PALAVRA||lhs==TIPO_NULO||lhs==TIPO_NOVALINHA)
             {
                 CompInfo::err()<<"[ERRO SEMANTICO] Não é possivel realizar está operação sobre o operador esquerdo do tipo "<<nome_tipo(lhs)<<" próximo a linha "<<atrib->linha<<"\n";
@@ -289,6 +291,8 @@ TipoVariavel::TipoVariavel checar_tipo(TabelaSimbolo &tabela, No* no)
             TipoVariavel::TipoVariavel lhs = checar_tipo(tabela, (No*) bin->lhs);
             TipoVariavel::TipoVariavel rhs = checar_tipo(tabela, (No*) bin->rhs);
 
+            bin->tipo = lhs;
+
             if(lhs==TIPO_ERRO||lhs==TIPO_PALAVRA||lhs==TIPO_NULO||lhs==TIPO_NOVALINHA)
             {
                 CompInfo::err()<<"[ERRO SEMANTICO] Não é possivel realizar está operação sobre o operador esquerdo do tipo "<<nome_tipo(lhs)<<" próximo a linha "<<bin->linha<<"\n";
@@ -356,6 +360,8 @@ TipoVariavel::TipoVariavel checar_tipo(TabelaSimbolo &tabela, No* no)
             NOperacaoUnaria* uni = dynamic_cast<NOperacaoUnaria*>(no);
 
             TipoVariavel::TipoVariavel rhs = checar_tipo(tabela, (No*) uni->rhs);
+
+            uni->tipo = rhs;
 
             if(rhs==TIPO_ERRO||rhs==TIPO_PALAVRA||rhs==TIPO_NULO||rhs==TIPO_NOVALINHA)
             {
