@@ -33,9 +33,14 @@ Error &CompInfo::err()
     return (*CompInfo::inst()->_err);
 }
 
-void CompInfo::setOut(CompThread* thread)
+void CompInfo::setThread(CompThread* thread)
 {
     CompInfo::inst()->thread = thread;
+}
+
+CompThread *CompInfo::getThread()
+{
+    return CompInfo::inst()->thread;
 }
 
 void CompInfo::modoEntrada()

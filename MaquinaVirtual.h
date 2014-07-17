@@ -11,6 +11,8 @@
 #include <QSet>
 #include "arvore_abstrata.h"
 
+class IDE;
+
 /*
  * Este enum é utilizado para fazer o controle se está executando normal
  * se está em passo por cima, passa entrando...
@@ -70,6 +72,7 @@ public:
     void empilha_variavel(No *no, int offset, int profundidade, No *pno);
     void desempilha_variavel(No *no);
     void atualizarVariaveis();
+    IDE *ide;
 
     /*
      * Com essa variavel eu guardarei as informação da pilha de execução, partir do momento que for acionado passar por cima
@@ -88,11 +91,6 @@ signals:
     void mudou_instrucao(int linha);
     void comecar_execucao();
     void terminou_execucao(bool sucesso);
-    void desabilitar_botoes_debug();
-    void empilha_variavel_debug(No *no, int offset, No *pno);
-    void desempilha_variavel_debug(No *no);
-    void atualizar_variavel();
-    void empilha_quadro_debug();
     void desempilha_quadro_debug();
 
 public slots:
