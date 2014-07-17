@@ -1,5 +1,6 @@
 #include "MaquinaVirtual.h"
 #include "Instrucao.h"
+#include "ide.h"
 
 MaquinaVirtual::MaquinaVirtual(QObject *parent) :
     QObject(parent), memoria(100)
@@ -181,12 +182,11 @@ void MaquinaVirtual::empilha_chamada()
     //indiferente se tiver continuar/proximo/entrar
     //eu devo criar e remover variaveis porém esse processo fica invisivel ao usuario...
     //com genVar->setVisibilidade(false); - Eu crio as variaveis mas não insiro na GUI.
-    emit empilha_quadro_debug();
 
     //Eu preciso sincronizar está parte...
-    CompInfo::inst()->mutexSincPasso.lock();
-    CompInfo::inst()->waitSincPasso.wait(&CompInfo::inst()->mutexSincPasso);
-    CompInfo::inst()->mutexSincPasso.unlock();
+
+    ide->empilha_quadro();
+
 
     if(statusExec == StatusExec::PROXIMA)
     {
@@ -201,12 +201,9 @@ void MaquinaVirtual::desempilha_chamada()
     //indiferente se tiver continuar/proximo/entrar
     //eu devo criar e remover variaveis porém esse processo fica invisivel ao usuario...
     //com genVar->setVisibilidade(false); - Eu crio as variaveis mas não insiro na GUI.
-    emit desempilha_quadro_debug();
 
     //Eu preciso sincronizar está parte...
-    CompInfo::inst()->mutexSincPasso.lock();
-    CompInfo::inst()->waitSincPasso.wait(&CompInfo::inst()->mutexSincPasso);
-    CompInfo::inst()->mutexSincPasso.unlock();
+    ide->desempilha_quadro();
 
     if(statusExec == StatusExec::PROXIMA)
     {
@@ -267,12 +264,10 @@ void MaquinaVirtual::empilha_variavel(No *no, int offset, int profundidade, No *
         offset = pg.toInt() + offset;
     }
 
-    emit empilha_variavel_debug(no, offset, pno);
-
     //Eu preciso sincronizar está parte...
-    CompInfo::inst()->mutexSincPasso.lock();
-    CompInfo::inst()->waitSincPasso.wait(&CompInfo::inst()->mutexSincPasso);
-    CompInfo::inst()->mutexSincPasso.unlock();
+    ide->empilha_variavel_debug(no, offset, pno);
+
+
 }
 
 void MaquinaVirtual::desempilha_variavel(No *no)
@@ -283,12 +278,9 @@ void MaquinaVirtual::desempilha_variavel(No *no)
 
     //Não posso tratar aki diretamente tem que ser via IDE por que no Qt não da para alterar a interface grafica
     //em outra thread!!!!
-    emit desempilha_variavel_debug(no);
 
     //Eu preciso sincronizar está parte...
-    CompInfo::inst()->mutexSincPasso.lock();
-    CompInfo::inst()->waitSincPasso.wait(&CompInfo::inst()->mutexSincPasso);
-    CompInfo::inst()->mutexSincPasso.unlock();
+    ide->desempilha_variavel_debug(no);
 }
 
 void MaquinaVirtual::atualizarVariaveis()
@@ -298,12 +290,8 @@ void MaquinaVirtual::atualizarVariaveis()
 
     if(sinc_passo)
     {
-        emit atualizar_variavel();
-
         //Eu preciso sincronizar está parte...
-        CompInfo::inst()->mutexSincPasso.lock();
-        CompInfo::inst()->waitSincPasso.wait(&CompInfo::inst()->mutexSincPasso);
-        CompInfo::inst()->mutexSincPasso.unlock();
+        ide->atualizarVariavel();
     }
 }
 
@@ -311,11 +299,10 @@ void MaquinaVirtual::sincronizar_passo(int linha)
 {
     bool contem = CompInfo::isBreakPoint(linha);
 
-    //qDebug()<<sinc_passo;
-
     if(sinc_passo || contem)
     {
         emit mudou_instrucao(linha);
+
         CompInfo::inst()->mutexSincPasso.lock();
         CompInfo::inst()->waitSincPasso.wait(&CompInfo::inst()->mutexSincPasso);
         CompInfo::inst()->mutexSincPasso.unlock();

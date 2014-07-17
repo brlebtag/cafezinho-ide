@@ -12,7 +12,7 @@ void ValidarBreakPoint::inserirParada(int linha)
 
 bool ValidarBreakPoint::isBreakPoint(int linha)
 {
-    return breakpoints.value(linha);
+    return this->breakpoints.lowerBound(linha).value();
 }
 
 void ValidarBreakPoint::validarBreakPoints(QSet<int> &breakpoints)
@@ -21,10 +21,9 @@ void ValidarBreakPoint::validarBreakPoints(QSet<int> &breakpoints)
     reiniciar_breakpoints();
 
     //remarca os breakpoints
-    foreach(int a, breakpoints)
+    foreach(int indice, breakpoints)
     {
-        QMap<int, bool>::iterator it = this->breakpoints.lowerBound(a);
-        this->breakpoints[it.key()] = true;
+        this->breakpoints[indice] = true;
     }
 }
 

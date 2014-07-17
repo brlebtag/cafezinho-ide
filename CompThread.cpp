@@ -12,7 +12,6 @@ CompThread::CompThread(QObject *parent) :
 {
     vm = new MaquinaVirtual(this);
     CompInfo::setVM(vm);
-    connect(this, SIGNAL(finished()),CompInfo::inst(),SLOT(thread_terminou()));
 }
 
 void CompThread::run()
@@ -33,8 +32,6 @@ void CompThread::run()
     yylineno = 1;
     erro_compilador = 0;
     erro_lexico = 0;
-
-    CompInfo::setOut(this);
 
     NBloco *bloco;
     do
@@ -74,16 +71,10 @@ void CompThread::run()
             CompInfo::err()<<"[Cafezinho] A função nulo programa() não foi definida!\n";
             vm->erf = true;
         }
-
-        if(!vm->erf)
-            appendMsg("<b>Programa terminado com sucesso!</b>");
     }
 
     delete bloco;
-
     fclose(file);
-
-    this->deleteLater();
 }
 
 void CompThread::limpar_tela()

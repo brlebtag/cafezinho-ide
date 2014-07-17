@@ -54,9 +54,11 @@ public:
     QString arquivo;
     static Output &out();
     static Error &err();
-    static void setOut(CompThread *thread);
+    static void setThread(CompThread *thread);
+    static CompThread *getThread();
     static void modoEntrada();
     static void appendTexto(QString texto);
+    static void thread_terminou();
     QMutex mutexIO;//EntradaSaidaMutex
     QString entrada;
     QWaitCondition waitIO;
@@ -81,7 +83,6 @@ private:
 
 
 public slots:
-    void thread_terminou();
 };
 
 #endif // COMPINFO_H

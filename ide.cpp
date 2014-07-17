@@ -1022,7 +1022,6 @@ void IDE::acaoHabilitarRealcador(bool checked)
 
 void IDE::breakpoint(int line, bool checked)
 {
-    //qDebug()<<line<<", "<<checked;
     if(executando_processo)
     {
         //Atualiza Breakpoints
@@ -1396,14 +1395,23 @@ void IDE::terminou_processo()
     executando_processo = false;
     cancelando = false;
     doc_exec_atual->getEditor()->setReadOnly(false);
-
     botoesModoCompilar();
-    //Desempilha tudo
-    genVar->desempilhar_tudo();
-    delete genVar;
-    genVar = NULL;
+    if(genVar!=NULL)
+    {
+        genVar->desempilhar_tudo();
+        delete genVar;
+        genVar = NULL;
+    }
     doc_exec_atual = NULL;
-    delete CompInfo::getVM();
+
+    MaquinaVirtual *vm = CompInfo::getVM();
+
+    if(!vm->erf)
+        mensagem("<b>Programa terminado com sucesso!</b>");
+
+    delete vm;
+    delete CompInfo::getThread();
+    CompInfo::thread_terminou();
 }
 
 void IDE::modoEntrada()
@@ -1453,15 +1461,8 @@ void IDE::configurarModoDebug(MaquinaVirtual *vm)
     //Conecta agora para receber o break...
     connect(vm, SIGNAL(mudou_instrucao(int)),this, SLOT(mudou_instrucao(int)));
 
-    //Para gerenciar a criação de quadros de chamada de função
-    connect(vm, SIGNAL(empilha_quadro_debug()), this, SLOT(empilha_quadro()));
-    connect(vm, SIGNAL(desempilha_quadro_debug()), this, SLOT(desempilha_quadro()));
-
     //Cria o gerenciador de variaveis e liga os signal/slots...
     genVar = new GerenciadorVariaveis(this->ui->treeVariaveis);
-    connect(vm, SIGNAL(empilha_variavel_debug(No*,int,No*)), this, SLOT(empilha_variavel_debug(No*,int,No*)));
-    connect(vm, SIGNAL(desempilha_variavel_debug(No*)), this, SLOT(desempilha_variavel_debug(No*)));
-    connect(vm, SIGNAL(atualizar_variavel()), this, SLOT(atualizarVariavel()));
 }
 
 void IDE::compilar()
@@ -1493,18 +1494,20 @@ void IDE::compilar()
             //Criar a thread que irá compilar e executar
             CompThread *compilar = criarCompThread();
 
+            //salva a thread
+            CompInfo::setThread(compilar);
+
             //Trava o editor para não ser possivel editar
             doc->getEditor()->setReadOnly(true);
 
             //Configura os estado
             MaquinaVirtual *vm = compilar->getVM();
 
-            //Quando for começar a executar (ou seja o codigo já foi gerado) então
-            //atualiza os breakpoints
-            connect(vm, SIGNAL(comecar_execucao()), SLOT(atualiza_breakpoints()));
-
             if(!doc->getBreakPoints().isEmpty())
             {
+                //Quando for começar a executar (ou seja o codigo já foi gerado) então
+                //atualiza os breakpoints
+                atualiza_breakpoints();
 
                 //Inicializar os sinais/slots e aloca genVar...
                 configurarModoDebug(vm);
@@ -1538,13 +1541,11 @@ void IDE::continuar()
     if(executando_processo)
     {
         //Habilita apenas o botão parar...
+        genVar->setVisibilidade(false);
         botaoPararApenas();
-        CompInfo::inst()->waitSincPasso.wakeAll();
         CompInfo::getVM()->continuar();
+        CompInfo::inst()->waitSincPasso.wakeAll();
     }
-    //Para ficar invisivel quando precionar continue...
-    //if(genVar!=NULL)
-        //genVar->setVisibilidade(false);
 }
 
 void IDE::entrar_instrucao()
@@ -1586,6 +1587,9 @@ void IDE::entrar_instrucao()
         //Criar a thread que irá compilar e executar
         CompThread *compilar = criarCompThread();
 
+        //salva a thread
+        CompInfo::setThread(compilar);
+
         //Trava o editor para não ser possivel editar
         doc_exec_atual->getEditor()->setReadOnly(true);
 
@@ -1594,7 +1598,7 @@ void IDE::entrar_instrucao()
 
         //Quando for começar a executar (ou seja o codigo já foi gerado) então
         //atualiza os breakpoints
-        connect(vm, SIGNAL(comecar_execucao()), SLOT(atualiza_breakpoints()));
+        atualiza_breakpoints();
 
         //Inicializar os sinais/slots e aloca genVar...
         configurarModoDebug(vm);
@@ -1652,6 +1656,9 @@ void IDE::prox_instrucao()
         //Criar a thread que irá compilar e executar
         CompThread *compilar = criarCompThread();
 
+        //salva a thread
+        CompInfo::setThread(compilar);
+
         //Trava o editor para não ser possivel editar
         doc_exec_atual->getEditor()->setReadOnly(true);
 
@@ -1660,7 +1667,7 @@ void IDE::prox_instrucao()
 
         //Quando for começar a executar (ou seja o codigo já foi gerado) então
         //atualiza os breakpoints
-        connect(vm, SIGNAL(comecar_execucao()), SLOT(atualiza_breakpoints()));
+        atualiza_breakpoints();
 
         //Inicializar os sinais/slots e aloca genVar...
         configurarModoDebug(vm);
@@ -1682,6 +1689,7 @@ void IDE::prox_instrucao()
 CompThread *IDE::criarCompThread()
 {
     CompThread *compilar = new CompThread();
+    compilar->getVM()->ide = this;
     connect(compilar, SIGNAL(mensagem(QString)), this, SLOT(mensagem(QString)));
     connect(compilar, SIGNAL(texto_puro(QString)), this, SLOT(output(QString)));
     connect(compilar, SIGNAL(finished()), this, SLOT(terminou_processo()));
@@ -1750,31 +1758,26 @@ void IDE::botaoPararApenas()
 void IDE::atualizarVariavel()
 {
     genVar->atualizar();
-    CompInfo::inst()->waitSincPasso.wakeAll();
 }
 
 void IDE::empilha_variavel_debug(No *no, int offset, No *pno)
 {
     genVar->adicionar(dynamic_cast<NDeclaracaoVariavel*>(no), offset, dynamic_cast<NDeclaracaoVariavel*>(pno));
-    CompInfo::inst()->waitSincPasso.wakeAll();
 }
 
 void IDE::desempilha_variavel_debug(No *no)
 {
     genVar->remover(dynamic_cast<NDeclaracaoVariavel*>(no));
-    CompInfo::inst()->waitSincPasso.wakeAll();
 }
 
 void IDE::empilha_quadro()
 {
     genVar->empilha_quadro();
-    CompInfo::inst()->waitSincPasso.wakeAll();
 }
 
 void IDE::desempilha_quadro()
 {
     genVar->desempilha_quadro();
-    CompInfo::inst()->waitSincPasso.wakeAll();
 }
 
 

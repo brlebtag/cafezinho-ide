@@ -58,6 +58,12 @@ public:
     explicit IDE(QWidget *parent = 0);
     ~IDE();
     Documento* getDocumentoAtual();
+    //Para gerenciar as variaveis
+    void atualizarVariavel();
+    void empilha_variavel_debug(No *no, int offset, No *pno);
+    void desempilha_variavel_debug(No *no);
+    void empilha_quadro();
+    void desempilha_quadro();
 
 private:
 
@@ -191,6 +197,7 @@ private:
     //temporario
     void desabilitarFuncoes();
 
+
 protected:
     void closeEvent(QCloseEvent *event);
 
@@ -274,13 +281,6 @@ private slots:
     void botoesModoCompilar();
     void botoesModoDebug();
     void botaoPararApenas();
-    void atualizarVariavel();
-
-    //Para gerenciar as variaveis
-    void empilha_variavel_debug(No *no, int offset, No *pno);
-    void desempilha_variavel_debug(No *no);
-    void empilha_quadro();
-    void desempilha_quadro();
 
     //Reforçar a seleção caso esteja executando
     void reforcar_selecao();
